@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Halima Dairy Farm Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <style>
+        body { font-family: Arial, Helvetica, sans-serif; -webkit-tap-highlight-color: transparent; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: #166534; border-radius: 10px; }
+        .touch-card { transition: transform 0.1s ease, box-shadow 0.1s ease; }
+        .touch-card:active { transform: scale(0.96); }
+    </style>
+</head>
+<body class="bg-[#f8f9fa] text-gray-900 transition-colors duration-200 min-h-screen pb-32 dark:bg-[#000000] dark:text-gray-100">
+
+    <!-- Global System Header Banner -->
+    <header class="p-4 border-b bg-white dark:bg-[#121212] border-gray-200 dark:border-gray-800 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <div>
+                <h1 class="text-xs font-bold text-[#166534] tracking-wider uppercase">Halima dairy farm.</h1>
+            </div>
+            <div class="flex gap-2">
+                <button id="themeToggle" class="border border-gray-300 dark:border-gray-700 rounded-lg px-2.5 py-1 bg-white dark:bg-[#1a1a1a] shadow-sm text-[10px] font-bold tracking-wider text-gray-700 dark:text-gray-300">
+                    MODE
+                </button>
+                <button onclick="toggleSetupModal(true)" class="bg-[#166534] text-white rounded-lg px-2.5 py-1 shadow-sm text-[10px] font-bold tracking-wider hover:bg-[#14532d]">
+                    SETUP
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto px-4 pt-4">
+
+        <!-- ==================== VIEW 1: DASHBOARD VIEW ==================== -->
+        <div id="dashboardView" class="tab-view space-y-6">
+            <!-- Operational Averages (10 Cards turned into Touch Buttons) -->
+            <div>
+                <h2 class="text-xs font-extrabold text-[#166534] tracking-widest uppercase mb-2 flex items-center gap-1">
+                    <span>📊</span> Operational Average (10 Cards)
+                </h2>
+                <div class="grid grid-cols-2 gap-2">
+                    <div onclick="openCardDetails('Avg Milk / Buffalo', '19.2 Ltr', 'Operational Summary', 'Average daily milk production tracked per active buffalo head across all active milking cows in Shed A & B.', 'bg-emerald-700')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-emerald-700 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Avg Milk / Buffalo</span><span class="text-base font-black mt-0.5">19.2 Ltr</span></div>
+                        <span class="text-xl opacity-80">🥛</span>
+                    </div>
+                    <div onclick="openCardDetails('Avg Feed / Buffalo', '14.5 Kg', 'Operational Summary', 'Average dry and green fodder allocation consumed per animal head daily.', 'bg-emerald-600')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-emerald-600 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Avg Feed / Buffalo</span><span class="text-base font-black mt-0.5">14.5 Kg</span></div>
+                        <span class="text-xl opacity-80">🌾</span>
+                    </div>
+                    <div onclick="openCardDetails('Avg Feed Cost / Kg', '₹32.50', 'Financial Indicator', 'Consolidated cost configuration for composite feed blends and supplements per kilogram.', 'bg-emerald-800')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-emerald-800 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Avg Feed Cost / Kg</span><span class="text-base font-black mt-0.5">₹32.50</span></div>
+                        <span class="text-xl opacity-80">💰</span>
+                    </div>
+                    <div onclick="openCardDetails('Avg Own Milk Rate', '₹68.00', 'Financial Indicator', 'Internal procurement farm-gate inventory valuation assigned for self-produced raw milk.', 'bg-amber-600')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-amber-600 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Avg Own Milk Rate</span><span class="text-base font-black mt-0.5">₹68.00</span></div>
+                        <span class="text-xl opacity-80">📈</span>
+                    </div>
+                    <div onclick="openCardDetails('Avg Customer Rate', '₹71.20', 'Financial Indicator', 'Standard sales pricing ledger established for commercial consumer distribution routes.', 'bg-purple-600')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-purple-600 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Avg Customer Rate</span><span class="text-base font-black mt-0.5">₹71.20</span></div>
+                        <span class="text-xl opacity-80">🏪</span>
+                    </div>
+                    <div onclick="openCardDetails('Avg Labor / Head', '₹450', 'Human Resources', 'Aggregated monthly employee payroll expenditures evenly scaled down per animal unit.', 'bg-teal-600')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-teal-600 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Avg Labor / Head</span><span class="text-base font-black mt-0.5">₹450</span></div>
+                        <span class="text-xl opacity-80">👥</span>
+                    </div>
+                    <div onclick="openCardDetails('Avg Slaughter Rate', '₹18,500', 'Asset Liquidation', 'Average transaction baseline secured for standard marketplace non-productive culling metrics.', 'bg-indigo-600')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-indigo-600 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Avg Slaughter Rate</span><span class="text-base font-black mt-0.5">₹18,500</span></div>
+                        <span class="text-xl opacity-80">📉</span>
+                    </div>
+                    <div onclick="openCardDetails('Avg Kori Rate', '₹82,000', 'Procurement Valuation', 'Current benchmark baseline investment index required for general inbound asset additions.', 'bg-lime-700')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-lime-700 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Avg Kori Rate</span><span class="text-base font-black mt-0.5">₹82,000</span></div>
+                        <span class="text-xl opacity-80">🏷️</span>
+                    </div>
+                    <div onclick="openCardDetails('Avg Taji Rate', '₹95,000', 'Procurement Valuation', 'Premium tier acquisition pricing targeted for high-lactation operational buffaloes.', 'bg-green-700')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-green-700 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Avg Taji Rate</span><span class="text-base font-black mt-0.5">₹95,000</span></div>
+                        <span class="text-xl opacity-80">🚚</span>
+                    </div>
+                    <div onclick="openCardDetails('Dead Ratio M/Y', '1.2% / 4%', 'Risk Analytics', 'Statistical monthly and annualized herd mortality ratios actively cataloged in compliance limits.', 'bg-zinc-600')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-zinc-600 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Dead Ratio M/Y</span><span class="text-base font-black mt-0.5">1.2% / 4%</span></div>
+                        <span class="text-xl opacity-80">🪦</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bills Ledger (10 Cards turned into Touch Buttons) -->
+            <div>
+                <h2 class="text-xs font-extrabold text-[#166534] tracking-widest uppercase mb-2 flex items-center gap-1">
+                    <span>💰</span> Bills Ledger (10 Cards)
+                </h2>
+                <div class="grid grid-cols-2 gap-2">
+                    <div onclick="openCardDetails('Noora Palak Bill', document.getElementById('nooraBill').textContent, 'Ledger Balance', 'Accumulated outstanding operational compensation balance statement tracked for handler Noora.', 'bg-[#166534]')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-[#166534] shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Noora Palak Bill</span><span class="text-base font-black mt-0.5" id="nooraBill">₹0</span></div>
+                        <span class="text-xl opacity-80">🧑‍🌾</span>
+                    </div>
+                    <div onclick="openCardDetails('Tosif Palak Bill', document.getElementById('tosifBill').textContent, 'Ledger Balance', 'Accumulated outstanding operational compensation balance statement tracked for handler Tosif.', 'bg-[#166534]')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-[#166534] shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Tosif Palak Bill</span><span class="text-base font-black mt-0.5" id="tosifBill">₹0</span></div>
+                        <span class="text-xl opacity-80">🧑‍🌾</span>
+                    </div>
+                    <div onclick="openCardDetails('Irshad Trans Bill', document.getElementById('irshadBill').textContent, 'Logistics Account', 'Pending logistical distribution freight costs assigned to Irshad Transportation systems.', 'bg-amber-600')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-amber-600 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Irshad Trans Bill</span><span class="text-base font-black mt-0.5" id="irshadBill">₹0</span></div>
+                        <span class="text-xl opacity-80">🚛</span>
+                    </div>
+                    <div onclick="openCardDetails('Danawala Balance', document.getElementById('danaBal').textContent, 'Supplier Account', 'Current open trade ledger outstanding balance payable with primary feed grain suppliers.', 'bg-emerald-600')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-emerald-600 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-emerald-600 uppercase truncate">Danawala Balance</span><span class="text-base font-black mt-0.5" id="danaBal">₹0</span></div>
+                        <span class="text-xl opacity-80">🌾</span>
+                    </div>
+                    <div onclick="openCardDetails('Bhaiswala Balance', document.getElementById('bhaisBal').textContent, 'Broker Account', 'Pending settlement credit statements owed to primary marketplace cattle trading brokers.', 'bg-blue-500')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-blue-500 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-blue-500 uppercase truncate">Bhaiswala Balance</span><span class="text-base font-black mt-0.5" id="bhaisBal">₹0</span></div>
+                        <span class="text-xl opacity-80">🐄</span>
+                    </div>
+                    <div onclick="openCardDetails('Total Labor Pagar', document.getElementById('laborPagar').textContent, 'Payroll Liability', 'Consolidated monthly salary wages and employee compensation due for distribution bookkeeping.', 'bg-purple-500')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-purple-500 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Total Labor Pagar</span><span class="text-base font-black mt-0.5" id="laborPagar">₹0</span></div>
+                        <span class="text-xl opacity-80">💵</span>
+                    </div>
+                    <div onclick="openCardDetails('Slaughtered Net', document.getElementById('slaughterNet').textContent, 'Revenue Statement', 'Net asset liquidation revenue captured through secondary meat market processing metrics.', 'bg-teal-500')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-teal-500 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Slaughtered Net</span><span class="text-base font-black mt-0.5" id="slaughterNet">₹0</span></div>
+                        <span class="text-xl opacity-80">🧼</span>
+                    </div>
+                    <div onclick="openCardDetails('Kori Purchase Log', document.getElementById('koriLedger').textContent, 'Capital Expenditure', 'Historical lifecycle financial entries mapping aggregate herd expansion asset investments.', 'bg-emerald-700')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-emerald-700 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Kori Purchase Log</span><span class="text-base font-black mt-0.5" id="koriLedger">₹0</span></div>
+                        <span class="text-xl opacity-80">📝</span>
+                    </div>
+                    <div onclick="openCardDetails('Medicine Book Net', '₹0', 'Medical Expenditures', 'Aggregate book expense logs capturing veterinary pharmacy drugs, vaccines, and emergency treatment.', 'bg-stone-600')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-stone-600 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Medicine Book Net</span><span class="text-base font-black mt-0.5">₹0</span></div>
+                        <span class="text-xl opacity-80">💊</span>
+                    </div>
+                    <div onclick="openCardDetails('Operations Overhead', '₹0', 'Administrative Cost', 'Ancillary structural maintenance costs, utility tracking logs, and miscellaneous facility fees.', 'bg-stone-500')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-stone-500 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Operations Overhead</span><span class="text-base font-black mt-0.5">₹0</span></div>
+                        <span class="text-xl opacity-80">🧱</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expected Delivery Matrix -->
+            <div class="bg-white dark:bg-[#121214] p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+                <h2 class="text-xs font-extrabold text-[#166534] tracking-widest uppercase mb-3 flex items-center gap-1">
+                    <span>📅</span> 12-Month Expected Delivery Matrix
+                </h2>
+                <div class="grid grid-cols-4 gap-2 text-center">
+                    <div class="bg-gray-50 dark:bg-[#1a1a1c] p-2 rounded border border-gray-100 dark:border-gray-800"><div class="text-[10px] font-bold text-gray-400 uppercase">Jan</div><div class="text-xs font-black text-gray-800 dark:text-gray-200 mt-0.5">4 Hd</div></div>
+                    <div class="bg-gray-50 dark:bg-[#1a1a1c] p-2 rounded border border-gray-100 dark:border-gray-800"><div class="text-[10px] font-bold text-gray-400 uppercase">Feb</div><div class="text-xs font-black text-gray-800 dark:text-gray-200 mt-0.5">2 Hd</div></div>
+                    <div class="bg-gray-50 dark:bg-[#1a1a1c] p-2 rounded border border-gray-100 dark:border-gray-800"><div class="text-[10px] font-bold text-gray-400 uppercase">Mar</div><div class="text-xs font-black text-gray-800 dark:text-gray-200 mt-0.5">5 Hd</div></div>
+                    <div class="bg-gray-50 dark:bg-[#1a1a1c] p-2 rounded border border-gray-100 dark:border-gray-800"><div class="text-[10px] font-bold text-gray-400 uppercase">Apr</div><div class="text-xs font-black text-gray-800 dark:text-gray-200 mt-0.5">1 Hd</div></div>
+                    <div class="bg-gray-50 dark:bg-[#1a1a1c] p-2 rounded border border-gray-100 dark:border-gray-800"><div class="text-[10px] font-bold text-gray-400 uppercase">May</div><div class="text-xs font-black text-gray-800 dark:text-gray-200 mt-0.5">3 Hd</div></div>
+                    <div class="bg-gray-50 dark:bg-[#1a1a1c] p-2 rounded border border-gray-100 dark:border-gray-800"><div class="text-[10px] font-bold text-gray-400 uppercase">Jun</div><div class="text-xs font-black text-gray-800 dark:text-gray-200 mt-0.5">6 Hd</div></div>
+                    <div class="bg-gray-50 dark:bg-[#1a1a1c] p-2 rounded border border-gray-100 dark:border-gray-800"><div class="text-[10px] font-bold text-gray-400 uppercase">Jul</div><div class="text-xs font-black text-gray-800 dark:text-gray-200 mt-0.5">0 Hd</div></div>
+                    <div class="bg-gray-50 dark:bg-[#1a1a1c] p-2 rounded border border-gray-100 dark:border-gray-800"><div class="text-[10px] font-bold text-gray-400 uppercase">Aug</div><div class="text-xs font-black text-gray-800 dark:text-gray-200 mt-0.5">2 Hd</div></div>
+                    <div class="bg-gray-50 dark:bg-[#1a1a1c] p-2 rounded border border-gray-100 dark:border-gray-800"><div class="text-[10px] font-bold text-gray-400 uppercase">Sep</div><div class="text-xs font-black text-gray-800 dark:text-gray-200 mt-0.5">3 Hd</div></div>
+                    <div class="bg-gray-50 dark:bg-[#1a1a1c] p-2 rounded border border-gray-100 dark:border-gray-800"><div class="text-[10px] font-bold text-gray-400 uppercase">Oct</div><div class="text-xs font-black text-gray-800 dark:text-gray-200 mt-0.5">4 Hd</div></div>
+                    <div class="bg-gray-50 dark:bg-[#1a1a1c] p-2 rounded border border-gray-100 dark:border-gray-800"><div class="text-[10px] font-bold text-gray-400 uppercase">Nov</div><div class="text-xs font-black text-gray-800 dark:text-gray-200 mt-0.5">7 Hd</div></div>
+                    <div class="bg-gray-50 dark:bg-[#1a1a1c] p-2 rounded border border-gray-100 dark:border-gray-800"><div class="text-[10px] font-bold text-gray-400 uppercase">Dec</div><div class="text-xs font-black text-gray-800 dark:text-gray-200 mt-0.5">1 Hd</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== VIEW 2: HERD BOOK VIEW ==================== -->
+        <div id="herdBookView" class="tab-view space-y-6 hidden">
+            <!-- Search Filter -->
+            <div class="bg-white dark:bg-[#121214] p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+                <label class="text-xs font-extrabold text-[#166534] tracking-widest uppercase block mb-2">🔍 Herd Search Filter</label>
+                <div class="relative">
+                    <input type="text" id="tagSearchInput" placeholder="Enter Tag No. (e.g., KORI-908)..." 
+                        class="w-full text-sm bg-gray-50 dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 rounded-lg py-2.5 pl-3 pr-10 focus:outline-none focus:border-[#166534]">
+                    <button onclick="executeTagSearch()" class="absolute right-3 top-3 text-gray-400 hover:text-[#166534]">➔</button>
+                </div>
+                <div id="searchResultFeedback" class="text-xs text-gray-400 mt-1.5 hidden"></div>
+            </div>
+
+            <!-- Stock and Alerts (12 Cards turned into Touch Buttons) -->
+            <div>
+                <h2 class="text-xs font-extrabold text-[#166534] tracking-widest uppercase mb-2 flex items-center gap-1">
+                    <span>🐄</span> Animals Stock and Alerts (12 Cards)
+                </h2>
+                <div class="grid grid-cols-2 gap-2">
+                    <div onclick="openCardDetails('Total Animal Stock', '284 Hd', 'Herd Inventory', 'Aggregate census count of live animals tracked natively across system data partitions.', 'bg-[#166534]')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-[#166534] shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Total Animal Stock</span><span class="text-base font-black mt-0.5">284 Hd</span></div>
+                        <span class="text-xl opacity-80">🤠</span>
+                    </div>
+                    <div onclick="openCardDetails('Shed A Total', '72 Anm', 'Housing Capacity', 'Total animal density distributed inside physical management barn facility Shed A.', 'bg-[#166534]')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-[#166534] shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Shed A Total</span><span class="text-base font-black mt-0.5">72 Anm</span></div>
+                        <span class="text-xl opacity-80">🏠</span>
+                    </div>
+                    <div onclick="openCardDetails('Shed B Total', '70 Anm', 'Housing Capacity', 'Total animal density distributed inside physical management barn facility Shed B.', 'bg-[#166534]')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-[#166534] shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Shed B Total</span><span class="text-base font-black mt-0.5">70 Anm</span></div>
+                        <span class="text-xl opacity-80">🏡</span>
+                    </div>
+                    <div onclick="openCardDetails('Noora Animals', '64 Hd', 'Supervised Allocation', 'Sub-herd livestock group currently assigned under the administrative supervision of handler Noora.', 'bg-amber-600')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-amber-600 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Noora Animals</span><span class="text-base font-black mt-0.5">64 Hd</span></div>
+                        <span class="text-xl opacity-80">🪵</span>
+                    </div>
+                    <div onclick="openCardDetails('Tosif Animals', '58 Hd', 'Supervised Allocation', 'Sub-herd livestock group currently assigned under the administrative supervision of handler Tosif.', 'bg-amber-600')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-amber-600 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Tosif Animals</span><span class="text-base font-black mt-0.5">58 Hd</span></div>
+                        <span class="text-xl opacity-80">🪵</span>
+                    </div>
+                    <div onclick="openCardDetails('Fali Animals', '18 Mo', 'Breeding Profile', 'Identified active tracking group monitored inside historical insemination cycle sequences.', 'bg-teal-600')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-teal-600 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Fali Animals</span><span class="text-base font-black mt-0.5">18 Mo</span></div>
+                        <span class="text-xl opacity-80">⏳</span>
+                    </div>
+                    <div onclick="openCardDetails('Taji Inward Log', '14 Arr', 'Operational Logistics', 'Fresh lactating inventory additions safely registered and integrated into processing nodes.', 'bg-emerald-600')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-emerald-600 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Taji Inward Log</span><span class="text-base font-black mt-0.5">14 Arr</span></div>
+                        <span class="text-xl opacity-80">📥</span>
+                    </div>
+                    <div onclick="openCardDetails('Bakdi Outward Log', '9 Sent', 'Operational Logistics', 'Dry structural livestock routed outward to off-site environmental pasture management.', 'bg-indigo-600')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-indigo-600 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">Bakdi Outward Log</span><span class="text-base font-black mt-0.5">9 Sent</span></div>
+                        <span class="text-xl opacity-80">📤</span>
+                    </div>
+                    <div onclick="openCardDetails('Pregnant Alert', '7 Head', 'Clinical Monitoring Group', 'High-priority clinical safety tracking verified positive and nearing parturition targets.', 'bg-emerald-700')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-emerald-700 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 uppercase truncate">🤰 Pregnant Alert</span><span class="text-base font-black text-emerald-700 dark:text-emerald-400 mt-0.5">7 Head</span></div>
+                        <span class="text-xl opacity-80">🤰</span>
+                    </div>
+                    <div onclick="openCardDetails('Repeat Breeders', '4 Alerts', 'Clinical Monitoring Group', 'Livestock exhibiting recurring configuration sequence anomalies flagged for medical checks.', 'bg-zinc-600')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-zinc-600 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-[#166534] uppercase truncate">🚨 Repeat Breeders</span><span class="text-base font-black text-[#166534] mt-0.5">4 Alerts</span></div>
+                        <span class="text-xl opacity-80">🚨</span>
+                    </div>
+                    <div onclick="openCardDetails('To Be Serviced', '22 Head', 'Production Pipeline', 'Eligible dry animals targeted for immediate processing inside upcoming breeding gates.', 'bg-purple-600')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-purple-600 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0"><span class="text-[11px] font-bold text-purple-600 dark:text-purple-400 uppercase truncate">⌛ To Be Serviced</span><span class="text-base font-black text-purple-600 dark:text-purple-400 mt-0.5">22 Head</span></div>
+                        <span class="text-xl opacity-80">⌛</span>
+                    </div>
+                    <div onclick="openCardDetails('Doctor\'s Target', '55 Days Check', 'Veterinary Directive', 'Clinical diagnostic threshold protocol applied exactly 55 days post insemination sequence.', 'bg-red-600')" class="cursor-pointer touch-card bg-white dark:bg-[#121214] py-2 px-3 rounded-lg border-l-4 border-red-600 shadow-sm flex items-center h-[68px] justify-between">
+                        <div class="flex flex-col min-w-0">
+                            <span class="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-tighter truncate">🩺 Doctor's Target</span>
+                            <span class="text-[11px] font-bold text-gray-800 dark:text-gray-200 mt-0.5 leading-tight">Test after 55 days of fali date</span>
+                        </div>
+                        <span class="text-xl opacity-80">🩺</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Entry System -->
+            <div class="bg-white dark:bg-[#121214] p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm space-y-4">
+                <h2 class="text-xs font-extrabold text-[#166534] tracking-widest uppercase mb-1">📝 Quick Entry Book</h2>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="switchForm('formBuffalo')" class="w-full bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/20 border-l-4 border-blue-600 py-2 px-3 rounded-lg flex items-center justify-between h-[55px] text-left transition-all">
+                        <span class="text-[11px] font-extrabold text-blue-950 dark:text-blue-300 uppercase truncate">Buffalo Master Entry</span>
+                        <span class="text-xs text-blue-600 font-bold">➕</span>
+                    </button>
+                    <button onclick="switchForm('formFali')" class="w-full bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/20 border-l-4 border-purple-600 py-2 px-3 rounded-lg flex items-center justify-between h-[55px] text-left transition-all">
+                        <span class="text-[11px] font-extrabold text-purple-950 dark:text-purple-300 uppercase truncate">Fali Breeding Log</span>
+                        <span class="text-xs text-purple-600 font-bold">➕</span>
+                    </button>
+                    <button onclick="switchForm('formTaji')" class="w-full bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/20 border-l-4 border-amber-600 py-2 px-3 rounded-lg flex items-center justify-between h-[55px] text-left transition-all">
+                        <span class="text-[11px] font-extrabold text-amber-950 dark:text-amber-300 uppercase truncate">Taji Inwards</span>
+                        <span class="text-xs text-amber-600 font-bold">➕</span>
+                    </button>
+                    <button onclick="switchForm('formBakdi')" class="w-full bg-teal-50 hover:bg-teal-100 dark:bg-teal-950/20 border-l-4 border-teal-600 py-2 px-3 rounded-lg flex items-center justify-between h-[55px] text-left transition-all">
+                        <span class="text-[11px] font-extrabold text-teal-950 dark:text-teal-300 uppercase truncate">Bakdi Outgoing</span>
+                        <span class="text-xs text-teal-600 font-bold">➕</span>
+                    </button>
+                    <button onclick="switchForm('formSlaughtered')" class="w-full bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/20 border-l-4 border-indigo-600 py-2 px-3 rounded-lg flex items-center justify-between h-[55px] text-left transition-all">
+                        <span class="text-[11px] font-extrabold text-indigo-950 dark:text-indigo-300 uppercase truncate">Slaughtered Entry</span>
+                        <span class="text-xs text-indigo-600 font-bold">➕</span>
+                    </button>
+                    <button onclick="switchForm('formDead')" class="w-full bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/20 border-l-4 border-rose-600 py-2 px-3 rounded-lg flex items-center justify-between h-[55px] text-left transition-all">
+                        <span class="text-[11px] font-extrabold text-rose-950 dark:text-rose-300 uppercase truncate">Record Dead Log</span>
+                        <span class="text-xs text-rose-600 font-bold">➕</span>
+                    </button>
+                    <button onclick="switchForm('formKori')" class="w-full bg-cyan-50 hover:bg-cyan-100 dark:bg-cyan-950/20 border-l-4 border-cyan-600 py-2 px-3 rounded-lg flex items-center justify-between h-[55px] text-left transition-all">
+                        <span class="text-[11px] font-extrabold text-cyan-950 dark:text-cyan-300 uppercase truncate">Kori Bhaiswala</span>
+                        <span class="text-xs text-cyan-600 font-bold">➕</span>
+                    </button>
+                    <button onclick="switchForm('formPayment')" class="w-full bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/20 border-l-4 border-[#166534] py-2 px-3 rounded-lg flex items-center justify-between h-[55px] text-left transition-all">
+                        <span class="text-[11px] font-extrabold text-emerald-950 dark:text-emerald-300 uppercase truncate">Payment Book</span>
+                        <span class="text-xs text-[#166534] font-bold">➕</span>
+                    </button>
+                </div>
+
+                <!-- Form Render Engine -->
+                <div id="formsViewport" class="border-t border-gray-100 dark:border-gray-800 pt-4">
+                    <!-- Buffalo Master Entry Form -->
+                    <form id="formBuffalo" class="form-instance space-y-3 hidden" onsubmit="handleFormSubmit(event, 'Buffalo Master Form Registered')">
+                        <div class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">📋 Add Buffalo Master Entry</div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" placeholder="Tag No" required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                            <input type="text" placeholder="Khila No" required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <select required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                                <option value="">Select Location</option>
+                                <option value="Shed A">Shed A</option>
+                                <option value="Shed B">Shed B</option>
+                                <option value="Noora">Noora</option>
+                                <option value="Tosif">Tosif</option>
+                            </select>
+                            <select required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                                <option value="">Select Status</option>
+                                <option value="Fali">Fali</option>
+                                <option value="Pregnant">Pregnant</option>
+                                <option value="Khali">Khali</option>
+                                <option value="Dead">Dead</option>
+                                <option value="Slaughtered">Slaughtered</option>
+                            </select>
+                        </div>
+                        <div class="relative w-full">
+                            <span class="absolute left-2.5 top-1 text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Incoming Date</span>
+                            <input type="date" required class="text-sm pt-5 pb-1.5 px-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                        </div>
+                        <button type="submit" class="w-full py-2.5 bg-blue-600 text-white font-bold text-sm rounded shadow">Save Buffalo Master Record</button>
+                    </form>
+
+                    <!-- Fali Form -->
+                    <form id="formFali" class="form-instance space-y-3 hidden" onsubmit="handleFormSubmit(event, 'Fali Logged')">
+                        <div class="text-xs font-bold text-purple-600 uppercase tracking-wider mb-1">🐂 Add Fali Entry</div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" placeholder="Tag no" required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                            <input type="text" placeholder="Khila no" required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="relative w-full">
+                                <span class="absolute left-2.5 top-1 text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase">Fali Date</span>
+                                <input type="date" required class="text-sm pt-4 pb-1 px-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                            </div>
+                            <input type="text" placeholder="Bull no." required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                        </div>
+                        <button type="submit" class="w-full py-2.5 bg-purple-600 text-white font-bold text-sm rounded shadow">Commit Fali Entry</button>
+                    </form>
+
+                    <!-- TAJI INWARDS FORM -->
+                    <form id="formTaji" class="form-instance space-y-3 hidden" onsubmit="handleFormSubmit(event, 'Taji Logged')">
+                        <div class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1">🚛 Add Taji Inwards</div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" placeholder="Tag no" required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                            <div class="relative w-full">
+                                <span class="absolute left-2.5 top-1 text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase">Incoming Date</span>
+                                <input type="date" required class="text-sm pt-4 pb-1 px-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <select required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                                <option value="">Select Handler (Noora / Tosif)</option>
+                                <option value="Noora">Noora</option>
+                                <option value="Tosif">Tosif</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-[9px] font-bold text-amber-600 block uppercase tracking-wider mb-0.5">Lactation Days (Automatic)</label>
+                                <input type="text" value="Auto Tracked" disabled class="text-xs p-2 rounded bg-gray-100 dark:bg-zinc-800 text-gray-400 dark:text-gray-500 border border-gray-200 dark:border-gray-700 w-full cursor-not-allowed font-medium">
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-bold text-amber-600 block uppercase tracking-wider mb-0.5">Bill Calculation (Automatic)</label>
+                                <input type="text" value="Auto Calculated" disabled class="text-xs p-2 rounded bg-gray-100 dark:bg-zinc-800 text-gray-400 dark:text-gray-500 border border-gray-200 dark:border-gray-700 w-full cursor-not-allowed font-medium">
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full py-2.5 bg-amber-600 text-white font-bold text-sm rounded shadow">Process Taji Intake</button>
+                    </form>
+
+                    <!-- Bakdi Outgoing Form -->
+                    <form id="formBakdi" class="form-instance space-y-3 hidden" onsubmit="handleFormSubmit(event, 'Bakdi Outgoing Dispatched')">
+                        <div class="text-xs font-bold text-teal-600 uppercase tracking-wider mb-1">🛣️ Bakdi Outgoing Fields</div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" placeholder="Tag no" required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                            <div class="relative w-full">
+                                <span class="absolute left-2.5 top-1 text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase">Outgoing Date</span>
+                                <input type="date" required class="text-sm pt-4 pb-1 px-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <select required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                                <option value="">Select Palak</option><option value="Noora">Noora</option><option value="Tosif">Tosif</option>
+                            </select>
+                            <select required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                                <option value="">From Shed</option><option value="A">Shed A</option><option value="B">Shed B</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-teal-600 block mb-1 uppercase tracking-wider">Fali Date Box (Automatic Tracking)</label>
+                            <input type="text" value="System Computed via Breeding Database Lookup" disabled class="text-sm p-2.5 rounded bg-gray-100 dark:bg-zinc-800 text-gray-400 dark:text-gray-500 border border-gray-300 dark:border-gray-700 w-full cursor-not-allowed">
+                        </div>
+                        <button type="submit" class="w-full py-2.5 bg-teal-600 text-white font-bold text-sm rounded shadow">Log Bakdi Outgoing</button>
+                    </form>
+
+                    <!-- SLAUGHTERED ENTRY FORM -->
+                    <form id="formSlaughtered" class="form-instance space-y-3 hidden" onsubmit="handleFormSubmit(event, 'Slaughter Record Handled')">
+                        <div class="text-xs font-bold text-indigo-600 uppercase tracking-wider mb-1">🔪 Slaughtered Entry Fields</div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" placeholder="Tag no" required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                            <select required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                                <option value="">Select Location</option>
+                                <option value="Shed A">Shed A</option>
+                                <option value="Shed B">Shed B</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" placeholder="Sold Amount (₹)" required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                            <input type="text" placeholder="Kasai Name" required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                        </div>
+                        <button type="submit" class="w-full py-2.5 bg-indigo-600 text-white font-bold text-sm rounded shadow">Process Kasai Record</button>
+                    </form>
+
+                    <!-- RECORD DEAD FORM -->
+                    <form id="formDead" class="form-instance space-y-3 hidden" onsubmit="handleFormSubmit(event, 'Mortality Event Logged')">
+                        <div class="text-xs font-bold text-rose-600 uppercase tracking-wider mb-1">💀 Record Dead Fields</div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" placeholder="Tag no" required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                            <div class="relative w-full">
+                                <span class="absolute left-2.5 top-1 text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase">Outgoing Date</span>
+                                <input type="date" required class="text-sm pt-4 pb-1 px-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <select required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                                <option value="">Select Location (Shed A/B / Noora / Tosif)</option>
+                                <option value="Shed A">Shed A</option>
+                                <option value="Shed B">Shed B</option>
+                                <option value="Noora">Noora</option>
+                                <option value="Tosif">Tosif</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full py-2.5 bg-rose-600 text-white font-bold text-sm rounded shadow">File Mortality Record</button>
+                    </form>
+
+                    <!-- KORI ENTRY FORM -->
+                    <form id="formKori" class="form-instance space-y-3 hidden" onsubmit="handleFormSubmit(event, 'Kori Ledger Logged')">
+                        <div class="text-xs font-bold text-cyan-600 uppercase tracking-wider mb-1">🐄 Kori Bhaiswala Entry</div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" placeholder="Broker name" required class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                            <input type="number" id="koriCount" placeholder="No of animals" required oninput="calculateKoriAverage()" class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="relative w-full">
+                                <span class="absolute left-2.5 top-1 text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase">Entry Date</span>
+                                <input type="date" required class="text-sm pt-4 pb-1 px-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                            </div>
+                            <input type="number" id="koriTotalAmount" placeholder="Amount (₹)" required oninput="calculateKoriAverage()" class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-cyan-600 block mb-1 uppercase tracking-wider">Average Per Animal (Automatic)</label>
+                            <input type="text" id="koriAverageDisplay" value="₹0" disabled class="text-sm p-2.5 rounded bg-gray-100 dark:bg-zinc-800 font-bold text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-700 w-full cursor-not-allowed">
+                        </div>
+                        <button type="submit" class="w-full py-2.5 bg-cyan-600 text-white font-bold text-sm rounded shadow">Commit Kori Purchase</button>
+                    </form>
+
+                    <!-- PAYMENT BOOK FORM -->
+                    <form id="formPayment" class="form-instance space-y-3 hidden" onsubmit="handleFormSubmit(event, 'Payment registered')">
+                        <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1">💸 Payment Book Ledger</div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="payBrokerName" placeholder="Broker name" required oninput="calculateOutstandingMock()" class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                            <div class="relative w-full">
+                                <span class="absolute left-2.5 top-1 text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase">Payment Date</span>
+                                <input type="date" required class="text-sm pt-4 pb-1 px-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" id="payAmountPaid" placeholder="Amount paid (₹)" required oninput="calculateOutstandingMock()" class="text-sm p-2.5 rounded bg-white dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 w-full focus:outline-none">
+                            <div>
+                                <span class="text-[9px] font-bold text-emerald-600 block uppercase tracking-wider">Outstanding (Auto)</span>
+                                <input type="text" id="payOutstandingDisplay" value="₹0" disabled class="text-xs p-2 rounded bg-gray-100 dark:bg-zinc-800 font-bold text-red-600 border border-gray-200 dark:border-gray-700 w-full cursor-not-allowed">
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full py-2.5 bg-[#166534] text-white font-bold text-sm rounded shadow">Register Payment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ==================== SUB-PAGE VIEWPORT / FULL DETAILS MODAL ==================== -->
+    <div id="detailsSubPage" class="fixed inset-0 bg-white dark:bg-black z-50 transform translate-y-full transition-transform duration-300 ease-out overflow-y-auto hidden">
+        <!-- Sheet Nav Bar Header -->
+        <div class="sticky top-0 p-4 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-[#121212] flex items-center justify-between">
+            <button onclick="closeDetailsSubPage()" class="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                ◀ Back to Ledger
+            </button>
+            <span class="text-xs font-black text-[#166534] uppercase tracking-widest">System Record Detail</span>
+            <div class="w-12"></div> <!-- Layout Spacer -->
+        </div>
+
+        <!-- Inner Detailed Data Sheet Layout -->
+        <div class="p-6 max-w-md mx-auto space-y-6">
+            <!-- Dynamic Main Identity Card Panel -->
+            <div id="detailHeroCard" class="p-5 rounded-2xl text-white shadow-md space-y-2">
+                <div class="flex justify-between items-center">
+                    <span id="dtHeroTag" class="text-xl font-black tracking-tight"></span>
+                    <span id="dtHeroStatus" class="text-xs font-extrabold uppercase px-3 py-1 bg-white/20 rounded-full tracking-wider"></span>
+                </div>
+                <div class="text-sm opacity-90 font-medium">Record Domain: <span id="dtHeroKhila" class="font-bold"></span></div>
+            </div>
+
+            <!-- Primary Metric Layout Breakdown Grid -->
+            <div class="bg-gray-50 dark:bg-[#121214] border border-gray-200 dark:border-gray-800 rounded-xl p-4">
+                <h3 class="text-xs font-bold text-[#166534] uppercase tracking-wider mb-3">📍 Data Verification Logs</h3>
+                <table class="w-full text-left text-xs border-collapse">
+                    <tbody>
+                        <tr class="border-b border-gray-100 dark:border-gray-800">
+                            <td class="py-2.5 font-bold text-gray-400 uppercase">Tracking Scope</td>
+                            <td id="dtLocation" class="py-2.5 font-black text-right text-gray-800 dark:text-gray-200">Global Node</td>
+                        </tr>
+                        <tr class="border-b border-gray-100 dark:border-gray-800">
+                            <td class="py-2.5 font-bold text-gray-400 uppercase">System Status</td>
+                            <td id="dtStatus" class="py-2.5 font-black text-right text-emerald-600 uppercase">Active Sync</td>
+                        </tr>
+                        <tr class="border-b border-gray-100 dark:border-gray-800">
+                            <td class="py-2.5 font-bold text-gray-400 uppercase">Registry Signature</td>
+                            <td id="dtInDate" class="py-2.5 font-medium text-right text-gray-600 dark:text-gray-400">Real-time</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2.5 font-bold text-gray-400 uppercase">Calculated Matrix State</td>
+                            <td id="dtFaliDate" class="py-2.5 font-medium text-right text-gray-600 dark:text-gray-400">Automated</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Secondary Analytics Panel Metrics -->
+            <div class="grid grid-cols-1 gap-2">
+                <div class="bg-gray-50 dark:bg-[#121214] border border-gray-200 dark:border-gray-800 p-3 rounded-xl">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase block">Active Value Reference</span>
+                    <span id="dtMilk" class="text-lg font-black text-gray-800 dark:text-gray-100"></span>
+                </div>
+            </div>
+
+            <!-- Health Logs Warning Banner Info Box -->
+            <div class="p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900 rounded-xl flex gap-3 text-xs">
+                <span class="text-xl">ℹ️</span>
+                <div>
+                    <h4 id="dtDetailTitle" class="font-bold text-amber-900 dark:text-amber-400 uppercase mb-0.5">Summary Profile</h4>
+                    <p id="dtDetailDesc" class="text-amber-800 dark:text-amber-500 leading-normal"></p>
+                </div>
+            </div>
+
+            <!-- Dismiss Button Control Layer -->
+            <button onclick="closeDetailsSubPage()" class="w-full py-3 bg-[#166534] text-white font-bold text-xs uppercase rounded-xl tracking-wider shadow-md">
+                Acknowledge & Exit File
+            </button>
+        </div>
+    </div>
+
+    <!-- GLOBAL CONFIGURATION MODAL DIALOG ENGINE -->
+    <div id="setupModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4 z-50">
+        <div class="bg-white dark:bg-[#121214] border border-gray-200 dark:border-gray-800 rounded-2xl w-full max-w-xs p-5 space-y-4 shadow-xl">
+            <h3 class="text-base font-extrabold text-[#166534] uppercase tracking-tight">⚙️ Setup Engine</h3>
+            <hr class="border-gray-100 dark:border-gray-800" />
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase block mb-1">Noora Monthly Charge</label>
+                    <input type="number" id="inputNooraRate" class="w-full text-sm p-2.5 rounded bg-gray-50 dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase block mb-1">Tosif Monthly Charge</label>
+                    <input type="number" id="inputTosifRate" class="w-full text-sm p-2.5 rounded bg-gray-50 dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase block mb-1">Irshad Taji Charge</label>
+                    <input type="number" id="inputIrshadTajiRate" class="w-full text-sm p-2.5 rounded bg-gray-50 dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase block mb-1">Irshad Bakdi Charge</label>
+                    <input type="number" id="inputIrshadBakdiRate" class="w-full text-sm p-2.5 rounded bg-gray-50 dark:bg-[#1a1a1c] border border-gray-300 dark:border-gray-700 focus:outline-none">
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2 pt-2">
+                <button onclick="toggleSetupModal(false)" class="w-full py-2 bg-gray-100 dark:bg-gray-800 font-bold text-xs uppercase rounded-lg">Cancel</button>
+                <button onclick="saveSetupRates()" class="w-full py-2 bg-[#166534] text-white font-bold text-xs uppercase rounded-lg shadow">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active App Navigation Footer Control System Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 border-t bg-white border-gray-200 dark:bg-[#121212] dark:border-gray-800 py-3 transition-colors duration-200 z-40 shadow-lg">
+        <div class="max-w-md mx-auto grid grid-cols-2 items-center text-center">
+            <button id="navBtnDashboard" onclick="switchViewTab('dashboard')" class="text-[#166534] font-bold text-xs tracking-wider uppercase flex flex-col items-center justify-center border-r border-gray-100 dark:border-gray-800/50">
+                <span class="text-base">📊</span><span class="mt-0.5">Dashboard</span>
+            </button>
+            <button id="navBtnHerdBook" onclick="switchViewTab('herdbook')" class="text-gray-400 dark:text-gray-500 font-bold text-xs tracking-wider uppercase flex flex-col items-center justify-center">
+                <span class="text-base">📝</span><span class="mt-0.5">Herd Book</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- CENTRAL COMPUTATION CONTROL CODE LOGIC ENGINE -->
+    <script>
+        let systemRates = { noora: 3300, tosif: 3100, irshadTaji: 0, irshadBakdi: 0 };
+
+        // Dynamic Sub-Page Viewport Render Engine for touch buttons
+        function openCardDetails(title, value, domain, description, colorClass) {
+            const subPage = document.getElementById('detailsSubPage');
+            
+            // Populate details structure dynamically
+            document.getElementById('dtHeroTag').textContent = title;
+            document.getElementById('dtHeroStatus').textContent = value;
+            document.getElementById('dtHeroKhila').textContent = domain;
+            document.getElementById('dtMilk').textContent = value;
+            document.getElementById('dtDetailTitle').textContent = title + " Profile Details";
+            document.getElementById('dtDetailDesc').textContent = description;
+            
+            // Apply dynamic visual branding colors to the subpage banner card
+            const heroCard = document.getElementById('detailHeroCard');
+            heroCard.className = `p-5 rounded-2xl text-white shadow-md space-y-2 ${colorClass || 'bg-[#166534]'}`;
+            
+            // Trigger overlay window reveal animations smoothly
+            subPage.classList.remove('hidden');
+            setTimeout(() => {
+                subPage.classList.remove('translate-y-full');
+            }, 10);
+        }
+
+        function closeDetailsSubPage() {
+            const subPage = document.getElementById('detailsSubPage');
+            subPage.classList.add('translate-y-full');
+            setTimeout(() => {
+                subPage.classList.add('hidden');
+            }, 300);
+        }
+
+        // Dynamic Calculation Engine for Kori Entry Form
+        function calculateKoriAverage() {
+            const count = parseFloat(document.getElementById('koriCount').value) || 0;
+            const amount = parseFloat(document.getElementById('koriTotalAmount').value) || 0;
+            const displayField = document.getElementById('koriAverageDisplay');
+            
+            if (count > 0 && amount > 0) {
+                const avg = Math.round(amount / count);
+                displayField.value = `₹${avg.toLocaleString('en-IN')} per animal`;
+            } else {
+                displayField.value = "₹0";
+            }
+        }
+
+        // Dynamic Calculation Engine for Payment Book Outstanding Tracker
+        function calculateOutstandingMock() {
+            const amountPaid = parseFloat(document.getElementById('payAmountPaid').value) || 0;
+            const displayField = document.getElementById('payOutstandingDisplay');
+            
+            // Standard simulated baseline total contract value
+            const benchmarkTotalContract = 125000; 
+            if(amountPaid > 0) {
+                const balance = benchmarkTotalContract - amountPaid;
+                displayField.value = `₹${balance.toLocaleString('en-IN')} remaining`;
+            } else {
+                displayField.value = "₹0";
+            }
+        }
+
+        // Theme Customization Mechanics Controller
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+        themeToggleBtn.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                htmlElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        function safeMoneyFormat(val) {
+            return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
+        }
+
+        // Active Bottom Navigation Layout Management Architecture
+        function switchViewTab(targetTab) {
+            document.querySelectorAll('.tab-view').forEach(view => view.classList.add('hidden'));
+            
+            const btnDash = document.getElementById('navBtnDashboard');
+            const btnHerd = document.getElementById('navBtnHerdBook');
+
+            const grayClasses = ['text-gray-400', 'dark:text-gray-500'];
+            const activeColorClass = 'text-[#166534]';
+
+            [btnDash, btnHerd].forEach(btn => {
+                btn.classList.remove(activeColorClass);
+                btn.classList.add(...grayClasses);
+            });
+
+            if (targetTab === 'dashboard') {
+                document.getElementById('dashboardView').classList.remove('hidden');
+                btnDash.classList.add(activeColorClass);
+                btnDash.classList.remove(...grayClasses);
+            } else if (targetTab === 'herdbook') {
+                document.getElementById('herdBookView').classList.remove('hidden');
+                btnHerd.classList.add(activeColorClass);
+                btnHerd.classList.remove(...grayClasses);
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleSetupModal(open) {
+            const modal = document.getElementById('setupModal');
+            if (open) {
+                document.getElementById('inputNooraRate').value = systemRates.noora;
+                document.getElementById('inputTosifRate').value = systemRates.tosif;
+                document.getElementById('inputIrshadTajiRate').value = systemRates.irshadTaji;
+                document.getElementById('inputIrshadBakdiRate').value = systemRates.irshadBakdi;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function saveSetupRates() {
+            systemRates.noora = parseFloat(document.getElementById('inputNooraRate').value) || 0;
+            systemRates.tosif = parseFloat(document.getElementById('inputTosifRate').value) || 0;
+            systemRates.irshadTaji = parseFloat(document.getElementById('inputIrshadTajiRate').value) || 0;
+            systemRates.irshadBakdi = parseFloat(document.getElementById('inputIrshadBakdiRate').value) || 0;
+            toggleSetupModal(false);
+        }
+
+        function switchForm(formId) {
+            document.querySelectorAll('.form-instance').forEach(f => f.classList.add('hidden'));
+            const activeForm = document.getElementById(formId);
+            if (activeForm) activeForm.classList.remove('hidden');
+        }
+
+        function executeTagSearch() {
+            const query = document.getElementById('tagSearchInput').value.trim();
+            const display = document.getElementById('searchResultFeedback');
+            if(!query) { display.classList.add('hidden'); return; }
+            display.classList.remove('hidden');
+            display.innerHTML = `🔍 Result for "<b>${query}</b>": Active in System Data Logs. Status: <b class="text-[#166534]">Verified</b>.`;
+        }
+
+        function handleFormSubmit(event, message) {
+            event.preventDefault();
+            alert(`Success Action Logged: ${message}`);
+            event.target.reset();
+            
+            // Clear auto calculation placeholders after record submit
+            const korAvgDisp = document.getElementById('koriAverageDisplay');
+            const payOutDisp = document.getElementById('payOutstandingDisplay');
+            if(korAvgDisp) korAvgDisp.value = "₹0";
+            if(payOutDisp) payOutDisp.value = "₹0";
+        }
+
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlElement.classList.add('dark');
+        }
+
+        // Bind Base Static Ledger balances on runtime initializations
+        document.getElementById('nooraBill').textContent = safeMoneyFormat(148500);
+        document.getElementById('tosifBill').textContent = safeMoneyFormat(112400);
+        document.getElementById('irshadBill').textContent = safeMoneyFormat(8000);
+        document.getElementById('danaBal').textContent = safeMoneyFormat(0);
+        document.getElementById('bhaiswaladsal').textContent = safeMoneyFormat(43500);
+        document.getElementById('bhaisBal').textContent = safeMoneyFormat(43500);
+        document.getElementById('laborPagar').textContent = safeMoneyFormat(68200);
+        document.getElementById('slaughterNet').textContent = safeMoneyFormat(145000);
+        document.getElementById('koriLedger').textContent = safeMoneyFormat(2460000);
+    </script>
+</body>
+</html>
