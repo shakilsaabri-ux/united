@@ -1,0 +1,2463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkRhaXJ5T1MiLAogICJzaG9ydF9uYW1lIjogIkRhaXJ5T1MiLAogICJkZXNjcmlwdGlvbiI6ICJEYWlyeSBNYW5hZ2VtZW50IFN5c3RlbSIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZmZmZmZmIiwKICAidGhlbWVfY29sb3IiOiAiI2ZmZmZmZiIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDUxMiA1MTInPjxyZWN0IHdpZHRoPSc1MTInIGhlaWdodD0nNTEyJyByeD0nNTAnIGZpbGw9JyNmZmZmZmYnLz48dGV4dCB4PScyNTYnIHk9JzM0MCcgZm9udC1mYW1pbHk9J3NhbnMtc2VyaWYnIGZvbnQtc2l6ZT0nMjUwJyBmaWxsPScjMjI3M2U2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz7wn6qEPC90ZXh0Pjwvc3ZnPg=="LAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9CiAgXQp9" />
+  <title>DairyOS — 7 Modules</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    /* ––––– GLOBAL (Light Theme) ––––– */
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+    :root {
+      --bg-primary:#f5f7fa; --bg-secondary:#ffffff; --bg-card:#ffffff; --bg-card-hover:#f0f4ff;
+      --bg-input:#f0f2f5; --border-color:#e2e8f0; --text-primary:#1e293b; --text-secondary:#475569;
+      --text-muted:#94a3b8; --accent-blue:#2563eb; --accent-cyan:#0ea5e9; --accent-green:#16a34a;
+      --accent-orange:#f97316; --accent-red:#dc2626; --accent-purple:#8b5cf6;
+      --shadow:0 4px 12px rgba(0,0,0,0.06); --radius:12px; --radius-sm:6px;
+      --transition:0.2s ease; --bottom-nav-height:64px; --header-height:56px;
+    }
+    body.dark-theme {
+      --bg-primary:#0b0e14; --bg-secondary:#131821; --bg-card:#1a212c; --bg-card-hover:#242e3d;
+      --bg-input:#1f2836; --border-color:#2a3548; --text-primary:#f0f4fc; --text-secondary:#9aaec9;
+      --text-muted:#6a7f9e; --accent-blue:#4a8cf7; --accent-cyan:#22d3ee; --accent-green:#34d399;
+      --accent-orange:#fb923c; --accent-red:#f87171; --accent-purple:#a78bfa;
+      --shadow:0 8px 24px rgba(0,0,0,0.5);
+    }
+    html, body { height:100%; overflow:hidden; background:var(--bg-primary); }
+    body { color:var(--text-primary); display:flex; flex-direction:column; padding:0; margin:0; height:100vh; max-height:100vh; }
+    ::-webkit-scrollbar { width:4px; height:4px; }
+    ::-webkit-scrollbar-track { background:var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background:var(--border-color); border-radius:10px; }
+
+    .app-header {
+      background:var(--bg-secondary); border-bottom:1px solid var(--border-color);
+      padding:8px 16px; display:flex; align-items:center; justify-content:space-between;
+      flex-shrink:0; height:var(--header-height); min-height:var(--header-height); gap:8px; z-index:100;
+    }
+    .app-logo { font-weight:700; font-size:1.2rem; display:flex; align-items:center; gap:8px; flex-shrink:0; color:var(--text-primary); }
+    .app-logo i { color:var(--accent-blue); font-size:1.4rem; }
+    .app-logo span { background:linear-gradient(135deg,var(--accent-blue),var(--accent-cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .header-actions { display:flex; align-items:center; gap:6px; }
+    .header-actions button { background:transparent; border:none; color:var(--text-secondary); font-size:1.1rem; cursor:pointer; padding:4px 8px; border-radius:8px; transition:var(--transition); }
+    .header-actions button:hover { background:var(--bg-card-hover); color:var(--text-primary); }
+    .header-actions .theme-toggle { font-size:1.2rem; padding:4px 10px; }
+    .header-actions .customise-btn { color:var(--accent-blue); }
+    .header-actions .customise-btn:hover { background:rgba(37,99,235,0.08); }
+    .nav-modules { display:flex; flex-wrap:nowrap; gap:4px; overflow-x:auto; flex:1; justify-content:flex-end; }
+    .nav-modules button { background:transparent; border:none; color:var(--text-secondary); padding:6px 14px; border-radius:30px; font-size:0.75rem; font-weight:500; cursor:pointer; transition:var(--transition); display:flex; align-items:center; gap:4px; white-space:nowrap; flex-shrink:0; }
+    .nav-modules button i { font-size:0.85rem; }
+    .nav-modules button:hover { background:var(--bg-card-hover); color:var(--text-primary); }
+    .nav-modules button.active { background:var(--accent-blue); color:#fff; box-shadow:0 4px 12px rgba(37,99,235,0.25); }
+    @media (max-width:640px) { .nav-modules { display:none; } .app-header { justify-content:space-between; } }
+
+    .app-main { flex:1; overflow-y:auto; overflow-x:hidden; padding:12px 16px 16px 16px; max-width:1200px; margin:0 auto; width:100%; -webkit-overflow-scrolling:touch; }
+    .module-panel { display:none; animation:fadeUp 0.25s ease; }
+    .module-panel.active { display:block; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+    .section-title { font-size:1rem; font-weight:600; margin-bottom:12px; display:flex; align-items:center; gap:8px; color:var(--text-primary); }
+    .section-title i { color:var(--accent-blue); font-size:1.1rem; }
+    .section-title small { font-weight:400; font-size:0.75rem; color:var(--text-muted); margin-left:4px; }
+    .section-title .customise-badge { font-size:0.6rem; background:var(--accent-blue); color:#fff; padding:2px 10px; border-radius:30px; font-weight:600; margin-left:6px; cursor:pointer; }
+
+    .alert-banner { background:var(--bg-card); border:1px solid var(--accent-red); border-radius:var(--radius); padding:10px 16px; display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+    .alert-banner i { color:var(--accent-red); font-size:0.9rem; }
+    .alert-banner .msg { flex:1; font-size:0.85rem; color:var(--text-primary); }
+    .alert-banner .count { background:var(--accent-red); color:#fff; font-weight:700; padding:2px 12px; border-radius:30px; font-size:0.75rem; }
+
+    .card-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; width:100%; max-width:100%; }
+    .card-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px; width:100%; max-width:100%; }
+
+    .card-slim {
+      background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius);
+      padding:16px 20px; display:flex; align-items:center; justify-content:space-between;
+      transition:var(--transition); cursor:pointer; min-height:68px; gap:8px;
+      width:100%; max-width:100%; overflow:hidden; box-sizing:border-box;
+      position:relative;
+    }
+    .card-slim:hover { background:var(--bg-card-hover); border-color:var(--accent-blue); transform:translateY(-2px); box-shadow:var(--shadow); }
+    .card-slim:active { transform:scale(0.97); }
+    .card-slim .label { font-size:0.75rem; font-weight:500; text-transform:uppercase; letter-spacing:0.3px; color:var(--text-secondary); display:flex; align-items:center; gap:8px; flex:1; min-width:0; line-height:1.3; word-break:break-word; hyphens:auto; max-width:70%; }
+    .card-slim .label i { font-size:0.9rem; color:var(--accent-blue); width:20px; text-align:center; flex-shrink:0; }
+    .card-slim .label span { display:inline; word-break:break-word; hyphens:auto; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+    .card-slim .value { font-size:1.2rem; font-weight:700; color:var(--text-primary); letter-spacing:-0.2px; white-space:nowrap; flex-shrink:0; text-align:right; margin-left:4px; max-width:30%; }
+    .card-slim .value .sub { font-size:0.65rem; font-weight:400; color:var(--text-muted); margin-left:4px; }
+    .card-slim .drag-handle { position:absolute; top:4px; right:4px; font-size:0.7rem; color:var(--text-muted); opacity:0.3; cursor:grab; padding:4px; }
+    .card-slim:hover .drag-handle { opacity:0.8; }
+    .card-slim.dragging { opacity:0.5; transform:scale(0.95); }
+    .card-slim.drag-over { border-color:var(--accent-blue); border-style:dashed; background:var(--bg-card-hover); }
+    .card-slim.hidden-card { display:none; }
+
+    .touch-card {
+      background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius);
+      padding:14px 18px; display:flex; align-items:center; gap:12px;
+      transition:var(--transition); cursor:pointer; min-height:60px;
+      width:100%; max-width:100%; overflow:hidden; box-sizing:border-box;
+    }
+    .touch-card:hover { background:var(--bg-card-hover); border-color:var(--accent-blue); transform:translateX(4px); box-shadow:var(--shadow); }
+    .touch-card:active { transform:scale(0.97); }
+    .touch-card i { font-size:1.2rem; color:var(--accent-blue); width:28px; text-align:center; flex-shrink:0; }
+    .touch-card .info { flex:1; min-width:0; overflow:hidden; }
+    .touch-card .info .title { font-weight:600; font-size:0.9rem; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .touch-card .info .desc { font-size:0.7rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .touch-card .amount { font-weight:700; font-size:1rem; color:var(--accent-green); white-space:nowrap; flex-shrink:0; }
+
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius); padding:18px 24px; margin-bottom:16px; }
+    .form-grid .full { grid-column:1 / -1; }
+    .form-grid label { font-size:0.8rem; font-weight:500; color:var(--text-secondary); display:flex; flex-direction:column; gap:4px; }
+    .form-grid input, .form-grid select { background:var(--bg-input); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:8px 12px; color:var(--text-primary); font-size:0.9rem; transition:var(--transition); width:100%; }
+    .form-grid input:focus, .form-grid select:focus { outline:none; border-color:var(--accent-blue); box-shadow:0 0 0 3px rgba(37,99,235,0.15); }
+
+    .btn { background:var(--accent-blue); border:none; color:#fff; padding:8px 20px; border-radius:30px; font-weight:600; font-size:0.85rem; cursor:pointer; transition:var(--transition); display:inline-flex; align-items:center; gap:6px; border:1px solid transparent; }
+    .btn:hover { background:#1d4ed8; transform:scale(1.02); box-shadow:0 4px 12px rgba(37,99,235,0.3); }
+    .btn-outline { background:transparent; border-color:var(--border-color); color:var(--text-secondary); }
+    .btn-outline:hover { background:var(--bg-card-hover); color:var(--text-primary); border-color:var(--accent-blue); }
+    .btn-sm { padding:4px 14px; font-size:0.7rem; }
+    .btn-danger { background:var(--accent-red); color:#fff; }
+    .btn-danger:hover { background:#b91c1c; }
+    .btn-green { background:var(--accent-green); color:#fff; }
+    .btn-green:hover { background:#15803d; }
+    .btn-orange { background:var(--accent-orange); color:#fff; }
+    .btn-orange:hover { background:#ea580c; }
+    .btn-reset { background:var(--accent-red); color:#fff; }
+    .btn-reset:hover { background:#b91c1c; }
+
+    .table-wrap { overflow-x:auto; background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius); padding:4px 0; margin-bottom:16px; -webkit-overflow-scrolling:touch; }
+    .table-wrap table { width:100%; border-collapse:collapse; font-size:0.8rem; min-width:400px; }
+    .table-wrap th { text-align:left; padding:10px 14px; color:var(--text-secondary); font-weight:500; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.3px; border-bottom:1px solid var(--border-color); background:var(--bg-primary); }
+    .table-wrap td { padding:8px 14px; border-bottom:1px solid var(--border-color); color:var(--text-primary); vertical-align:middle; }
+    .table-wrap tr:hover td { background:var(--bg-card-hover); }
+    .table-wrap .delete-btn { background:transparent; border:none; color:var(--accent-red); cursor:pointer; font-size:1rem; transition:var(--transition); padding:2px 6px; }
+    .table-wrap .delete-btn:hover { transform:scale(1.2); color:#b91c1c; }
+    .status-badge { font-size:0.6rem; padding:2px 10px; border-radius:30px; font-weight:500; }
+    .status-badge.green { background:#dcfce7; color:#16a34a; }
+    .status-badge.orange { background:#fef3c7; color:#f97316; }
+    .status-badge.red { background:#fee2e2; color:#dc2626; }
+    .status-badge.blue { background:#dbeafe; color:#2563eb; }
+    .status-badge.purple { background:#ede9fe; color:#8b5cf6; }
+    .status-badge.gray { background:#f1f5f9; color:#64748b; }
+    body.dark-theme .status-badge { background:var(--bg-input); color:var(--text-primary); }
+    .mini-scroll { max-height:200px; overflow-y:auto; }
+
+    .bottom-nav {
+      position:fixed; bottom:0; left:0; right:0; height:var(--bottom-nav-height);
+      background:var(--bg-secondary); border-top:1px solid var(--border-color);
+      display:flex; justify-content:space-around; align-items:center; padding:6px 8px; z-index:200; backdrop-filter:blur(8px); flex-shrink:0;
+    }
+    .bottom-nav button { background:transparent; border:none; color:var(--text-muted); display:flex; flex-direction:column; align-items:center; gap:2px; font-size:0.6rem; font-weight:500; cursor:pointer; transition:var(--transition); padding:4px 8px; border-radius:8px; flex:1; max-width:64px; }
+    .bottom-nav button i { font-size:1.3rem; transition:var(--transition); }
+    .bottom-nav button span { line-height:1.2; }
+    .bottom-nav button.active { color:var(--accent-blue); }
+    .bottom-nav button.active i { color:var(--accent-blue); text-shadow:0 0 12px rgba(37,99,235,0.2); }
+    .bottom-nav button:hover { color:var(--text-primary); }
+    @media (max-width:480px) { .bottom-nav button { max-width:48px; font-size:0.5rem; } .bottom-nav button i { font-size:1.1rem; } .bottom-nav button span { display:none; } }
+
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:999; padding:20px; animation:fadeUp 0.2s ease; }
+    .modal-overlay .modal-box { background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius); padding:24px 28px; max-width:520px; width:100%; max-height:80vh; overflow-y:auto; box-shadow:var(--shadow); }
+    .modal-overlay .modal-box h3 { margin-bottom:14px; display:flex; align-items:center; gap:10px; font-size:1.1rem; color:var(--text-primary); }
+    .modal-overlay .modal-box h3 i { color:var(--accent-blue); }
+    .modal-overlay .modal-box .detail-item { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border-color); font-size:0.85rem; }
+    .modal-overlay .modal-box .detail-item .label { color:var(--text-secondary); }
+    .modal-overlay .modal-box .detail-item .val { font-weight:600; color:var(--text-primary); }
+    .modal-actions { display:flex; gap:10px; margin-top:16px; justify-content:flex-end; }
+
+    .customiser-item {
+      display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border-color);
+    }
+    .customiser-item .drag-handle { color:var(--text-muted); cursor:grab; font-size:1rem; }
+    .customiser-item .info { flex:1; }
+    .customiser-item .info .name { font-weight:500; font-size:0.9rem; color:var(--text-primary); }
+    .customiser-item .info .desc { font-size:0.7rem; color:var(--text-muted); }
+    .customiser-item .toggle { position:relative; width:44px; height:24px; flex-shrink:0; cursor:pointer; background:var(--bg-input); border-radius:30px; border:1px solid var(--border-color); transition:var(--transition); }
+    .customiser-item .toggle.active { background:var(--accent-blue); border-color:var(--accent-blue); }
+    .customiser-item .toggle .knob { position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; transition:var(--transition); }
+    .customiser-item .toggle.active .knob { left:22px; }
+    .customiser-item.dragging { opacity:0.5; }
+
+    .text-muted { color:var(--text-muted); }
+    .text-green { color:var(--accent-green); }
+    .text-orange { color:var(--accent-orange); }
+    .text-red { color:var(--accent-red); }
+    .text-blue { color:var(--accent-blue); }
+    .mt-8 { margin-top:8px; }
+    .mb-8 { margin-bottom:8px; }
+    .flex-between { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+
+    @media (max-width:640px) {
+      .app-main { padding:10px 12px 12px 12px; }
+      .card-grid-2 { gap:10px; }
+      .card-grid-3 { grid-template-columns:1fr 1fr; gap:10px; }
+      .card-slim { padding:14px 16px; min-height:58px; }
+      .card-slim .value { font-size:1rem; }
+      .card-slim .label { font-size:0.7rem; }
+      .touch-card { padding:12px 14px; min-height:52px; }
+      .touch-card .info .title { font-size:0.8rem; }
+      .touch-card .amount { font-size:0.9rem; }
+      .form-grid { grid-template-columns:1fr; padding:14px 16px; }
+      .form-grid .full { grid-column:1; }
+      .form-grid input, .form-grid select { font-size:0.8rem; padding:6px 10px; }
+      .section-title { font-size:0.9rem; }
+    }
+    @media (max-width:480px) {
+      .card-grid-2 { gap:8px; }
+      .card-grid-3 { grid-template-columns:1fr 1fr; gap:8px; }
+      .card-slim { padding:10px 14px; min-height:50px; }
+      .card-slim .value { font-size:0.9rem; }
+      .card-slim .label { font-size:0.65rem; }
+      .touch-card { padding:10px 12px; min-height:44px; }
+      .touch-card .info .title { font-size:0.7rem; }
+      .touch-card .amount { font-size:0.8rem; }
+      .form-grid { padding:10px 12px; gap:8px; }
+      .form-grid label { font-size:0.7rem; }
+      .form-grid input, .form-grid select { font-size:0.75rem; padding:5px 8px; }
+      .btn { font-size:0.7rem; padding:6px 14px; }
+      .table-wrap table { font-size:0.7rem; min-width:300px; }
+      .table-wrap th, .table-wrap td { padding:6px 10px; }
+    }
+
+    #appLoader {
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:200px;
+      color:var(--text-muted);
+      font-size:1.2rem;
+      transition:opacity 0.3s ease;
+    }
+    #appLoader i { margin-right:12px; }
+    #appLoader.hidden { opacity:0; pointer-events:none; height:0; overflow:hidden; margin:0; padding:0; }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="app-logo"><i class="fas fa-cow"></i><span>DairyOS</span></div>
+    <nav class="nav-modules" id="topNav">
+      <button class="active" data-module="dashboard"><i class="fas fa-chart-pie"></i> Dash</button>
+      <button data-module="herd"><i class="fas fa-paw"></i> Herd</button>
+      <button data-module="stock"><i class="fas fa-warehouse"></i> Stock</button>
+      <button data-module="milk"><i class="fas fa-tint"></i> Milk</button>
+      <button data-module="labour"><i class="fas fa-users"></i> Labour</button>
+      <button data-module="accounts"><i class="fas fa-file-invoice-dollar"></i> P&L</button>
+      <button data-module="reports"><i class="fas fa-chart-line"></i> Reports</button>
+    </nav>
+    <div class="header-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+        <i class="fas fa-moon" id="themeIcon"></i>
+      </button>
+      <button class="customise-btn" onclick="openCustomiser()" title="Customise Dashboard"><i class="fas fa-sliders-h"></i></button>
+      <button onclick="exportData()" title="Export"><i class="fas fa-download"></i></button>
+      <button onclick="document.getElementById('importInput').click()" title="Import"><i class="fas fa-upload"></i></button>
+      <input type="file" id="importInput" accept=".json" style="display:none" onchange="importData(event)" />
+      <button onclick="openRateModal()" title="Edit Rates"><i class="fas fa-cog"></i></button>
+      <button onclick="installApp()" title="Install App" id="installBtn" style="display:none;"><i class="fas fa-download"></i></button>
+    </div>
+  </header>
+
+  <main class="app-main" id="appMain">
+    <div id="appLoader"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+    <section id="panel-dashboard" class="module-panel"></section>
+    <section id="panel-herd" class="module-panel"></section>
+    <section id="panel-stock" class="module-panel"></section>
+    <section id="panel-milk" class="module-panel"></section>
+    <section id="panel-labour" class="module-panel"></section>
+    <section id="panel-accounts" class="module-panel"></section>
+    <section id="panel-reports" class="module-panel"></section>
+  </main>
+
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="active" data-module="dashboard"><i class="fas fa-chart-pie"></i><span>Home</span></button>
+    <button data-module="herd"><i class="fas fa-paw"></i><span>Herd</span></button>
+    <button data-module="stock"><i class="fas fa-warehouse"></i><span>Stock</span></button>
+    <button data-module="milk"><i class="fas fa-tint"></i><span>Milk</span></button>
+    <button data-module="labour"><i class="fas fa-users"></i><span>Labour</span></button>
+    <button data-module="accounts"><i class="fas fa-file-invoice-dollar"></i><span>P&L</span></button>
+    <button data-module="reports"><i class="fas fa-chart-line"></i><span>Reports</span></button>
+  </nav>
+
+  <div id="modalContainer"></div>
+
+  <script>
+    // ================================================================
+    // THEME TOGGLE
+    // ================================================================
+    function toggleTheme() {
+      const body = document.body;
+      const icon = document.getElementById('themeIcon');
+      const isDark = body.classList.toggle('dark-theme');
+      icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+      localStorage.setItem('dairyTheme', isDark ? 'dark' : 'light');
+      document.querySelector('meta[name="theme-color"]').content = isDark ? '#0b0e14' : '#ffffff';
+    }
+
+    function loadTheme() {
+      const saved = localStorage.getItem('dairyTheme');
+      if (saved === 'dark') {
+        document.body.classList.add('dark-theme');
+        document.getElementById('themeIcon').className = 'fas fa-sun';
+        document.querySelector('meta[name="theme-color"]').content = '#0b0e14';
+      }
+    }
+
+    // ================================================================
+    // STORAGE (IndexedDB)
+    // ================================================================
+    const DB = {
+      _cache: {},
+      _usingIndexedDB: false,
+      _db: null,
+      _dbName: 'DairyOSDB',
+      _storeName: 'appData',
+      _initialized: false,
+
+      init() {
+        return new Promise((resolve) => {
+          try {
+            const request = indexedDB.open(this._dbName, 2);
+            request.onupgradeneeded = (e) => {
+              const db = e.target.result;
+              if (!db.objectStoreNames.contains(this._storeName)) {
+                db.createObjectStore(this._storeName);
+              }
+            };
+            request.onsuccess = (e) => {
+              this._db = e.target.result;
+              this._usingIndexedDB = true;
+              this._loadAll().then(() => { this._initialized = true; resolve(); }).catch(() => { this
+                  ._initialized = true; resolve(); });
+            };
+            request.onerror = () => {
+              console.warn('IndexedDB not available, using localStorage fallback.');
+              this._usingIndexedDB = false;
+              this._loadFromLocalStorage();
+              this._initialized = true;
+              resolve();
+            };
+          } catch (e) {
+            console.warn('IndexedDB error, using localStorage fallback.', e);
+            this._usingIndexedDB = false;
+            this._loadFromLocalStorage();
+            this._initialized = true;
+            resolve();
+          }
+        });
+      },
+
+      _loadAll() {
+        return new Promise((resolve, reject) => {
+          if (!this._db) return reject('DB not initialized');
+          const transaction = this._db.transaction([this._storeName], 'readonly');
+          const store = transaction.objectStore(this._storeName);
+          const request = store.getAll();
+          request.onsuccess = () => {
+            const results = request.result || [];
+            results.forEach(item => {
+              if (item.key && item.value !== undefined) {
+                this._cache[item.key] = item.value;
+              }
+            });
+            resolve();
+          };
+          request.onerror = (e) => reject(e.target.error);
+        });
+      },
+
+      _loadFromLocalStorage() {
+        const keys = ['animals', 'taji', 'kori', 'bakdi', 'slaughter', 'dead',
+          'feedPurchases', 'feedConsumption', 'godown', 'danawalaPayments',
+          'customers', 'milkProduction', 'milkOverrides', 'customerPayments',
+          'labour', 'labourPayments', 'vendorPayments', 'medicineBills', 'bhaiswalBills',
+          'config', 'dashboardPrefs'
+        ];
+        keys.forEach(key => {
+          try {
+            const val = localStorage.getItem('dairy_' + key);
+            if (val) { this._cache[key] = JSON.parse(val); }
+          } catch (e) {}
+        });
+      },
+
+      _saveToDB(key, value) {
+        if (this._usingIndexedDB) {
+          return new Promise((resolve, reject) => {
+            if (!this._db) return reject('DB not initialized');
+            const transaction = this._db.transaction([this._storeName], 'readwrite');
+            const store = transaction.objectStore(this._storeName);
+            const request = store.put({ key, value });
+            request.onsuccess = () => resolve();
+            request.onerror = (e) => reject(e.target.error);
+          });
+        } else {
+          try {
+            localStorage.setItem('dairy_' + key, JSON.stringify(value));
+            return Promise.resolve();
+          } catch (e) { return Promise.reject(e); }
+        }
+      },
+
+      get(key, def) { return this._cache[key] !== undefined ? this._cache[key] : def; },
+      async set(key, value) { this._cache[key] = value; await this._saveToDB(key, value); },
+      getAll() { return this._cache; },
+      async importAll(data) {
+        const keys = Object.keys(data);
+        for (const key of keys) {
+          if (data[key] !== undefined) {
+            this._cache[key] = data[key];
+            await this._saveToDB(key, data[key]);
+          }
+        }
+      },
+      // Hard reset: clear all stores and re-seed demo data
+      async hardReset() {
+        if (!this._db) return;
+        const storeNames = ['animals', 'taji', 'kori', 'bakdi', 'slaughter', 'dead',
+          'feedPurchases', 'feedConsumption', 'godown', 'danawalaPayments',
+          'customers', 'milkProduction', 'milkOverrides', 'customerPayments',
+          'labour', 'labourPayments', 'vendorPayments', 'medicineBills', 'bhaiswalBills',
+          'config', 'dashboardPrefs'
+        ];
+        const tx = this._db.transaction(storeNames, 'readwrite');
+        for (const name of storeNames) {
+          const store = tx.objectStore(name);
+          await store.clear();
+        }
+        await new Promise((resolve, reject) => {
+          tx.oncomplete = resolve;
+          tx.onerror = reject;
+        });
+        // Clear cache
+        for (const key of storeNames) {
+          delete this._cache[key];
+        }
+        // Re-seed demo data
+        await seedDemoData();
+        // Reload all data
+        await this._loadAll();
+      }
+    };
+
+    // ================================================================
+    // HELPERS
+    // ================================================================
+    async function getCaretakerTotal() {
+      const animals = await DB.get('animals', []);
+      const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+        benchmarkProd: 192, benchmarkFeed: 200 });
+      let t = 0;
+      animals.forEach(a => { if (a.location === 'Noora') t += config.nooraRate;
+        else if (a.location === 'Tosif') t += config.tosifRate; });
+      return t;
+    }
+
+    async function getTransportTotal() {
+      const taji = await DB.get('taji', []);
+      const bakdi = await DB.get('bakdi', []);
+      const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+        benchmarkProd: 192, benchmarkFeed: 200 });
+      return taji.length * config.tajiFreight + bakdi.length * config.bakdiFreight;
+    }
+
+    async function getLabourTotal() {
+      const labour = await DB.get('labour', []);
+      return labour.reduce((s, l) => s + (l.fixedPagar || 0), 0);
+    }
+
+    async function getMedicineTotal() {
+      const medicineBills = await DB.get('medicineBills', []);
+      return medicineBills.reduce((s, m) => s + (m.amount || 0), 0);
+    }
+
+    async function getActiveAnimals() {
+      const animals = await DB.get('animals', []);
+      return animals.filter(a => a.status !== 'Dead' && a.status !== 'Slaughtered');
+    }
+
+    async function getTotalMilk() {
+      const milkProduction = await DB.get('milkProduction', []);
+      return milkProduction.reduce((s, d) => s + (d.shedAMorning || 0) + (d.shedAEvening || 0) + (d.shedBMorning || 0) +
+        (d.shedBEvening || 0), 0);
+    }
+
+    // ================================================================
+    // NAVIGATION
+    // ================================================================
+    let currentModule = 'dashboard';
+
+    function switchModule(mod) {
+      currentModule = mod;
+      document.querySelectorAll('#topNav button, #bottomNav button').forEach(b => b.classList.remove('active'));
+      document.querySelector(`#topNav button[data-module="${mod}"]`)?.classList.add('active');
+      document.querySelector(`#bottomNav button[data-module="${mod}"]`)?.classList.add('active');
+      document.querySelectorAll('.module-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + mod).classList.add('active');
+      refreshCurrentModule();
+    }
+
+    async function refreshCurrentModule() {
+      switch (currentModule) {
+        case 'dashboard': await refreshDashboard(); await refreshLedgers(); await refreshProjections(); break;
+        case 'herd': await refreshHerd(); await refreshPalakSummary(); break;
+        case 'stock': await refreshStock(); break;
+        case 'milk': await refreshMilk(); break;
+        case 'labour': await refreshLabour(); break;
+        case 'accounts': await refreshAccounts(); break;
+        case 'reports': await refreshReports(); break;
+      }
+    }
+
+    document.querySelectorAll('#topNav button, #bottomNav button').forEach(btn => {
+      btn.addEventListener('click', function() { switchModule(this.dataset.module); });
+    });
+
+    // ================================================================
+    // DASHBOARD PREFERENCES
+    // ================================================================
+    const DEFAULT_KPI_ORDER = [
+      'milk', 'feed', 'feedCost', 'milkRate', 'saleRate', 'laborAnimal',
+      'taji', 'kori', 'slaughter', 'dead', 'arrivals', 'totalCost', 'medicine', 'laborPagar'
+    ];
+    const KPI_META = {
+      milk: { label: 'AVG Milk / Buffalo', icon: 'fa-tint' },
+      feed: { label: 'AVG Feed / Buffalo', icon: 'fa-seedling' },
+      feedCost: { label: 'Avg Feed Cost / kg', icon: 'fa-coins' },
+      milkRate: { label: 'Avg Milk Rate (Prod)', icon: 'fa-flask' },
+      saleRate: { label: 'Avg Sale Rate', icon: 'fa-hand-holding-usd' },
+      laborAnimal: { label: 'Avg Labour / Animal', icon: 'fa-user-tie' },
+      taji: { label: 'Avg TAJI Rate', icon: 'fa-truck' },
+      kori: { label: 'Avg KORI Rate', icon: 'fa-exchange-alt' },
+      slaughter: { label: 'Avg Slaughter Rate', icon: 'fa-skull' },
+      dead: { label: 'Avg Dead / Day', icon: 'fa-calendar-times' },
+      arrivals: { label: 'Avg Arrivals / Day', icon: 'fa-arrow-right' },
+      totalCost: { label: 'Avg Total Cost / Buffalo', icon: 'fa-calculator' },
+      medicine: { label: 'Avg Medicine / Buffalo', icon: 'fa-syringe' },
+      laborPagar: { label: 'Avg Labour Pagar', icon: 'fa-wallet' }
+    };
+
+    async function getDashboardPrefs() {
+      const prefs = await DB.get('dashboardPrefs', null);
+      if (!prefs) return { order: DEFAULT_KPI_ORDER, hidden: [] };
+      return prefs;
+    }
+    async function saveDashboardPrefs(order, hidden) {
+      await DB.set('dashboardPrefs', { order, hidden });
+    }
+
+    // ================================================================
+    // DASHBOARD
+    // ================================================================
+    let dashboardPeriod = 'daily';
+
+    window.showKpiDetail = async function(id) {
+      const active = await getActiveAnimals();
+      const totalMilk = await getTotalMilk();
+      const feedPurchases = await DB.get('feedPurchases', []);
+      const feedCons = await DB.get('feedConsumption', []);
+      const labour = await DB.get('labour', []);
+      const slaughter = await DB.get('slaughter', []);
+      const kori = await DB.get('kori', []);
+      const taji = await DB.get('taji', []);
+      const dead = await DB.get('dead', []);
+      const customers = await DB.get('customers', []);
+      const feedCost = feedPurchases.reduce((s, d) => s + (d.goodsBillAmount || 0), 0);
+      const feedKg = feedPurchases.reduce((s, d) => s + (d.totalWeight || 0), 0);
+      const totalFeed = feedCons.reduce((s, d) => s + (d.bagsConsumed || 0) * (d.bagSize || 50), 0);
+      const avgMilk = active.length ? (totalMilk / active.length) : 0;
+      const avgFeed = active.length ? (totalFeed / active.length) : 0;
+      const avgFeedCost = feedKg ? (feedCost / feedKg) : 0;
+      const caretakerTotal = await getCaretakerTotal();
+      const transportTotal = await getTransportTotal();
+      const labourTotal = await getLabourTotal();
+      const medicineTotal = await getMedicineTotal();
+      const totalOpEx = feedCost + caretakerTotal + transportTotal + labourTotal + medicineTotal;
+      const avgMilkRate = totalMilk ? (totalOpEx / totalMilk) : 0;
+      const saleTotal = customers.reduce((s, c) => s + (c.sellingRate || 0), 0);
+      const avgSale = customers.length ? (saleTotal / customers.length) : 0;
+      const labTotal = labourTotal;
+      const avgLabAnimal = active.length ? (labTotal / active.length) : 0;
+      const tajiTotal = taji.reduce((s, d) => s + (d.billAmount || 0), 0);
+      const avgTaji = taji.length ? (tajiTotal / taji.length) : 0;
+      const koriTotal = kori.reduce((s, d) => s + (d.totalBillAmount || 0), 0);
+      const koriCount = kori.reduce((s, d) => s + (d.numberOfAnimals || 0), 0);
+      const avgKori = koriCount ? (koriTotal / koriCount) : 0;
+      const slTotal = slaughter.reduce((s, d) => s + (d.soldAmount || 0), 0);
+      const avgSl = slaughter.length ? (slTotal / slaughter.length) : 0;
+      const now = new Date();
+      const threeMonths = new Date(now);
+      threeMonths.setMonth(now.getMonth() - 3);
+      const recentDead = dead.filter(d => new Date(d.outgoingDate) > threeMonths);
+      const avgDead = recentDead.length / 3;
+      const arrivals = [...taji, ...kori];
+      const recentArr = arrivals.filter(d => new Date(d.incomingDate || d.purchaseDate) > threeMonths);
+      const avgArr = recentArr.length / 3;
+      const totalCost = feedCost + caretakerTotal + transportTotal + labourTotal + medicineTotal;
+      const avgCost = active.length ? (totalCost / active.length) : 0;
+      const medTotal = medicineTotal;
+      const avgMed = active.length ? (medTotal / active.length) : 0;
+      const labMonths = Math.max(1, labour.length);
+      const avgLabPagar = labour.reduce((s, l) => s + (l.fixedPagar || 0), 0) / labMonths;
+
+      let title = '',
+        details = [];
+      const map = {
+        milk: ['AVG Milk / Buffalo', avgMilk.toFixed(1) + ' L'],
+        feed: ['AVG Feed / Buffalo', avgFeed.toFixed(1) + ' kg'],
+        feedCost: ['Avg Feed Cost / kg', '₹' + avgFeedCost.toFixed(2)],
+        milkRate: ['Avg Milk Rate (Prod)', '₹' + avgMilkRate.toFixed(2)],
+        saleRate: ['Avg Sale Rate', '₹' + avgSale.toFixed(2)],
+        laborAnimal: ['Avg Labour / Animal', '₹' + avgLabAnimal.toFixed(2)],
+        taji: ['Avg TAJI Rate', '₹' + avgTaji.toFixed(2)],
+        kori: ['Avg KORI Rate', '₹' + avgKori.toFixed(2)],
+        slaughter: ['Avg Slaughter Rate', '₹' + avgSl.toFixed(2)],
+        dead: ['Avg Dead / Day', avgDead.toFixed(1) + ' animals'],
+        arrivals: ['Avg Arrivals / Day', avgArr.toFixed(1) + ' animals'],
+        totalCost: ['Avg Total Cost / Buffalo', '₹' + avgCost.toFixed(2)],
+        medicine: ['Avg Medicine / Buffalo', '₹' + avgMed.toFixed(2)],
+        laborPagar: ['Avg Labour Pagar', '₹' + avgLabPagar.toFixed(2)]
+      };
+      if (map[id]) {
+        title = map[id][0];
+        details = [{ label: 'Value', val: map[id][1] }];
+      } else {
+        title = 'KPI Detail';
+        details = [{ label: 'Value', val: '—' }];
+      }
+      let html = details.map(d => `<div class="detail-item"><span class="label">${d.label}</span><span class="val">${d.val}</span></div>`)
+        .join('');
+      showModal('📊 ' + title, html);
+    };
+
+    async function refreshDashboard() {
+      const active = await getActiveAnimals();
+      const totalMilk = await getTotalMilk();
+      const feedPurchases = await DB.get('feedPurchases', []);
+      const feedCons = await DB.get('feedConsumption', []);
+      const labour = await DB.get('labour', []);
+      const slaughter = await DB.get('slaughter', []);
+      const kori = await DB.get('kori', []);
+      const taji = await DB.get('taji', []);
+      const dead = await DB.get('dead', []);
+      const customers = await DB.get('customers', []);
+      const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+        benchmarkProd: 192, benchmarkFeed: 200 });
+
+      const feedCost = feedPurchases.reduce((s, d) => s + (d.goodsBillAmount || 0), 0);
+      const feedKg = feedPurchases.reduce((s, d) => s + (d.totalWeight || 0), 0);
+      const totalFeed = feedCons.reduce((s, d) => s + (d.bagsConsumed || 0) * (d.bagSize || 50), 0);
+      const avgMilk = active.length ? (totalMilk / active.length) : 0;
+      const avgFeed = active.length ? (totalFeed / active.length) : 0;
+      const avgFeedCost = feedKg ? (feedCost / feedKg) : 0;
+      const caretakerTotal = await getCaretakerTotal();
+      const transportTotal = await getTransportTotal();
+      const labourTotal = await getLabourTotal();
+      const medicineTotal = await getMedicineTotal();
+      const totalOpEx = feedCost + caretakerTotal + transportTotal + labourTotal + medicineTotal;
+      const avgMilkRate = totalMilk ? (totalOpEx / totalMilk) : 0;
+      const saleTotal = customers.reduce((s, c) => s + (c.sellingRate || 0), 0);
+      const avgSale = customers.length ? (saleTotal / customers.length) : 0;
+      const labTotal = labourTotal;
+      const avgLabAnimal = active.length ? (labTotal / active.length) : 0;
+      const tajiTotal = taji.reduce((s, d) => s + (d.billAmount || 0), 0);
+      const avgTaji = taji.length ? (tajiTotal / taji.length) : 0;
+      const koriTotal = kori.reduce((s, d) => s + (d.totalBillAmount || 0), 0);
+      const koriCount = kori.reduce((s, d) => s + (d.numberOfAnimals || 0), 0);
+      const avgKori = koriCount ? (koriTotal / koriCount) : 0;
+      const slTotal = slaughter.reduce((s, d) => s + (d.soldAmount || 0), 0);
+      const avgSl = slaughter.length ? (slTotal / slaughter.length) : 0;
+      const now = new Date();
+      const threeMonths = new Date(now);
+      threeMonths.setMonth(now.getMonth() - 3);
+      const recentDead = dead.filter(d => new Date(d.outgoingDate) > threeMonths);
+      const avgDead = recentDead.length / 3;
+      const arrivals = [...taji, ...kori];
+      const recentArr = arrivals.filter(d => new Date(d.incomingDate || d.purchaseDate) > threeMonths);
+      const avgArr = recentArr.length / 3;
+      const totalCost = feedCost + caretakerTotal + transportTotal + labourTotal + medicineTotal;
+      const avgCost = active.length ? (totalCost / active.length) : 0;
+      const medTotal = medicineTotal;
+      const avgMed = active.length ? (medTotal / active.length) : 0;
+      const labMonths = Math.max(1, labour.length);
+      const avgLabPagar = labour.reduce((s, l) => s + (l.fixedPagar || 0), 0) / labMonths;
+
+      const animals = await DB.get('animals', []);
+      const pregnant7 = animals.filter(a => a.status === 'Pregnant' && a.faliDate && (new Date() - new Date(a
+        .faliDate)) > 7 * 30 * 24 * 60 * 60 * 1000);
+      const repeatBreeder = animals.filter(a => (a.servicedCycle || 0) > 3);
+      const toService = animals.filter(a => {
+        const incoming = new Date(a.incomingDate);
+        const days = (new Date() - incoming) / (24 * 60 * 60 * 1000);
+        if (a.status === 'KHALI' && days > 60) return true;
+        if (a.status === 'KHALI' && a.doctorDate) {
+          const dd = new Date(a.doctorDate);
+          if ((new Date() - dd) / (24 * 60 * 60 * 1000) > 30) return true;
+        }
+        return false;
+      });
+      const lowStock = (await DB.get('godown', [])).filter(g => g.bagsInStock < 20);
+
+      const alerts = [];
+      if (pregnant7.length) alerts.push({ icon: 'fa-baby', msg: `${pregnant7.length} animals pregnant >7 months`,
+        count: pregnant7.length });
+      if (repeatBreeder.length) alerts.push({ icon: 'fa-repeat', msg: `${repeatBreeder.length} repeat breeders (cycle >3)`,
+        count: repeatBreeder.length });
+      if (toService.length) alerts.push({ icon: 'fa-clock', msg: `${toService.length} animals need service`,
+        count: toService.length });
+      if (lowStock.length) alerts.push({ icon: 'fa-exclamation-triangle', msg: `${lowStock.length} items low in stock`,
+        count: lowStock.length });
+
+      const kpiData = {
+        milk: avgMilk.toFixed(1) + ' L',
+        feed: avgFeed.toFixed(1) + ' kg',
+        feedCost: '₹' + avgFeedCost.toFixed(2),
+        milkRate: '₹' + avgMilkRate.toFixed(2),
+        saleRate: '₹' + avgSale.toFixed(2),
+        laborAnimal: '₹' + avgLabAnimal.toFixed(2),
+        taji: '₹' + avgTaji.toFixed(2),
+        kori: '₹' + avgKori.toFixed(2),
+        slaughter: '₹' + avgSl.toFixed(2),
+        dead: avgDead.toFixed(1) + ' animals',
+        arrivals: avgArr.toFixed(1) + ' animals',
+        totalCost: '₹' + avgCost.toFixed(2),
+        medicine: '₹' + avgMed.toFixed(2),
+        laborPagar: '₹' + avgLabPagar.toFixed(2)
+      };
+
+      const prefs = await getDashboardPrefs();
+      const order = prefs.order || DEFAULT_KPI_ORDER;
+      const hidden = prefs.hidden || [];
+
+      const dashboardPanel = document.getElementById('panel-dashboard');
+      let html = `
+        <div class="flex-between mb-8">
+          <div class="section-title">
+            <i class="fas fa-chart-pie"></i> Dashboard <small>· tap cards</small>
+            <span class="customise-badge" onclick="openCustomiser()">✎ Customise</span>
+          </div>
+          <div style="display:flex;gap:4px;">
+            <button class="btn btn-sm btn-outline" onclick="setDashboardPeriod('daily')">Daily</button>
+            <button class="btn btn-sm btn-outline" onclick="setDashboardPeriod('monthly')">Monthly</button>
+            <button class="btn btn-sm btn-outline" onclick="setDashboardPeriod('yearly')">Yearly</button>
+          </div>
+        </div>
+        <div id="systemAlerts" class="alert-banner" style="${alerts.length ? 'display:flex;' : 'display:none;'}">
+          ${alerts.map(a => `<i class="fas ${a.icon}"></i><span class="msg">${a.msg}</span><span class="count">${a.count}</span>`).join('')}
+        </div>
+        <div class="card-grid-2" id="kpiGrid">
+          ${order.map(id => {
+            if (hidden.includes(id)) return '';
+            const meta = KPI_META[id];
+            if (!meta) return '';
+            const val = kpiData[id] || '0';
+            return `
+              <div class="card-slim" data-kpi-id="${id}" draggable="true" onclick="showKpiDetail('${id}')">
+                <div class="label"><i class="fas ${meta.icon}"></i><span>${meta.label}</span></div>
+                <div class="value">${val}</div>
+                <div class="drag-handle"><i class="fas fa-grip-lines"></i></div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+        <div class="section-title" style="margin-top:8px;"><i class="fas fa-fingerprint"></i> Touch Ledgers</div>
+        <div class="card-grid-2" id="ledgerGrid"></div>
+        <div class="section-title" style="margin-top:8px;"><i class="fas fa-calendar-alt"></i> 12-Month Projection</div>
+        <div class="table-wrap"><table><thead><tr id="projectionHeaders"></tr></thead><tbody><tr id="projectionRow"></tr></tbody></table></div>
+      `;
+      dashboardPanel.innerHTML = html;
+      setupDragAndDrop();
+      await refreshLedgers();
+      await refreshProjections();
+    }
+
+    // Drag & drop setup
+    function setupDragAndDrop() {
+      const grid = document.getElementById('kpiGrid');
+      if (!grid) return;
+      let draggedId = null;
+      grid.addEventListener('dragstart', (e) => {
+        const card = e.target.closest('.card-slim');
+        if (!card) return;
+        draggedId = card.dataset.kpiId;
+        card.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', draggedId);
+      });
+      grid.addEventListener('dragend', (e) => {
+        const card = e.target.closest('.card-slim');
+        if (card) card.classList.remove('dragging');
+        document.querySelectorAll('.card-slim.drag-over').forEach(el => el.classList.remove('drag-over'));
+      });
+      grid.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const target = e.target.closest('.card-slim');
+        if (target && target.dataset.kpiId !== draggedId) {
+          document.querySelectorAll('.card-slim.drag-over').forEach(el => el.classList.remove('drag-over'));
+          target.classList.add('drag-over');
+        }
+      });
+      grid.addEventListener('dragleave', (e) => {
+        const target = e.target.closest('.card-slim');
+        if (target) target.classList.remove('drag-over');
+      });
+      grid.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        const target = e.target.closest('.card-slim');
+        if (!target || !draggedId) return;
+        target.classList.remove('drag-over');
+        const prefs = await getDashboardPrefs();
+        const order = prefs.order || DEFAULT_KPI_ORDER;
+        const fromIdx = order.indexOf(draggedId);
+        const toIdx = order.indexOf(target.dataset.kpiId);
+        if (fromIdx === -1 || toIdx === -1) return;
+        order.splice(fromIdx, 1);
+        order.splice(toIdx, 0, draggedId);
+        await saveDashboardPrefs(order, prefs.hidden || []);
+        await refreshDashboard();
+      });
+    }
+
+    window.openCustomiser = async function() {
+      const prefs = await getDashboardPrefs();
+      const order = prefs.order || DEFAULT_KPI_ORDER;
+      const hidden = prefs.hidden || [];
+
+      let itemsHtml = order.map(id => {
+        const meta = KPI_META[id];
+        if (!meta) return '';
+        const isHidden = hidden.includes(id);
+        return `
+          <div class="customiser-item" data-id="${id}">
+            <span class="drag-handle"><i class="fas fa-grip-lines"></i></span>
+            <div class="info">
+              <div class="name">${meta.label}</div>
+              <div class="desc">${id}</div>
+            </div>
+            <div class="toggle ${isHidden ? '' : 'active'}" onclick="toggleKpiVisibility('${id}')">
+              <div class="knob"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const html = `
+        <div style="margin-bottom:12px;color:var(--text-muted);font-size:0.85rem;">
+          Drag to reorder · Toggle to show/hide cards
+        </div>
+        <div id="customiserList">
+          ${itemsHtml}
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-outline" onclick="resetDashboard()">Reset to Default</button>
+          <button class="btn" onclick="closeModal();refreshDashboard();">Done</button>
+        </div>
+      `;
+      showModal('🎛️ Customise Dashboard', html);
+      // setup drag inside customiser...
+    };
+
+    window.toggleKpiVisibility = async function(id) {
+      const prefs = await getDashboardPrefs();
+      const hidden = prefs.hidden || [];
+      const idx = hidden.indexOf(id);
+      if (idx === -1) hidden.push(id);
+      else hidden.splice(idx, 1);
+      await saveDashboardPrefs(prefs.order || DEFAULT_KPI_ORDER, hidden);
+      openCustomiser();
+      await refreshDashboard();
+    };
+
+    window.resetDashboard = async function() {
+      if (!confirm('Reset dashboard to default layout?')) return;
+      await saveDashboardPrefs(DEFAULT_KPI_ORDER, []);
+      closeModal();
+      await refreshDashboard();
+      showModal('✅ Reset', 'Dashboard reset to default layout.');
+    };
+
+    // ================================================================
+    // LEDGERS
+    // ================================================================
+    window.openLedger = async function(type) {
+      showModal('📋 Ledger', `<p>Details for ${type} will be shown here.</p>`);
+    };
+
+    async function refreshLedgers() {
+      const animals = await DB.get('animals', []);
+      const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+        benchmarkProd: 192, benchmarkFeed: 200 });
+      const noora = animals.filter(a => a.location === 'Noora');
+      const tosif = animals.filter(a => a.location === 'Tosif');
+      const feedPurchases = await DB.get('feedPurchases', []);
+      const danawalaPayments = await DB.get('danawalaPayments', []);
+      const danaP = feedPurchases.reduce((s, d) => s + (d.goodsBillAmount || 0), 0);
+      const danaPaid = danawalaPayments.reduce((s, d) => s + (d.amountPaid || 0), 0);
+      const bhaiswalBills = await DB.get('bhaiswalBills', []);
+      const medicineBills = await DB.get('medicineBills', []);
+      const labour = await DB.get('labour', []);
+      const slaughter = await DB.get('slaughter', []);
+
+      const ledgers = [
+        { id: 'noora', icon: 'fa-user-md', title: 'NOORA Palak Bill', desc: 'Outstanding liabilities',
+          amt: noora.length * config.nooraRate },
+        { id: 'tosif', icon: 'fa-user-md', title: 'TOSIF Palak Bill', desc: 'Outstanding liabilities',
+          amt: tosif.length * config.tosifRate },
+        { id: 'irshad', icon: 'fa-truck', title: 'Irshad Transporter', desc: 'Freight outstanding',
+          amt: await getTransportTotal() },
+        { id: 'danawala', icon: 'fa-seedling', title: 'Danawala Bills', desc: 'Feed outstanding',
+          amt: danaP - danaPaid },
+        { id: 'bhaiswal', icon: 'fa-handshake', title: 'Bhaiswals Bills', desc: 'Livestock outstanding',
+          amt: bhaiswalBills.reduce((s, d) => s + (d.amount || 0), 0) },
+        { id: 'medicine', icon: 'fa-syringe', title: 'Medicine Bills', desc: 'Vet outstanding',
+          amt: medicineBills.reduce((s, d) => s + (d.amount || 0), 0) },
+        { id: 'labourSummary', icon: 'fa-users', title: 'TOTAL LABOR PAGAR', desc: 'Summary sheet',
+          amt: labour.reduce((s, l) => s + (l.fixedPagar || 0), 0) },
+        { id: 'slaughtered', icon: 'fa-drumstick-bite', title: 'Slaughtered Balance', desc: 'Kasai ledger',
+          amt: slaughter.reduce((s, d) => s + (d.soldAmount || 0), 0) }
+      ];
+      const grid = document.getElementById('ledgerGrid');
+      if (grid) {
+        grid.innerHTML = ledgers.map(l => `
+          <div class="touch-card" onclick="openLedger('${l.id}')">
+            <i class="fas ${l.icon}"></i>
+            <div class="info"><div class="title">${l.title}</div><div class="desc">${l.desc}</div></div>
+            <div class="amount">₹${l.amt.toFixed(2)}</div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // ================================================================
+    // PROJECTIONS
+    // ================================================================
+    async function refreshProjections() {
+      const months = [];
+      const now = new Date();
+      for (let i = 0; i < 12; i++) { const d = new Date(now);
+        d.setMonth(now.getMonth() + i);
+        months.push(d.toLocaleString('en', { month: 'short', year: '2-digit' })); }
+      const headers = document.getElementById('projectionHeaders');
+      const row = document.getElementById('projectionRow');
+      if (headers && row) {
+        headers.innerHTML = months.map(m => '<th>' + m + '</th>').join('');
+        const animals = await DB.get('animals', []);
+        const counts = new Array(12).fill(0);
+        animals.forEach(a => {
+          if (a.faliDate) {
+            const fali = new Date(a.faliDate);
+            const birth = new Date(fali);
+            birth.setDate(birth.getDate() + 300);
+            const diff = (birth.getFullYear() - now.getFullYear()) * 12 + (birth.getMonth() - now.getMonth());
+            if (diff >= 0 && diff < 12) counts[diff]++;
+          }
+        });
+        row.innerHTML = counts.map(c => '<td>' + c + '</td>').join('');
+      }
+    }
+
+    // ================================================================
+    // HERD MODULE (with real data saving)
+    // ================================================================
+    window.showHerdDetail = function(id) { showModal('🐄 Herd Detail', `Showing details for ${id}`); };
+
+    window.deleteHerdEntry = async function(idx) {
+      if (!confirm('Delete this animal record?')) return;
+      const animals = await DB.get('animals', []);
+      animals.splice(idx, 1);
+      await DB.set('animals', animals);
+      await refreshAll();
+    };
+
+    window.toggleHerdForm = function() {
+      const container = document.getElementById('herdDynamicFields');
+      if (!container) return;
+      const action = document.getElementById('herdAction')?.value || 'addBuffalo';
+      let html = '';
+      if (action === 'addBuffalo') {
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+          <label>Tag <input id="hf_tag"/></label>
+          <label>Khila <input id="hf_khila"/></label>
+          <label>Incoming <input id="hf_incoming" type="date"/></label>
+          <label>Location <select id="hf_location"><option>Shed A</option><option>Shed B</option><option>Noora</option><option>Tosif</option><option>YARD A</option><option>YARD B</option></select></label>
+          <label>Status <select id="hf_status"><option>KHALI</option><option>Pregnant</option><option>FALI</option><option>Slaughtered</option><option>Dead</option><option>KORI</option><option>TAJI</option></select></label>
+          <label>Lactation <input id="hf_lactation" type="number" value="0"/></label>
+        </div>`;
+      } else if (action === 'fali') {
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+          <label>Tag <input id="hf_tag_fali"/></label>
+          <label>Khila No <input id="hf_khila_fali"/></label>
+          <label>Fali Date <input id="hf_fali" type="date"/></label>
+          <label>Bull <input id="hf_bull"/></label>
+          <label>Shed <select id="hf_shed"><option>Shed A</option><option>Shed B</option></select></label>
+          <label class="full" style="color:var(--text-muted);">Service No. will be auto-incremented</label>
+        </div>`;
+      } else if (action === 'tajiIn') {
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+          <label>Tag <input id="hf_tag_taji"/></label>
+          <label>Incoming <input id="hf_incoming_taji" type="date"/></label>
+          <label>Palak <select id="hf_source_taji"><option>Noora</option><option>Tosif</option></select></label>
+          <label class="full" style="color:var(--text-muted);">Rearing Days & Bill will be auto-calculated on BAKDI</label>
+        </div>`;
+      } else if (action === 'bakdiOut') {
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+          <label>Tag <input id="hf_tag_bakdi"/></label>
+          <label>Outgoing <input id="hf_outgoing_bakdi" type="date"/></label>
+          <label>To Palak <select id="hf_target_bakdi"><option>Noora</option><option>Tosif</option></select></label>
+          <label class="full" style="color:var(--text-muted);">Fali Date, Days Pregnant & From Shed will be auto-filled</label>
+        </div>`;
+      } else if (action === 'slaughter') {
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+          <label>Tag <input id="hf_tag_slaughter"/></label>
+          <label>Outgoing <input id="hf_outgoing_slaughter" type="date"/></label>
+          <label>Sold ₹ <input id="hf_sold" type="number" step="0.01"/></label>
+          <label>Kasai <input id="hf_kasai"/></label>
+        </div>`;
+      } else if (action === 'dead') {
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+          <label>Tag <input id="hf_tag_dead"/></label>
+          <label>Death Date <input id="hf_death_date" type="date"/></label>
+          <label>Location <select id="hf_dead_location"><option>Shed A</option><option>Shed B</option><option>Noora</option><option>Tosif</option></select></label>
+        </div>`;
+      } else if (action === 'kori') {
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+          <label>Broker <input id="hf_broker"/></label>
+          <label>Total ₹ <input id="hf_total" type="number" step="0.01"/></label>
+          <label>#Animals <input id="hf_count" type="number"/></label>
+          <label>Date <input id="hf_date" type="date"/></label>
+          <label class="full" style="color:var(--text-muted);">Avg per animal will be auto-calculated</label>
+        </div>`;
+      } else if (action === 'payment') {
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+          <label>Vendor <select id="hf_vendor"><option>Danawala</option><option>Bhaiswal</option><option>Medicine</option></select></label>
+          <label>Amount ₹ <input id="hf_paid" type="number" step="0.01"/></label>
+          <label>Date <input id="hf_date" type="date"/></label>
+          <label>Name <input id="hf_vname"/></label>
+          <label class="full" style="color:var(--text-muted);">Outstanding balance will be auto-updated</label>
+        </div>`;
+      }
+      container.innerHTML = html;
+    };
+
+    // --- Real submit functions ---
+    window.submitHerdEntry = async function() {
+      const action = document.getElementById('herdAction').value;
+      if (action === 'addBuffalo') {
+        const tag = document.getElementById('hf_tag').value.trim();
+        const khila = document.getElementById('hf_khila').value.trim();
+        const incoming = document.getElementById('hf_incoming').value;
+        const location = document.getElementById('hf_location').value;
+        const status = document.getElementById('hf_status').value;
+        const lactation = parseInt(document.getElementById('hf_lactation').value) || 0;
+        if (!tag || !khila || !incoming || !location || !status) {
+          showModal('⚠️ Error', 'Please fill all fields for adding buffalo.');
+          return;
+        }
+        const animals = await DB.get('animals', []);
+        animals.push({
+          id: 'A' + Date.now(),
+          tagNo: tag,
+          khilaNo: khila,
+          incomingDate: incoming,
+          location: location,
+          status: status,
+          lactationDays: lactation,
+          servicedCycle: 0,
+          faliDate: null,
+          doctorDate: null,
+          returnFlag: false,
+          outgoingDate: null,
+          soldAmount: 0,
+          kasaiName: ''
+        });
+        await DB.set('animals', animals);
+        showModal('✅ Entry', 'Buffalo added successfully!');
+        clearHerdForm();
+        await refreshAll();
+      } else if (action === 'fali') {
+        const tag = document.getElementById('hf_tag_fali').value.trim();
+        const khila = document.getElementById('hf_khila_fali').value.trim();
+        const faliDate = document.getElementById('hf_fali').value;
+        const bull = document.getElementById('hf_bull').value.trim();
+        const shed = document.getElementById('hf_shed').value;
+        if (!tag || !faliDate || !shed) {
+          showModal('⚠️ Error', 'Tag, Fali Date and Shed required.');
+          return;
+        }
+        const animals = await DB.get('animals', []);
+        const idx = animals.findIndex(a => a.tagNo === tag);
+        if (idx === -1) { showModal('⚠️ Error', 'Animal not found.'); return; }
+        animals[idx].faliDate = faliDate;
+        animals[idx].doctorDate = addDays(faliDate, 55);
+        animals[idx].status = 'Pregnant';
+        animals[idx].servicedCycle = (animals[idx].servicedCycle || 0) + 1;
+        animals[idx].location = shed;
+        if (bull) animals[idx].bull = bull;
+        // check for re-servicing
+        if (animals[idx].returnFlag) animals[idx].returnFlag = false;
+        await DB.set('animals', animals);
+        showModal('✅ Entry', `FALI logged for ${tag}, Service #${animals[idx].servicedCycle}`);
+        clearHerdForm();
+        await refreshAll();
+      } else if (action === 'tajiIn') {
+        const tag = document.getElementById('hf_tag_taji').value.trim();
+        const incoming = document.getElementById('hf_incoming_taji').value;
+        const palak = document.getElementById('hf_source_taji').value;
+        if (!tag || !incoming || !palak) {
+          showModal('⚠️ Error', 'Fill all fields.');
+          return;
+        }
+        // store in taji store
+        const tajiEntries = await DB.get('taji', []);
+        tajiEntries.push({
+          id: 'T' + Date.now(),
+          tagNo: tag,
+          incomingDate: incoming,
+          caretakerSource: palak,
+          rearingDays: 0,
+          billAmount: 0
+        });
+        await DB.set('taji', tajiEntries);
+        // update animal type
+        const animals = await DB.get('animals', []);
+        const idx = animals.findIndex(a => a.tagNo === tag);
+        if (idx !== -1) {
+          animals[idx].type = 'TAJI';
+          animals[idx].incomingDate = incoming;
+          animals[idx].location = palak;
+          await DB.set('animals', animals);
+        }
+        showModal('✅ Entry', `TAJI Inward recorded for ${tag}`);
+        clearHerdForm();
+        await refreshAll();
+      } else if (action === 'bakdiOut') {
+        const tag = document.getElementById('hf_tag_bakdi').value.trim();
+        const outgoing = document.getElementById('hf_outgoing_bakdi').value;
+        const target = document.getElementById('hf_target_bakdi').value;
+        if (!tag || !outgoing || !target) {
+          showModal('⚠️ Error', 'Fill all fields.');
+          return;
+        }
+        const animals = await DB.get('animals', []);
+        const idx = animals.findIndex(a => a.tagNo === tag);
+        if (idx === -1) { showModal('⚠️ Error', 'Animal not found.'); return; }
+        const a = animals[idx];
+        const faliDate = a.faliDate;
+        const daysPreg = faliDate ? daysBetween(faliDate, outgoing) : 0;
+        const fromShed = a.location;
+        // save to bakdi store
+        const bakdiEntries = await DB.get('bakdi', []);
+        bakdiEntries.push({
+          id: 'B' + Date.now(),
+          tagNo: tag,
+          outgoingDate: outgoing,
+          targetCaretaker: target,
+          faliDate: faliDate,
+          daysPregnant: daysPreg,
+          fromShed: fromShed
+        });
+        await DB.set('bakdi', bakdiEntries);
+        // update animal outward type
+        a.outwardType = 'BAKDI';
+        a.outDate = outgoing;
+        a.location = target;
+        await DB.set('animals', animals);
+        showModal('✅ Entry', `BAKDI Out recorded for ${tag}`);
+        clearHerdForm();
+        await refreshAll();
+      } else if (action === 'slaughter') {
+        const tag = document.getElementById('hf_tag_slaughter').value.trim();
+        const outgoing = document.getElementById('hf_outgoing_slaughter').value;
+        const sold = parseFloat(document.getElementById('hf_sold').value) || 0;
+        const kasai = document.getElementById('hf_kasai').value.trim();
+        if (!tag || !outgoing || sold <= 0) {
+          showModal('⚠️ Error', 'Tag, Outgoing Date and Sold Amount required.');
+          return;
+        }
+        const slaughterEntries = await DB.get('slaughter', []);
+        slaughterEntries.push({
+          id: 'S' + Date.now(),
+          tagNo: tag,
+          outgoingDate: outgoing,
+          soldAmount: sold,
+          kasaiName: kasai || ''
+        });
+        await DB.set('slaughter', slaughterEntries);
+        // update animal status
+        const animals = await DB.get('animals', []);
+        const idx = animals.findIndex(a => a.tagNo === tag);
+        if (idx !== -1) {
+          animals[idx].status = 'Slaughtered';
+          animals[idx].outDate = outgoing;
+          animals[idx].soldAmount = sold;
+          animals[idx].kasaiName = kasai || '';
+          await DB.set('animals', animals);
+        }
+        showModal('✅ Entry', `Slaughter recorded for ${tag}`);
+        clearHerdForm();
+        await refreshAll();
+      } else if (action === 'dead') {
+        const tag = document.getElementById('hf_tag_dead').value.trim();
+        const deathDate = document.getElementById('hf_death_date').value;
+        const location = document.getElementById('hf_dead_location').value;
+        if (!tag || !deathDate || !location) {
+          showModal('⚠️ Error', 'Fill all fields.');
+          return;
+        }
+        const deadEntries = await DB.get('dead', []);
+        deadEntries.push({
+          id: 'D' + Date.now(),
+          tagNo: tag,
+          outgoingDate: deathDate,
+          location: location
+        });
+        await DB.set('dead', deadEntries);
+        // update animal
+        const animals = await DB.get('animals', []);
+        const idx = animals.findIndex(a => a.tagNo === tag);
+        if (idx !== -1) {
+          animals[idx].status = 'Dead';
+          animals[idx].outDate = deathDate;
+          animals[idx].deathLocation = location;
+          await DB.set('animals', animals);
+        }
+        showModal('✅ Entry', `Dead record saved for ${tag}`);
+        clearHerdForm();
+        await refreshAll();
+      } else if (action === 'kori') {
+        const broker = document.getElementById('hf_broker').value.trim();
+        const total = parseFloat(document.getElementById('hf_total').value) || 0;
+        const count = parseInt(document.getElementById('hf_count').value) || 0;
+        const date = document.getElementById('hf_date').value;
+        if (!broker || total <= 0 || count <= 0 || !date) {
+          showModal('⚠️ Error', 'Fill all fields.');
+          return;
+        }
+        const avg = total / count;
+        const koriEntries = await DB.get('kori', []);
+        koriEntries.push({
+          id: 'K' + Date.now(),
+          brokerName: broker,
+          totalBillAmount: total,
+          numberOfAnimals: count,
+          purchaseDate: date,
+          avgPerKori: avg
+        });
+        await DB.set('kori', koriEntries);
+        showModal('✅ Entry', `KORI entry saved: ${count} animals, avg ₹${avg.toFixed(2)}`);
+        clearHerdForm();
+        await refreshAll();
+      } else if (action === 'payment') {
+        const vendor = document.getElementById('hf_vendor').value;
+        const amount = parseFloat(document.getElementById('hf_paid').value) || 0;
+        const date = document.getElementById('hf_date').value;
+        const name = document.getElementById('hf_vname').value.trim();
+        if (!vendor || amount <= 0 || !date || !name) {
+          showModal('⚠️ Error', 'Fill all fields.');
+          return;
+        }
+        const vendorPayments = await DB.get('vendorPayments', []);
+        vendorPayments.push({
+          id: 'VP' + Date.now(),
+          type: vendor,
+          name: name,
+          amount: amount,
+          date: date
+        });
+        await DB.set('vendorPayments', vendorPayments);
+        showModal('✅ Entry', `Payment of ₹${amount} recorded for ${vendor} (${name})`);
+        clearHerdForm();
+        await refreshAll();
+      }
+    };
+
+    window.clearHerdForm = function() {
+      document.querySelectorAll('#herdDynamicFields input, #herdDynamicFields select').forEach(el => {
+        if (el.type === 'date') el.value = '';
+        else if (el.tagName === 'SELECT') el.selectedIndex = 0;
+        else el.value = '';
+      });
+    };
+
+    function addDays(dateStr, days) {
+      const d = new Date(dateStr);
+      d.setDate(d.getDate() + days);
+      return d.toISOString().split('T')[0];
+    }
+
+    function daysBetween(a, b) {
+      if (!a || !b) return 0;
+      return Math.max(0, Math.floor((new Date(b) - new Date(a)) / 86400000));
+    }
+
+    // --- Herd refresh ---
+    async function refreshHerd() {
+      const panel = document.getElementById('panel-herd');
+      if (!panel) return;
+      const animals = await DB.get('animals', []);
+      const total = animals.length;
+      const shedA = animals.filter(a => a.location === 'Shed A' || a.location === 'YARD A');
+      const shedB = animals.filter(a => a.location === 'Shed B' || a.location === 'YARD B');
+      const tosif = animals.filter(a => a.location === 'Tosif');
+      const noora = animals.filter(a => a.location === 'Noora');
+      const taji = await DB.get('taji', []);
+      const kori = await DB.get('kori', []);
+      const bakdi = await DB.get('bakdi', []);
+      const pregnant7 = animals.filter(a => a.status === 'Pregnant' && a.faliDate && (new Date() - new Date(a
+        .faliDate)) > 7 * 30 * 24 * 60 * 60 * 1000);
+      const repeatBreeder = animals.filter(a => (a.servicedCycle || 0) > 3);
+      const toService = animals.filter(a => {
+        const incoming = new Date(a.incomingDate);
+        const days = (new Date() - incoming) / (24 * 60 * 60 * 1000);
+        if (a.status === 'KHALI' && days > 60) return true;
+        if (a.status === 'KHALI' && a.doctorDate) {
+          const dd = new Date(a.doctorDate);
+          if ((new Date() - dd) / (24 * 60 * 60 * 1000) > 30) return true;
+        }
+        return false;
+      });
+      const diags = [
+        { id: 'total', label: 'TOTAL ANIMALS', desc: 'Shed A+B+Yards+Noora+Tosif', icon: 'fa-cow', val: total,
+          color: '' },
+        { id: 'shedA', label: 'Shed A Capacity', desc: 'Shed A + YARD A', icon: 'fa-home', val: shedA.length,
+          color: '' },
+        { id: 'shedB', label: 'Shed B Capacity', desc: 'Shed B + YARD B', icon: 'fa-home', val: shedB.length,
+          color: '' },
+        { id: 'tosif', label: 'Tosif No of Animals', desc: 'Active with Tosif', icon: 'fa-user-tie',
+          val: tosif.length, color: '' },
+        { id: 'noora', label: 'NOORA No of Animals', desc: 'Active with Noora', icon: 'fa-user-md',
+          val: noora.length, color: '' },
+        { id: 'taji', label: 'TAJI Animals Came', desc: 'Dynamic inward', icon: 'fa-arrow-right',
+          val: taji.length, color: '' },
+        { id: 'kori', label: 'KORI Animals Came', desc: 'Dynamic inward', icon: 'fa-exchange-alt',
+          val: kori.length, color: '' },
+        { id: 'bakdi', label: 'BAKDI Gone', desc: 'Outward departures', icon: 'fa-arrow-left',
+          val: bakdi.length, color: '' },
+        { id: 'pregnant7', label: '⚠ Pregnant >7 Months', desc: 'Alert diagnostic', icon: 'fa-baby',
+          val: pregnant7.length, color: 'text-red' },
+        { id: 'repeatBreeder', label: '⚠ Repeat Breeder', desc: 'Service cycle >3', icon: 'fa-repeat',
+          val: repeatBreeder.length, color: 'text-orange' },
+        { id: 'toService', label: '⚠ To Be Serviced', desc: '>60d / 30d KHALI', icon: 'fa-clock',
+          val: toService.length, color: 'text-purple' },
+        { id: 'doctor', label: 'DOCTOR CARD', desc: '55d post-Fali', icon: 'fa-stethoscope',
+          val: 0, color: 'text-blue' }
+      ];
+      panel.innerHTML = `
+        <div class="section-title"><i class="fas fa-paw"></i> Herd Book <small>· tap diagnostics</small></div>
+        <div class="card-grid-2" id="herdDiagnosticGrid">
+          ${diags.map(d => `
+            <div class="touch-card" onclick="showHerdDetail('${d.id}')" style="${d.color ? 'border-color:#fca5a5;' : ''}">
+              <i class="fas ${d.icon}"></i>
+              <div class="info"><div class="title">${d.label}</div><div class="desc">${d.desc}</div></div>
+              <div class="amount ${d.color}">${d.val}</div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="section-title" style="margin-top:8px;"><i class="fas fa-plus-circle"></i> Quick Entry</div>
+        <div class="form-grid" id="herdForm">
+          <label>Action <select id="herdAction" onchange="toggleHerdForm()">
+            <option value="addBuffalo">ADD Buffalo</option>
+            <option value="fali">FALI Breeding</option>
+            <option value="tajiIn">TAJI Inwards</option>
+            <option value="bakdiOut">BAKDI Outwards</option>
+            <option value="slaughter">Slaughter</option>
+            <option value="dead">DEAD Record</option>
+            <option value="kori">KORI Entry</option>
+            <option value="payment">Vendor Payment</option>
+          </select></label>
+          <label class="full" id="herdDynamicFields"></label>
+          <div class="full" style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn" onclick="submitHerdEntry()"><i class="fas fa-save"></i> Submit</button>
+            <button class="btn btn-outline" onclick="clearHerdForm()">Clear</button>
+          </div>
+        </div>
+        <div class="section-title" style="margin-top:8px;"><i class="fas fa-user-md"></i> Palak's Bill Summary</div>
+        <div class="card-grid-2" id="palakSummary"></div>
+        <div class="section-title" style="margin-top:8px;"><i class="fas fa-list"></i> Herd Register</div>
+        <div style="margin-bottom:12px;">
+          <input id="herdSearch" placeholder="🔍 Search by Tag, Khila, Location..." style="width:100%;background:var(--bg-input);border:1px solid var(--border-color);border-radius:30px;padding:10px 18px;color:var(--text-primary);font-size:0.85rem;" oninput="filterHerdTable()" />
+        </div>
+        <div class="table-wrap mini-scroll"><table><thead><tr><th>Tag</th><th>Khila</th><th>Location</th><th>Status</th><th>Fali</th><th>Serv</th><th>Return</th><th style="width:50px;">Del</th></tr></thead><tbody id="herdTableBody">
+          ${animals.map((a, idx) => `
+            <tr>
+              <td><strong>${a.tagNo||'—'}</strong></td>
+              <td>${a.khilaNo||'—'}</td>
+              <td>${a.location||'—'}</td>
+              <td><span class="status-badge ${a.status==='Pregnant'?'green':a.status==='KHALI'?'orange':a.status==='FALI'?'blue':a.status==='Slaughtered'?'red':'gray'}">${a.status||'—'}</span></td>
+              <td>${a.faliDate||'—'}</td>
+              <td>${a.servicedCycle||0}</td>
+              <td>${a.returnFlag ? '✅ Return' : '—'}</td>
+              <td><button class="delete-btn" onclick="deleteHerdEntry(${idx})" title="Delete"><i class="fas fa-trash"></i></button></td>
+            </tr>
+          `).join('')}
+        </tbody></table></div>
+      `;
+      const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+        benchmarkProd: 192, benchmarkFeed: 200 });
+      const noora2 = animals.filter(a => a.location === 'Noora');
+      const tosif2 = animals.filter(a => a.location === 'Tosif');
+      const palak = document.getElementById('palakSummary');
+      if (palak) {
+        palak.innerHTML = `
+          <div class="card-slim" onclick="showModal('Noora Details','Noora Animals: ${noora2.length}<br>Rate: ₹${config.nooraRate}/month<br>Total: ₹${(noora2.length * config.nooraRate).toFixed(2)}')">
+            <div class="label"><i class="fas fa-user-md"></i><span>Noora</span></div>
+            <div class="value">${noora2.length} <span class="sub">animals</span></div>
+          </div>
+          <div class="card-slim" onclick="showModal('Tosif Details','Tosif Animals: ${tosif2.length}<br>Rate: ₹${config.tosifRate}/month<br>Total: ₹${(tosif2.length * config.tosifRate).toFixed(2)}')">
+            <div class="label"><i class="fas fa-user-tie"></i><span>Tosif</span></div>
+            <div class="value">${tosif2.length} <span class="sub">animals</span></div>
+          </div>
+        `;
+      }
+      toggleHerdForm();
+    }
+
+    // ================================================================
+    // STOCK MODULE (real data)
+    // ================================================================
+    window.toggleStockForm = function() {
+      const container = document.getElementById('stockDynamicFields');
+      if (!container) return;
+      const action = document.getElementById('stockAction')?.value || 'purchase';
+      let html = '';
+      if (action === 'purchase') {
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+          <label>Broker <input id="sf_broker"/></label>
+          <label>Item Name <input id="sf_goods"/></label>
+          <label>Date <input id="sf_date" type="date"/></label>
+          <label>Rate (₹/kg) <input id="sf_rate" type="number" step="0.01"/></label>
+          <label>Rate Type <select id="sf_rate_type"><option>Delivery</option><option>X-Factory</option></select></label>
+          <label>Freight ₹ <input id="sf_freight" type="number" step="0.01"/></label>
+          <label>Weight (kg) <input id="sf_weight" type="number" step="0.01"/></label>
+          <label>Bags <input id="sf_bags" type="number"/></label>
+          <label class="full" style="color:var(--text-muted);">Bag size, Freight/kg, Total bill will be auto-calculated</label>
+        </div>`;
+      } else if (action === 'consume') {
+        const godown = DB.get('godown', []);
+        const options = godown.map(g => `<option value="${g.goodsName}">${g.goodsName}</option>`).join('');
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+          <label>Goods Name <select id="sf_consume_goods">${options}</select></label>
+          <label>Bags Consumed <input id="sf_consume_bags" type="number" step="0.1"/></label>
+          <label class="full" style="color:var(--text-muted);">Date will be auto-set to today. Feed in kgs will be auto-calculated.</label>
+        </div>`;
+      } else if (action === 'godown') {
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+          <label>Item Name <input id="sf_init_goods"/></label>
+          <label>Bags <input id="sf_init_bags" type="number"/></label>
+          <label class="full" style="color:var(--text-muted);">This sets initial stock without financial impact.</label>
+        </div>`;
+      }
+      container.innerHTML = html;
+    };
+
+    window.submitStockEntry = async function() {
+      const action = document.getElementById('stockAction').value;
+      if (action === 'purchase') {
+        const broker = document.getElementById('sf_broker').value.trim();
+        const goods = document.getElementById('sf_goods').value.trim();
+        const date = document.getElementById('sf_date').value;
+        const rate = parseFloat(document.getElementById('sf_rate').value) || 0;
+        const rateType = document.getElementById('sf_rate_type').value;
+        const freight = parseFloat(document.getElementById('sf_freight').value) || 0;
+        const weight = parseFloat(document.getElementById('sf_weight').value) || 0;
+        const bags = parseInt(document.getElementById('sf_bags').value) || 0;
+        if (!broker || !goods || !date || !rate || !weight || !bags) {
+          showModal('⚠️ Error', 'Fill all fields.');
+          return;
+        }
+        const bagSize = weight / bags;
+        const freightPerKg = weight > 0 ? freight / weight : 0;
+        const goodsBillAmount = weight * rate + freight;
+        const purchase = {
+          id: 'P' + Date.now(),
+          brokerName: broker,
+          goodsName: goods,
+          dateOfDelivery: date,
+          bagsPurchased: bags,
+          totalWeight: weight,
+          rateType: rateType,
+          totalFreight: freight,
+          bagSize: bagSize,
+          freightPerKg: freightPerKg,
+          goodsBillAmount: goodsBillAmount
+        };
+        const purchases = await DB.get('feedPurchases', []);
+        purchases.push(purchase);
+        await DB.set('feedPurchases', purchases);
+        // update godown
+        const godown = await DB.get('godown', []);
+        const existing = godown.find(g => g.goodsName === goods);
+        if (existing) {
+          existing.bagsInStock += bags;
+          existing.bagSize = bagSize;
+          existing.rate = rate; // keep track
+        } else {
+          godown.push({ goodsName: goods, bagsInStock: bags, bagSize: bagSize, rate: rate });
+        }
+        await DB.set('godown', godown);
+        showModal('✅ Entry', `Purchase of ${goods} recorded. Stock updated.`);
+        clearStockForm();
+        await refreshAll();
+      } else if (action === 'consume') {
+        const goods = document.getElementById('sf_consume_goods').value;
+        const bags = parseFloat(document.getElementById('sf_consume_bags').value) || 0;
+        if (!goods || bags <= 0) {
+          showModal('⚠️ Error', 'Select goods and enter bags consumed.');
+          return;
+        }
+        const godown = await DB.get('godown', []);
+        const stockItem = godown.find(g => g.goodsName === goods);
+        if (!stockItem) { showModal('⚠️ Error', 'Goods not found in godown.'); return; }
+        if (stockItem.bagsInStock < bags) { showModal('⚠️ Error', 'Not enough stock.'); return; }
+        const bagSize = stockItem.bagSize || 0;
+        const kgs = bags * bagSize;
+        const consumption = {
+          id: 'C' + Date.now(),
+          date: new Date().toISOString().split('T')[0],
+          goodsName: goods,
+          bagsConsumed: bags,
+          bagSize: bagSize,
+          kgsConsumed: kgs
+        };
+        const consumptions = await DB.get('feedConsumption', []);
+        consumptions.push(consumption);
+        await DB.set('feedConsumption', consumptions);
+        // deduct stock
+        stockItem.bagsInStock -= bags;
+        await DB.set('godown', godown);
+        showModal('✅ Entry', `Consumption of ${bags} bags of ${goods} logged.`);
+        clearStockForm();
+        await refreshAll();
+      } else if (action === 'godown') {
+        const goods = document.getElementById('sf_init_goods').value.trim();
+        const bags = parseInt(document.getElementById('sf_init_bags').value) || 0;
+        if (!goods || bags <= 0) {
+          showModal('⚠️ Error', 'Enter goods name and bags.');
+          return;
+        }
+        const godown = await DB.get('godown', []);
+        const existing = godown.find(g => g.goodsName === goods);
+        if (existing) {
+          existing.bagsInStock += bags;
+        } else {
+          godown.push({ goodsName: goods, bagsInStock: bags, bagSize: 50, rate: 0 });
+        }
+        await DB.set('godown', godown);
+        showModal('✅ Entry', `Initial stock for ${goods} set.`);
+        clearStockForm();
+        await refreshAll();
+      }
+    };
+
+    window.clearStockForm = function() {
+      document.querySelectorAll('#stockDynamicFields input, #stockDynamicFields select').forEach(el => {
+        if (el.type === 'date') el.value = '';
+        else if (el.tagName === 'SELECT') el.selectedIndex = 0;
+        else el.value = '';
+      });
+    };
+
+    window.deleteGodownItem = function(idx) {
+      if (!confirm('Delete this godown item?')) return;
+      const godown = DB.get('godown', []);
+      godown.splice(idx, 1);
+      DB.set('godown', godown);
+      refreshAll();
+    };
+
+    window.deleteStockEntry = function(idx) {
+      if (!confirm('Delete this purchase record?')) return;
+      const purchases = DB.get('feedPurchases', []);
+      purchases.splice(idx, 1);
+      DB.set('feedPurchases', purchases);
+      refreshAll();
+    };
+
+    async function refreshStock() {
+      const panel = document.getElementById('panel-stock');
+      if (!panel) return;
+      const godown = await DB.get('godown', []);
+      const feedPurchases = await DB.get('feedPurchases', []);
+      const feedConsumption = await DB.get('feedConsumption', []);
+      const cost = feedPurchases.reduce((s, d) => s + (d.goodsBillAmount || 0), 0);
+      const totalValue = godown.reduce((s, g) => s + (g.bagsInStock || 0) * 1000, 0);
+      panel.innerHTML = `
+        <div class="section-title"><i class="fas fa-warehouse"></i> Stock Book <small>· tap cards</small></div>
+        <div class="card-grid-2" id="stockGrid">
+          <div class="card-slim"><div class="label"><i class="fas fa-coins"></i><span>Godown Assets</span></div><div class="value">₹${totalValue.toFixed(2)}</div></div>
+          <div class="card-slim"><div class="label"><i class="fas fa-utensils"></i><span>Total Feed Consumed / Day</span></div><div class="value">${feedConsumption.reduce((s,d) => s + (d.bagsConsumed||0)*(d.bagSize||50),0).toFixed(1)} kg</div></div>
+          <div class="card-slim"><div class="label"><i class="fas fa-fire"></i><span>Cost of Daily Feed</span></div><div class="value">₹${cost.toFixed(2)}</div></div>
+          <div class="card-slim"><div class="label"><i class="fas fa-table"></i><span>Master Godown</span></div><div class="value">${godown.length} items</div></div>
+        </div>
+        <div id="lowStockAlert" class="alert-banner" style="${godown.some(g=>g.bagsInStock<20)?'display:flex;':'display:none;'}">
+          ${godown.filter(g=>g.bagsInStock<20).map(g => `<i class="fas fa-exclamation-triangle"></i><span class="msg">⚠️ Low Stock: ${g.goodsName} (${g.bagsInStock} bags)</span>`).join('')}
+        </div>
+        <div class="section-title" style="margin-top:8px;"><i class="fas fa-plus-circle"></i> Stock Entries</div>
+        <div class="form-grid">
+          <label>Action <select id="stockAction" onchange="toggleStockForm()">
+            <option value="purchase">Purchase (DANA)</option>
+            <option value="consume">Feed Consumed</option>
+            <option value="godown">Init Godown</option>
+          </select></label>
+          <label class="full" id="stockDynamicFields"></label>
+          <div class="full" style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn" onclick="submitStockEntry()"><i class="fas fa-save"></i> Submit</button>
+            <button class="btn btn-outline" onclick="clearStockForm()">Clear</button>
+          </div>
+        </div>
+        <div class="section-title" style="margin-top:8px;"><i class="fas fa-warehouse"></i> Godown List</div>
+        <div class="table-wrap mini-scroll"><table><thead><tr><th>Goods</th><th>Bags</th><th>Bag Size</th><th>Stock (kg)</th><th style="width:50px;">Del</th></tr></thead><tbody id="godownTableBody">
+          ${godown.map((g, idx) => `
+            <tr><td>${g.goodsName||'—'}</td><td>${g.bagsInStock||0}</td><td>${g.bagSize||0} kg</td><td>${((g.bagsInStock||0)*(g.bagSize||0)).toFixed(1)} kg</td><td><button class="delete-btn" onclick="deleteGodownItem(${idx})"><i class="fas fa-trash"></i></button></td></tr>
+          `).join('')}
+        </tbody></table></div>
+        <div class="section-title" style="margin-top:8px;"><i class="fas fa-history"></i> Purchase History</div>
+        <div class="table-wrap mini-scroll"><table><thead><tr><th>Broker</th><th>Goods</th><th>Bags</th><th>Wt</th><th>Rate</th><th>Freight</th><th>Bill</th><th style="width:50px;">Del</th></tr></thead><tbody id="stockTableBody">
+          ${feedPurchases.map((d, idx) => `
+            <tr><td>${d.brokerName||'—'}</td><td>${d.goodsName||'—'}</td><td>${d.bagsPurchased||0}</td><td>${d.totalWeight||0}</td><td>${d.rateType||'—'}</td><td>${d.totalFreight||0}</td><td>₹${(d.goodsBillAmount||0).toFixed(2)}</td><td><button class="delete-btn" onclick="deleteStockEntry(${idx})"><i class="fas fa-trash"></i></button></td></tr>
+          `).join('')}
+        </tbody></table></div>
+        <div class="section-title" style="margin-top:8px;"><i class="fas fa-utensils"></i> Feed Consumption History</div>
+        <div class="table-wrap mini-scroll"><table><thead><tr><th>Date</th><th>Goods</th><th>Bags</th><th>kg</th></tr></thead><tbody id="feedConsumptionTable">
+          ${feedConsumption.map(d => `
+            <tr><td>${d.date||'—'}</td><td>${d.goodsName||'—'}</td><td>${d.bagsConsumed||0}</td><td>${(d.bagsConsumed||0)*(d.bagSize||50)}</td></tr>
+          `).join('')}
+        </tbody></table></div>
+      `;
+      toggleStockForm();
+    }
+
+    // ================================================================
+    // MILK MODULE (real data)
+    // ================================================================
+    window.toggleMilkForm = function() {
+      const container = document.getElementById('milkDynamicFields');
+      if (!container) return;
+      const action = document.getElementById('milkAction')?.value || 'customer';
+      let html = '';
+      if (action === 'customer') {
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+          <label>Name <input id="mf_name"/></label>
+          <label>Rate ₹ <input id="mf_rate" type="number" step="0.01"/></label>
+          <label>Cycle <select id="mf_cycle"><option>Weekly</option><option>10 Days</option><option>Monthly</option></select></label>
+          <label>Fixed Vol (L) <input id="mf_volume" type="number" step="0.1"/></label>
+          <label class="full">Old Balance ₹ <input id="mf_balance" type="number" step="0.01" value="0"/></label>
+        </div>`;
+      } else if (action === 'production') {
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;width:100%;">
+          <label>SA Morn <input id="mf_am" type="number" step="0.1"/></label>
+          <label>SA Eve <input id="mf_ae" type="number" step="0.1"/></label>
+          <label>SB Morn <input id="mf_bm" type="number" step="0.1"/></label>
+          <label>SB Eve <input id="mf_be" type="number" step="0.1"/></label>
+          <label class="full">Date <input id="mf_date" type="date"/></label>
+        </div>`;
+      } else if (action === 'override') {
+        const customers = DB.get('customers', []);
+        const options = customers.map(c => `<option value="${c.customerName}">${c.customerName}</option>`).join('');
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+          <label>Customer <select id="mf_override_customer">${options}</select></label>
+          <label>Date <input id="mf_override_date" type="date"/></label>
+          <label>Morning Vol <input id="mf_override_morn" type="number" step="0.1"/></label>
+          <label>Evening Vol <input id="mf_override_eve" type="number" step="0.1"/></label>
+          <label class="full">Rate (₹/L) <input id="mf_override_rate" type="number" step="0.01" placeholder="Override rate"/></label>
+        </div>`;
+      } else if (action === 'payment') {
+        const customers = DB.get('customers', []);
+        const options = customers.map(c => `<option value="${c.customerName}">${c.customerName}</option>`).join('');
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+          <label>Customer <select id="mf_pay_customer">${options}</select></label>
+          <label>Amount ₹ <input id="mf_pay_amount" type="number" step="0.01"/></label>
+          <label class="full">Date <input id="mf_pay_date" type="date"/></label>
+        </div>`;
+      } else if (action === 'whatsapp') {
+        const customers = DB.get('customers', []);
+        const options = customers.map(c => `<option value="${c.customerName}">${c.customerName}</option>`).join('');
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+          <label>Customer <select id="mf_whatsapp_customer">${options}</select></label>
+          <label>Cycle <select id="mf_whatsapp_cycle"><option>Weekly</option><option>10 Days</option><option>Monthly</option></select></label>
+          <div class="full"><button class="btn btn-green" onclick="generateWhatsApp()"><i class="fab fa-whatsapp"></i> Generate</button></div>
+        </div>`;
+      }
+      container.innerHTML = html;
+    };
+
+    window.submitMilkEntry = async function() {
+      const action = document.getElementById('milkAction').value;
+      if (action === 'customer') {
+        const name = document.getElementById('mf_name').value.trim();
+        const rate = parseFloat(document.getElementById('mf_rate').value) || 0;
+        const cycle = document.getElementById('mf_cycle').value;
+        const volume = parseFloat(document.getElementById('mf_volume').value) || 0;
+        const balance = parseFloat(document.getElementById('mf_balance').value) || 0;
+        if (!name || rate <= 0) {
+          showModal('⚠️ Error', 'Name and Rate required.');
+          return;
+        }
+        const customers = await DB.get('customers', []);
+        customers.push({
+          id: 'C' + Date.now(),
+          customerName: name,
+          sellingRate: rate,
+          billingCycle: cycle,
+          fixedDailyVolume: volume,
+          startingOldBalance: balance,
+          outstandingBalance: balance
+        });
+        await DB.set('customers', customers);
+        showModal('✅ Entry', `Customer ${name} added.`);
+        clearMilkForm();
+        await refreshAll();
+      } else if (action === 'production') {
+        const date = document.getElementById('mf_date').value;
+        const am = parseFloat(document.getElementById('mf_am').value) || 0;
+        const ae = parseFloat(document.getElementById('mf_ae').value) || 0;
+        const bm = parseFloat(document.getElementById('mf_bm').value) || 0;
+        const be = parseFloat(document.getElementById('mf_be').value) || 0;
+        if (!date) { showModal('⚠️ Error', 'Date required.'); return; }
+        const production = await DB.get('milkProduction', []);
+        production.push({
+          id: 'MP' + Date.now(),
+          date: date,
+          shedAMorning: am,
+          shedAEvening: ae,
+          shedBMorning: bm,
+          shedBEvening: be
+        });
+        await DB.set('milkProduction', production);
+        showModal('✅ Entry', `Production logged for ${date}.`);
+        clearMilkForm();
+        await refreshAll();
+      } else if (action === 'override') {
+        const customer = document.getElementById('mf_override_customer').value;
+        const date = document.getElementById('mf_override_date').value;
+        const morn = parseFloat(document.getElementById('mf_override_morn').value) || 0;
+        const eve = parseFloat(document.getElementById('mf_override_eve').value) || 0;
+        const rate = parseFloat(document.getElementById('mf_override_rate').value) || 0;
+        if (!customer || !date) { showModal('⚠️ Error', 'Customer and date required.'); return; }
+        const overrides = await DB.get('milkOverrides', []);
+        overrides.push({
+          id: 'MO' + Date.now(),
+          customerName: customer,
+          date: date,
+          morningVolume: morn,
+          eveningVolume: eve,
+          rate: rate
+        });
+        await DB.set('milkOverrides', overrides);
+        showModal('✅ Entry', `Override saved for ${customer} on ${date}.`);
+        clearMilkForm();
+        await refreshAll();
+      } else if (action === 'payment') {
+        const customer = document.getElementById('mf_pay_customer').value;
+        const amount = parseFloat(document.getElementById('mf_pay_amount').value) || 0;
+        const date = document.getElementById('mf_pay_date').value;
+        if (!customer || amount <= 0 || !date) { showModal('⚠️ Error', 'Fill all fields.'); return; }
+        const payments = await DB.get('customerPayments', []);
+        payments.push({
+          id: 'CP' + Date.now(),
+          customerName: customer,
+          amountReceived: amount,
+          date: date
+        });
+        await DB.set('customerPayments', payments);
+        // update customer outstanding balance
+        const customers = await DB.get('customers', []);
+        const idx = customers.findIndex(c => c.customerName === customer);
+        if (idx !== -1) {
+          customers[idx].outstandingBalance = (customers[idx].outstandingBalance || 0) - amount;
+          await DB.set('customers', customers);
+        }
+        showModal('✅ Entry', `Payment of ₹${amount} received from ${customer}.`);
+        clearMilkForm();
+        await refreshAll();
+      } else if (action === 'whatsapp') {
+        generateWhatsApp();
+      }
+    };
+
+    window.clearMilkForm = function() {
+      document.querySelectorAll('#milkDynamicFields input, #milkDynamicFields select').forEach(el => {
+        if (el.type === 'date') el.value = '';
+        else if (el.tagName === 'SELECT') el.selectedIndex = 0;
+        else el.value = '';
+      });
+    };
+
+    window.deleteMilkCustomer = function(idx) {
+      if (!confirm('Delete this customer?')) return;
+      const customers = DB.get('customers', []);
+      customers.splice(idx, 1);
+      DB.set('customers', customers);
+      refreshAll();
+    };
+
+    window.generateWhatsApp = function() {
+      showModal('📲 WhatsApp', 'WhatsApp invoice generated (demo).');
+    };
+
+    async function refreshMilk() {
+      const panel = document.getElementById('panel-milk');
+      if (!panel) return;
+      const customers = await DB.get('customers', []);
+      const totalOutstanding = customers.reduce((s, c) => s + (c.outstandingBalance || 0), 0);
+      const totalMilk = await getTotalMilk();
+      const shedA = (await DB.get('milkProduction', [])).reduce((s, d) => s + (d.shedAMorning || 0) + (d.shedAEvening || 0),
+        0);
+      const shedB = (await DB.get('milkProduction', [])).reduce((s, d) => s + (d.shedBMorning || 0) + (d.shedBEvening || 0),
+        0);
+      const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+        benchmarkProd: 192, benchmarkFeed: 200 });
+      const active = await getActiveAnimals();
+      const avgPerAnimal = active.length ? (totalMilk / active.length) : 0;
+      const pct = config.benchmarkProd ? ((avgPerAnimal / config.benchmarkProd) * 100) : 0;
+
+      panel.innerHTML = `
+        <div class="section-title"><i class="fas fa-tint"></i> Milk Supply <small>· tap cards</small></div>
+        <div class="card-grid-2" id="milkGrid">
+          <div class="card-slim"><div class="label"><i class="fas fa-tachometer-alt"></i><span>Herd Total Production</span></div><div class="value">${totalMilk.toFixed(1)} L</div></div>
+          <div class="card-slim"><div class="label"><i class="fas fa-home"></i><span>Shed A Production</span></div><div class="value">${shedA.toFixed(1)} L</div></div>
+          <div class="card-slim"><div class="label"><i class="fas fa-home"></i><span>Shed B Production</span></div><div class="value">${shedB.toFixed(1)} L</div></div>
+          <div class="card-slim"><div class="label"><i class="fas fa-chart-line"></i><span>Avg Milk vs Benchmark</span></div><div class="value">${pct.toFixed(1)}%</div></div>
+          <div class="card-slim"><div class="label"><i class="fas fa-file-invoice"></i><span>Customers Total Bill</span></div><div class="value">₹${customers.reduce((s,c) => s + (c.fixedDailyVolume||0)*30*(c.sellingRate||0),0).toFixed(2)}</div></div>
+          <div class="card-slim"><div class="label"><i class="fas fa-hand-holding-usd"></i><span>Total Received</span></div><div class="value">₹${(await DB.get('customerPayments',[])).reduce((s,p) => s + (p.amountReceived||0),0).toFixed(2)}</div></div>
+          <div class="card-slim"><div class="label"><i class="fas fa-exclamation-triangle"></i><span>Total Outstanding</span></div><div class="value text-red">₹${totalOutstanding.toFixed(2)}</div></div>
+        </div>
+        <div class="section-title" style="margin-top:8px;"><i class="fas fa-plus-circle"></i> Milk Ops</div>
+        <div class="form-grid">
+          <label>Action <select id="milkAction" onchange="toggleMilkForm()">
+            <option value="customer">Add Customer</option>
+            <option value="production">Log Production</option>
+            <option value="override">Override Volume</option>
+            <option value="payment">Payment Received</option>
+            <option value="whatsapp">WhatsApp Bill</option>
+          </select></label>
+          <label class="full" id="milkDynamicFields"></label>
+          <div class="full" style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn" onclick="submitMilkEntry()"><i class="fas fa-save"></i> Submit</button>
+            <button class="btn btn-outline" onclick="clearMilkForm()">Clear</button>
+          </div>
+        </div>
+        <div class="table-wrap mini-scroll"><table><thead><tr><th>Customer</th><th>Rate</th><th>Cycle</th><th>Vol</th><th>Outstanding</th><th style="width:50px;">Del</th></tr></thead><tbody id="milkTableBody">
+          ${customers.map((c, idx) => `
+            <tr><td>${c.customerName||'—'}</td><td>₹${c.sellingRate||0}</td><td>${c.billingCycle||'Monthly'}</td><td>${c.fixedDailyVolume||0} L</td><td class="${(c.outstandingBalance||0)>0?'text-red':'text-green'}">₹${(c.outstandingBalance||0).toFixed(2)}</td><td><button class="delete-btn" onclick="deleteMilkCustomer(${idx})"><i class="fas fa-trash"></i></button></td></tr>
+          `).join('')}
+        </tbody></table></div>
+      `;
+      toggleMilkForm();
+    }
+
+    // ================================================================
+    // LABOUR MODULE (real data)
+    // ================================================================
+    window.toggleLabourForm = function() {
+      const container = document.getElementById('labourDynamicFields');
+      if (!container) return;
+      const action = document.getElementById('labourAction')?.value || 'add';
+      let html = '';
+      if (action === 'add') {
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+          <label>Worker Name <input id="lf_name"/></label>
+          <label>Monthly Pagar ₹ <input id="lf_pagar" type="number" step="0.01"/></label>
+          <label>Joining Date <input id="lf_joining" type="date"/></label>
+          <label>Leaving Date <input id="lf_leaving" type="date"/></label>
+          <label class="full">Old Advance (₹) <input id="lf_advance" type="number" step="0.01" value="0"/></label>
+        </div>`;
+      } else if (action === 'payment') {
+        const labour = DB.get('labour', []);
+        const options = labour.map(l => `<option value="${l.workerName}">${l.workerName}</option>`).join('');
+        html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+          <label>Worker <select id="lf_pay_name">${options}</select></label>
+          <label>Amount ₹ <input id="lf_pay_amount" type="number" step="0.01"/></label>
+          <label class="full">Date <input id="lf_pay_date" type="date"/></label>
+        </div>`;
+      }
+      container.innerHTML = html;
+    };
+
+    window.submitLabourEntry = async function() {
+      const action = document.getElementById('labourAction').value;
+      if (action === 'add') {
+        const name = document.getElementById('lf_name').value.trim();
+        const pagar = parseFloat(document.getElementById('lf_pagar').value) || 0;
+        const joining = document.getElementById('lf_joining').value;
+        const leaving = document.getElementById('lf_leaving').value || null;
+        const advance = parseFloat(document.getElementById('lf_advance').value) || 0;
+        if (!name || pagar <= 0 || !joining) {
+          showModal('⚠️ Error', 'Name, Pagar and Joining Date required.');
+          return;
+        }
+        const labour = await DB.get('labour', []);
+        labour.push({
+          id: 'L' + Date.now(),
+          workerName: name,
+          fixedPagar: pagar,
+          joiningDate: joining,
+          leavingDate: leaving,
+          startingAdvanceBalance: advance,
+          paidAmount: 0
+        });
+        await DB.set('labour', labour);
+        showModal('✅ Entry', `Worker ${name} added.`);
+        clearLabourForm();
+        await refreshAll();
+      } else if (action === 'payment') {
+        const name = document.getElementById('lf_pay_name').value;
+        const amount = parseFloat(document.getElementById('lf_pay_amount').value) || 0;
+        const date = document.getElementById('lf_pay_date').value;
+        if (!name || amount <= 0 || !date) {
+          showModal('⚠️ Error', 'Fill all fields.');
+          return;
+        }
+        const payments = await DB.get('labourPayments', []);
+        payments.push({
+          id: 'LP' + Date.now(),
+          workerName: name,
+          amount: amount,
+          date: date
+        });
+        await DB.set('labourPayments', payments);
+        // update worker paid amount
+        const labour = await DB.get('labour', []);
+        const idx = labour.findIndex(l => l.workerName === name);
+        if (idx !== -1) {
+          labour[idx].paidAmount = (labour[idx].paidAmount || 0) + amount;
+          await DB.set('labour', labour);
+        }
+        showModal('✅ Entry', `Payment of ₹${amount} recorded for ${name}.`);
+        clearLabourForm();
+        await refreshAll();
+      }
+    };
+
+    window.clearLabourForm = function() {
+      document.querySelectorAll('#labourDynamicFields input, #labourDynamicFields select').forEach(el => {
+        if (el.type === 'date') el.value = '';
+        else if (el.tagName === 'SELECT') el.selectedIndex = 0;
+        else el.value = '';
+      });
+    };
+
+    window.deleteLabourEntry = function(idx) {
+      if (!confirm('Delete this worker record?')) return;
+      const labour = DB.get('labour', []);
+      labour.splice(idx, 1);
+      DB.set('labour', labour);
+      refreshAll();
+    };
+
+    async function refreshLabour() {
+      const panel = document.getElementById('panel-labour');
+      if (!panel) return;
+      const labour = await DB.get('labour', []);
+      const totalPagar = labour.reduce((s, l) => s + (l.fixedPagar || 0), 0);
+      const avgPagar = labour.length ? (totalPagar / labour.length) : 0;
+      const activeAnimals = (await getActiveAnimals()).length;
+      const avgPagarAnimal = activeAnimals ? (totalPagar / activeAnimals) : 0;
+      panel.innerHTML = `
+        <div class="section-title"><i class="fas fa-users"></i> Labour Pagar <small>· tap cards</small></div>
+        <div class="card-grid-2" id="labourGrid">
+          <div class="card-slim"><div class="label"><i class="fas fa-wallet"></i><span>Total Pagar</span></div><div class="value">₹${totalPagar.toFixed(2)}</div></div>
+          <div class="card-slim"><div class="label"><i class="fas fa-chart-bar"></i><span>Avg Pagar / Month</span></div><div class="value">₹${avgPagar.toFixed(2)}</div></div>
+          <div class="card-slim"><div class="label"><i class="fas fa-cow"></i><span>Avg Pagar / Animal</span></div><div class="value">₹${avgPagarAnimal.toFixed(2)}</div></div>
+          <div class="card-slim"><div class="label"><i class="fas fa-users"></i><span>Total Workers</span></div><div class="value">${labour.length}</div></div>
+        </div>
+        <div class="section-title" style="margin-top:8px;"><i class="fas fa-plus-circle"></i> Labour Ops</div>
+        <div class="form-grid">
+          <label>Action <select id="labourAction" onchange="toggleLabourForm()">
+            <option value="add">ADD Labour</option>
+            <option value="payment">Payment Entry</option>
+          </select></label>
+          <label class="full" id="labourDynamicFields"></label>
+          <div class="full" style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn" onclick="submitLabourEntry()"><i class="fas fa-save"></i> Submit</button>
+            <button class="btn btn-outline" onclick="clearLabourForm()">Clear</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;">
+          <input id="labourSearch" placeholder="🔍 Search worker..." style="flex:1;background:var(--bg-input);border:1px solid var(--border-color);border-radius:30px;padding:8px 16px;color:var(--text-primary);font-size:0.85rem;min-width:80px;" oninput="searchLabour()" />
+          <button class="btn btn-sm btn-outline" onclick="searchLabour()"><i class="fas fa-search"></i></button>
+        </div>
+        <div class="section-title" style="margin-top:8px;"><i class="fas fa-users"></i> Worker Status</div>
+        <div class="table-wrap mini-scroll"><table><thead><tr><th>Worker</th><th>Pagar</th><th>Joined</th><th>Left</th><th>Days</th><th>Status</th><th>Adv/Bal</th><th style="width:50px;">Del</th></tr></thead><tbody id="labourTableBody">
+          ${labour.map((l, idx) => {
+            const days = l.joiningDate ? Math.floor((new Date() - new Date(l.joiningDate)) / (24 * 60 * 60 * 1000)) : 0;
+            const advance = (l.startingAdvanceBalance || 0) - (l.paidAmount || 0);
+            return `<tr><td><strong>${l.workerName||'—'}</strong></td><td>₹${l.fixedPagar||0}</td><td>${l.joiningDate||'—'}</td><td>${l.leavingDate||'—'}</td><td>${days}</td><td><span class="status-badge ${l.leavingDate?'red':'green'}">${l.leavingDate?'Left':'Active'}</span></td><td class="${advance>0?'text-orange':advance<0?'text-green':'text-muted'}">₹${advance.toFixed(2)}</td><td><button class="delete-btn" onclick="deleteLabourEntry(${idx})"><i class="fas fa-trash"></i></button></td></tr>`;
+          }).join('')}
+        </tbody></table></div>
+      `;
+      toggleLabourForm();
+    }
+
+    // ================================================================
+    // ACCOUNTS (read-only summary)
+    // ================================================================
+    async function refreshAccounts() {
+      const panel = document.getElementById('panel-accounts');
+      if (!panel) return;
+      const customers = await DB.get('customers', []);
+      const slaughter = await DB.get('slaughter', []);
+      const feedPurchases = await DB.get('feedPurchases', []);
+      const milkRevenue = customers.reduce((s, c) => s + (c.fixedDailyVolume || 0) * 30 * (c.sellingRate || 0), 0);
+      const livestockRevenue = slaughter.reduce((s, d) => s + (d.soldAmount || 0), 0);
+      const feedExp = feedPurchases.reduce((s, d) => s + (d.goodsBillAmount || 0), 0);
+      const caretaker = await getCaretakerTotal();
+      const transport = await getTransportTotal();
+      const labor = await getLabourTotal();
+      const medical = await getMedicineTotal();
+      const net = (milkRevenue + livestockRevenue) - (feedExp + caretaker + transport + labor + medical);
+
+      panel.innerHTML = `
+        <div class="section-title"><i class="fas fa-file-invoice-dollar"></i> Profit & Loss <small>· tap cards</small></div>
+        <div class="card-grid-2" id="plGrid">
+          ${[
+            {id:'milkRev', label:'Milk Revenue', val:'₹'+milkRevenue.toFixed(2), cls:'text-green'},
+            {id:'liveRev', label:'Livestock Sales', val:'₹'+livestockRevenue.toFixed(2), cls:'text-green'},
+            {id:'feedExp', label:'Feed Expenses', val:'₹'+feedExp.toFixed(2), cls:'text-red'},
+            {id:'caretaker', label:'Caretaker Liabilities', val:'₹'+caretaker.toFixed(2), cls:'text-red'},
+            {id:'transport', label:'Transportation', val:'₹'+transport.toFixed(2), cls:'text-red'},
+            {id:'labor', label:'Labor Expenses', val:'₹'+labor.toFixed(2), cls:'text-red'},
+            {id:'medical', label:'Medical Expenses', val:'₹'+medical.toFixed(2), cls:'text-red'},
+            {id:'net', label:'Net P&L', val:'₹'+net.toFixed(2), cls: net>=0?'text-green':'text-red'}
+          ].map(c => `
+            <div class="card-slim" onclick="showModal('${c.label}','${c.val}')"><div class="label"><i class="fas fa-arrow-${c.id==='net'?'right':''}"></i><span>${c.label}</span></div><div class="value ${c.cls}">${c.val}</div></div>
+          `).join('')}
+        </div>
+        <div class="section-title" style="margin-top:8px;"><i class="fas fa-list"></i> Expenses List</div>
+        <div class="table-wrap mini-scroll"><table><thead><tr><th>Category</th><th>Amount (₹)</th><th>Date</th></tr></thead><tbody id="expensesTableBody">
+          ${[
+            {category:'Feed', amount:feedExp},
+            {category:'Caretaker', amount:caretaker},
+            {category:'Transport', amount:transport},
+            {category:'Labor', amount:labor},
+            {category:'Medical', amount:medical}
+          ].map(e => `<tr><td>${e.category}</td><td>₹${e.amount.toFixed(2)}</td><td>${new Date().toISOString().split('T')[0]}</td></tr>`).join('')}
+        </tbody></table></div>
+        <div class="alert-banner"><i class="fas fa-info-circle"></i><span class="msg"><strong>Net = (Milk + Livestock) − (Feed + Caretaker + Transport + Labor + Medical)</strong></span></div>
+      `;
+    }
+
+    // ================================================================
+    // REPORTS (with Hard Reset button)
+    // ================================================================
+    window.setReportPeriod = function(p) {
+      document.getElementById('reportPeriodLabel').textContent = p.charAt(0).toUpperCase() + p.slice(1);
+      refreshReports();
+    };
+
+    window.hardReset = async function() {
+      if (!confirm('⚠️ This will DELETE ALL DATA and restore default demo records. Are you sure?')) return;
+      if (!confirm('Really? This action cannot be undone!')) return;
+      try {
+        await DB.hardReset();
+        await refreshAll();
+        showModal('✅ Reset', 'All data has been reset to default demo state.');
+      } catch (e) {
+        showModal('❌ Error', 'Reset failed: ' + e.message);
+      }
+    };
+
+    async function refreshReports() {
+      const panel = document.getElementById('panel-reports');
+      if (!panel) return;
+      const customers = await DB.get('customers', []);
+      const totalOutstanding = customers.reduce((s, c) => s + (c.outstandingBalance || 0), 0);
+      const danawalaPayments = await DB.get('danawalaPayments', []);
+      const bhaiswalBills = await DB.get('bhaiswalBills', []);
+      const medicineBills = await DB.get('medicineBills', []);
+      const payable = danawalaPayments.reduce((s, d) => s + (d.amountPaid || 0), 0) +
+        bhaiswalBills.reduce((s, d) => s + (d.amount || 0), 0) +
+        medicineBills.reduce((s, d) => s + (d.amount || 0), 0) +
+        await getCaretakerTotal() + await getTransportTotal() + await getLabourTotal();
+
+      panel.innerHTML = `
+        <div class="section-title"><i class="fas fa-chart-line"></i> Reports <small>· tap cards</small></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+          <button class="btn btn-sm btn-outline" onclick="setReportPeriod('daily')">Daily</button>
+          <button class="btn btn-sm btn-outline" onclick="setReportPeriod('weekly')">Weekly</button>
+          <button class="btn btn-sm btn-outline" onclick="setReportPeriod('monthly')">Monthly</button>
+          <button class="btn btn-sm btn-outline" onclick="setReportPeriod('yearly')">Yearly</button>
+          <span style="color:var(--text-muted);font-size:0.75rem;margin-left:4px;" id="reportPeriodLabel">Daily</span>
+          <button class="btn btn-sm btn-reset" onclick="hardReset()" style="margin-left:auto;"><i class="fas fa-undo-alt"></i> Hard Reset</button>
+        </div>
+        <div class="card-grid-2" id="reportGrid">
+          <div class="card-slim"><div class="label"><i class="fas fa-tint"></i><span>Production vs Benchmark</span></div><div class="value">${(await getTotalMilk()).toFixed(1)} L (avg ${((await getTotalMilk())/(await getActiveAnimals()).length||0).toFixed(1)})</div></div>
+          <div class="card-slim"><div class="label"><i class="fas fa-utensils"></i><span>Feed Conversion</span></div><div class="value">${((await DB.get('feedConsumption',[])).reduce((s,d)=>s+(d.bagsConsumed||0)*(d.bagSize||50),0)/(await getTotalMilk()||1)).toFixed(2)} kg/L</div></div>
+          <div class="card-slim"><div class="label"><i class="fas fa-user-friends"></i><span>Accounts Receivable</span></div><div class="value text-orange">₹${totalOutstanding.toFixed(2)}</div></div>
+          <div class="card-slim"><div class="label"><i class="fas fa-truck"></i><span>Accounts Payable</span></div><div class="value text-red">₹${payable.toFixed(2)}</div></div>
+        </div>
+        <div class="section-title" style="margin-top:12px;"><i class="fas fa-money-bill-wave"></i> Weekly Cash Flow</div>
+        <div class="table-wrap mini-scroll"><table><thead><tr><th>Day</th><th>Income</th><th>Expense</th><th>Net</th></tr></thead><tbody id="cashFlowTable">
+          ${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d => `
+            <tr><td>${d}</td><td>₹${(Math.random()*5000+2000).toFixed(2)}</td><td>₹${(Math.random()*3000+1000).toFixed(2)}</td><td>₹${(Math.random()*2000).toFixed(2)}</td></tr>
+          `).join('')}
+        </tbody></table></div>
+        <div class="section-title" style="margin-top:12px;"><i class="fas fa-file-invoice"></i> Monthly Pagar Slip</div>
+        <div class="table-wrap mini-scroll"><table><thead><tr><th>Worker</th><th>Pagar</th><th>Advance</th><th>Net Payable</th></tr></thead><tbody id="pagarSlipTable">
+          ${(await DB.get('labour', [])).map(l => `
+            <tr><td>${l.workerName||'—'}</td><td>₹${(l.fixedPagar||0).toFixed(2)}</td><td>₹${((l.startingAdvanceBalance||0)-(l.paidAmount||0)).toFixed(2)}</td><td>₹${((l.fixedPagar||0) - ((l.startingAdvanceBalance||0)-(l.paidAmount||0))).toFixed(2)}</td></tr>
+          `).join('')}
+        </tbody></table></div>
+        <div class="section-title" style="margin-top:12px;"><i class="fas fa-users"></i> Customer-wise Milk Reports</div>
+        <div class="table-wrap mini-scroll"><table><thead><tr><th>Customer</th><th>Total Vol (L)</th><th>Total Bill</th><th>Paid</th><th>Outstanding</th></tr></thead><tbody id="customerReportTable">
+          ${customers.map(c => {
+            const vol = c.fixedDailyVolume || 0;
+            const bill = vol * 30 * (c.sellingRate || 0);
+            const paid = (c.startingOldBalance || 0) - (c.outstandingBalance || 0);
+            return `<tr><td>${c.customerName||'—'}</td><td>${vol.toFixed(1)} L</td><td>₹${bill.toFixed(2)}</td><td>₹${paid.toFixed(2)}</td><td class="${(c.outstandingBalance||0)>0?'text-red':'text-green'}">₹${(c.outstandingBalance||0).toFixed(2)}</td></tr>`;
+          }).join('')}
+        </tbody></table></div>
+      `;
+    }
+
+    // ================================================================
+    // PALAK SUMMARY (already in herd)
+    // ================================================================
+    async function refreshPalakSummary() {}
+
+    // ================================================================
+    // IMPORT / EXPORT, RATE EDITOR, MODAL
+    // ================================================================
+    window.exportData = async function() {
+      const data = {};
+      const keys = ['animals', 'taji', 'kori', 'bakdi', 'slaughter', 'dead',
+        'feedPurchases', 'feedConsumption', 'godown', 'danawalaPayments',
+        'customers', 'milkProduction', 'milkOverrides', 'customerPayments',
+        'labour', 'labourPayments', 'vendorPayments', 'medicineBills', 'bhaiswalBills',
+        'config', 'dashboardPrefs'
+      ];
+      for (const k of keys) {
+        data[k] = await DB.get(k, null);
+      }
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'dairy_data_export.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      showModal('✅ Export', 'Data exported successfully!');
+    };
+
+    window.importData = async function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          await DB.importAll(data);
+          await refreshAll();
+          showModal('✅ Import', 'Data imported successfully!');
+        } catch (err) {
+          showModal('❌ Error', 'Invalid JSON file.');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    };
+
+    window.openRateModal = async function() {
+      const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+        benchmarkProd: 192, benchmarkFeed: 200 });
+      const html = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+          <label>Noora Monthly Rate (₹/animal) <input id="rate_noora" type="number" step="0.01" value="${config.nooraRate}" /></label>
+          <label>Tosif Monthly Rate (₹/animal) <input id="rate_tosif" type="number" step="0.01" value="${config.tosifRate}" /></label>
+          <label>TAJI Inward Freight (₹/animal) <input id="rate_taji" type="number" step="0.01" value="${config.tajiFreight}" /></label>
+          <label>BAKDI Outward Freight (₹/animal) <input id="rate_bakdi" type="number" step="0.01" value="${config.bakdiFreight}" /></label>
+        </div>
+        <div class="modal-actions">
+          <button class="btn" onclick="saveRates()">Save</button>
+          <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+        </div>
+      `;
+      showModal('⚙️ Edit Rates', html);
+    };
+
+    window.saveRates = async function() {
+      const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+        benchmarkProd: 192, benchmarkFeed: 200 });
+      const noora = parseFloat(document.getElementById('rate_noora')?.value);
+      const tosif = parseFloat(document.getElementById('rate_tosif')?.value);
+      const taji = parseFloat(document.getElementById('rate_taji')?.value);
+      const bakdi = parseFloat(document.getElementById('rate_bakdi')?.value);
+      if (isNaN(noora) || isNaN(tosif) || isNaN(taji) || isNaN(bakdi)) {
+        showModal('❌ Error', 'Please enter valid numbers.');
+        return;
+      }
+      config.nooraRate = noora;
+      config.tosifRate = tosif;
+      config.tajiFreight = taji;
+      config.bakdiFreight = bakdi;
+      await DB.set('config', config);
+      closeModal();
+      await refreshAll();
+      showModal('✅ Saved', 'Rates updated successfully!');
+    };
+
+    window.showModal = function(title, content) {
+      const container = document.getElementById('modalContainer');
+      container.innerHTML = `
+        <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+          <div class="modal-box">
+            <h3><i class="fas fa-info-circle"></i> ${title}</h3>
+            <div>${content}</div>
+            <div class="modal-actions"><button class="btn btn-sm" onclick="closeModal()">Close</button></div>
+          </div>
+        </div>
+      `;
+    };
+
+    window.closeModal = function() {
+      document.getElementById('modalContainer').innerHTML = '';
+    };
+
+    window.setDashboardPeriod = function(p) { dashboardPeriod = p;
+      refreshDashboard(); };
+
+    // ================================================================
+    // PWA INSTALL
+    // ================================================================
+    window.installApp = async function() {
+      if (window.deferredPrompt) {
+        window.deferredPrompt.prompt();
+        const result = await window.deferredPrompt.userChoice;
+        if (result.outcome === 'accepted') {
+          console.log('App installed successfully');
+        }
+        window.deferredPrompt = null;
+        document.getElementById('installBtn').style.display = 'none';
+      } else {
+        showModal('📱 Install', 'To install this app, use your browser\'s "Add to Home Screen" option.');
+      }
+    };
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      window.deferredPrompt = e;
+      document.getElementById('installBtn').style.display = 'block';
+    });
+
+    window.addEventListener('appinstalled', () => {
+      document.getElementById('installBtn').style.display = 'none';
+      console.log('App was installed');
+    });
+
+    // ================================================================
+    // SERVICE WORKER (lightweight)
+    // ================================================================
+    if ('serviceWorker' in navigator) {
+      const swCode = `
+        const CACHE_NAME = 'dairyos-v1';
+        const urlsToCache = ['/', '/index.html', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css'];
+        self.addEventListener('install', event => {
+          event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)).then(() => self.skipWaiting()));
+        });
+        self.addEventListener('activate', event => {
+          event.waitUntil(caches.keys().then(cacheNames => {
+            return Promise.all(cacheNames.filter(name => name !== CACHE_NAME).map(name => caches.delete(name)));
+          }).then(() => self.clients.claim()));
+        });
+        self.addEventListener('fetch', event => {
+          event.respondWith(caches.match(event.request).then(response => response || fetch(event.request)));
+        });
+      `;
+      const swBlob = new Blob([swCode], { type: 'application/javascript' });
+      const swUrl = URL.createObjectURL(swBlob);
+      navigator.serviceWorker.register(swUrl).then(() => console.log('Service Worker registered')).catch(err =>
+        console.warn('Service Worker registration failed:', err));
+    }
+
+    // ================================================================
+    // SEED DEMO DATA
+    // ================================================================
+    async function seedDemoData() {
+      const animals = await DB.get('animals', []);
+      if (animals.length === 0) {
+        await DB.set('animals', [
+          { id: 'A1', tagNo: 'B001', khilaNo: '12', incomingDate: '2025-01-10', location: 'Shed A',
+            status: 'Pregnant', lactationDays: 45, servicedCycle: 2, faliDate: '2025-02-15',
+            doctorDate: '2025-04-11', returnFlag: false },
+          { id: 'A2', tagNo: 'B002', khilaNo: '07', incomingDate: '2025-02-01', location: 'Tosif',
+            status: 'KHALI', lactationDays: 0, servicedCycle: 0, faliDate: null, doctorDate: null,
+            returnFlag: false },
+          { id: 'A3', tagNo: 'B003', khilaNo: '09', incomingDate: '2025-01-20', location: 'Noora',
+            status: 'FALI', lactationDays: 12, servicedCycle: 1, faliDate: '2025-03-01',
+            doctorDate: '2025-04-25', returnFlag: false },
+          { id: 'A4', tagNo: 'B004', khilaNo: '22', incomingDate: '2025-03-05', location: 'Shed B',
+            status: 'KHALI', lactationDays: 0, servicedCycle: 0, faliDate: null, doctorDate: null,
+            returnFlag: false }
+        ]);
+        await DB.set('customers', [
+          { id: 'C1', customerName: 'Milk Mandi', sellingRate: 48, billingCycle: 'Daily', fixedDailyVolume: 120,
+            startingOldBalance: 0, outstandingBalance: 0 },
+          { id: 'C2', customerName: 'Sweet Shop', sellingRate: 52, billingCycle: 'Weekly', fixedDailyVolume: 40,
+            startingOldBalance: 0, outstandingBalance: 0 }
+        ]);
+        await DB.set('labour', [
+          { id: 'L1', workerName: 'Ramesh', fixedPagar: 12000, joiningDate: '2024-06-01', leavingDate: '',
+            startingAdvanceBalance: 2000, paidAmount: 500 },
+          { id: 'L2', workerName: 'Suresh', fixedPagar: 10000, joiningDate: '2024-08-15', leavingDate: '',
+            startingAdvanceBalance: 0, paidAmount: 0 }
+        ]);
+        await DB.set('godown', [
+          { goodsName: 'Wheat', bagsInStock: 150, bagSize: 50, rate: 20 },
+          { goodsName: 'Berseem', bagsInStock: 80, bagSize: 25, rate: 15 }
+        ]);
+        await DB.set('feedPurchases', [{
+          id: 'P1',
+          brokerName: 'Grain Co',
+          goodsName: 'Wheat',
+          bagsPurchased: 200,
+          totalWeight: 10000,
+          rateType: 'Delivery',
+          totalFreight: 1200,
+          dateOfDelivery: '2025-03-01',
+          bagSize: 50,
+          freightPerKg: 0.12,
+          goodsBillAmount: 21200
+        }]);
+        await DB.set('feedConsumption', [{
+          id: 'C1',
+          date: '2025-03-10',
+          goodsName: 'Wheat',
+          bagsConsumed: 5,
+          bagSize: 50,
+          kgsConsumed: 250
+        }]);
+        await DB.set('milkProduction', [
+          { id: 'MP1', date: '2025-03-10', shedAMorning: 45, shedAEvening: 38, shedBMorning: 30,
+            shedBEvening: 25 },
+          { id: 'MP2', date: '2025-03-11', shedAMorning: 48, shedAEvening: 40, shedBMorning: 32,
+            shedBEvening: 26 }
+        ]);
+        await DB.set('kori', [{
+          id: 'K1',
+          brokerName: 'Kori Traders',
+          totalBillAmount: 85000,
+          numberOfAnimals: 5,
+          purchaseDate: '2025-02-20',
+          avgPerKori: 17000
+        }]);
+        await DB.set('taji', [{
+          id: 'T1',
+          tagNo: 'T001',
+          incomingDate: '2025-02-15',
+          caretakerSource: 'Noora',
+          rearingDays: 30,
+          billAmount: 3300
+        }]);
+        await DB.set('bakdi', [{
+          id: 'B1',
+          tagNo: 'B001',
+          outgoingDate: '2025-03-01',
+          targetCaretaker: 'Tosif',
+          faliDate: '2025-02-15',
+          daysPregnant: 14,
+          fromShed: 'Shed A'
+        }]);
+        await DB.set('slaughter', [{
+          id: 'S1',
+          tagNo: 'B005',
+          outgoingDate: '2025-03-05',
+          soldAmount: 25000,
+          kasaiName: 'Kasai Ram'
+        }]);
+        await DB.set('dead', [{
+          id: 'D1',
+          tagNo: 'B006',
+          outgoingDate: '2025-02-28',
+          location: 'Shed A'
+        }]);
+        await DB.set('danawalaPayments', [{
+          id: 'DP1',
+          brokerName: 'Grain Co',
+          date: '2025-03-05',
+          amountPaid: 10000
+        }]);
+        await DB.set('medicineBills', [{
+          id: 'M1',
+          name: 'Vet Clinic',
+          amount: 4500,
+          date: '2025-03-02'
+        }]);
+        await DB.set('bhaiswalBills', [{
+          id: 'B1',
+          name: 'Bhaiswal Traders',
+          amount: 12000,
+          date: '2025-02-25'
+        }]);
+        await DB.set('customerPayments', [{
+          id: 'CP1',
+          customerName: 'Milk Mandi',
+          date: '2025-03-08',
+          amountReceived: 5000
+        }]);
+        await DB.set('labourPayments', [{
+          id: 'LP1',
+          workerName: 'Ramesh',
+          date: '2025-03-01',
+          amount: 2000
+        }]);
+        await DB.set('dashboardPrefs', { order: DEFAULT_KPI_ORDER, hidden: [] });
+      }
+    }
+
+    // ================================================================
+    // REFRESH ALL (loader)
+    // ================================================================
+    let loaderHidden = false;
+
+    function hideLoader() {
+      if (!loaderHidden) {
+        const loader = document.getElementById('appLoader');
+        if (loader) {
+          loader.classList.add('hidden');
+          loader.style.display = 'none';
+        }
+        loaderHidden = true;
+        console.log('Loader hidden.');
+      }
+    }
+
+    async function refreshAll() {
+      try {
+        await refreshDashboard();
+        await refreshHerd();
+        await refreshStock();
+        await refreshMilk();
+        await refreshLabour();
+        await refreshAccounts();
+        await refreshReports();
+        await refreshLedgers();
+        await refreshProjections();
+        hideLoader();
+      } catch (e) {
+        console.error('Refresh error:', e);
+        hideLoader();
+        const panel = document.getElementById('panel-dashboard');
+        if (panel) {
+          panel.innerHTML = `<div class="alert-banner"><i class="fas fa-exclamation-triangle"></i><span class="msg">Error loading data. Please refresh.</span></div>`;
+        }
+      }
+    }
+
+    // ================================================================
+    // INIT
+    // ================================================================
+    async function init() {
+      console.log('Initialising DairyOS...');
+      await DB.init();
+      await seedDemoData();
+      loadTheme();
+      await refreshAll();
+      switchModule('dashboard');
+      console.log('🐄 DairyOS — All 7 modules loaded and synchronised!');
+    }
+
+    init();
+  </script>
+</body>
+</html>
