@@ -1,0 +1,2674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>DairyOS — 7 Modules</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ===== GLOBAL ===== */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; }
+        :root {
+            --bg-primary:#0b0e14; --bg-secondary:#131821; --bg-card:#1a212c; --bg-card-hover:#242e3d;
+            --bg-input:#1f2836; --border-color:#2a3548; --text-primary:#f0f4fc; --text-secondary:#9aaec9;
+            --text-muted:#6a7f9e; --accent-blue:#4a8cf7; --accent-cyan:#22d3ee; --accent-green:#34d399;
+            --accent-orange:#fb923c; --accent-red:#f87171; --accent-purple:#a78bfa;
+            --shadow:0 8px 24px rgba(0,0,0,0.5); --radius:14px; --radius-sm:8px;
+            --transition:0.2s ease; --bottom-nav-height:64px; --header-height:56px;
+        }
+        html, body { height:100%; overflow:hidden; }
+        body { background:var(--bg-primary); color:var(--text-primary); display:flex; flex-direction:column; padding:0; margin:0; height:100vh; max-height:100vh; }
+        ::-webkit-scrollbar { width:4px; height:4px; }
+        ::-webkit-scrollbar-track { background:var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background:var(--border-color); border-radius:10px; }
+
+        /* ===== HEADER ===== */
+        .app-header {
+            background:var(--bg-secondary); border-bottom:1px solid var(--border-color);
+            padding:8px 16px; display:flex; align-items:center; justify-content:space-between;
+            flex-shrink:0; height:var(--header-height); min-height:var(--header-height); gap:8px; z-index:100;
+        }
+        .app-logo { font-weight:700; font-size:1.2rem; display:flex; align-items:center; gap:8px; flex-shrink:0; }
+        .app-logo i { color:var(--accent-cyan); font-size:1.4rem; }
+        .app-logo span { background:linear-gradient(135deg,var(--accent-cyan),var(--accent-blue)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .header-actions { display:flex; align-items:center; gap:6px; }
+        .header-actions button { background:transparent; border:none; color:var(--text-secondary); font-size:1.1rem; cursor:pointer; padding:4px 8px; border-radius:8px; transition:var(--transition); }
+        .header-actions button:hover { background:var(--bg-card); color:var(--text-primary); }
+        .nav-modules { display:flex; flex-wrap:nowrap; gap:4px; overflow-x:auto; flex:1; justify-content:flex-end; }
+        .nav-modules button { background:transparent; border:none; color:var(--text-secondary); padding:6px 14px; border-radius:30px; font-size:0.75rem; font-weight:500; cursor:pointer; transition:var(--transition); display:flex; align-items:center; gap:4px; white-space:nowrap; flex-shrink:0; }
+        .nav-modules button i { font-size:0.85rem; }
+        .nav-modules button:hover { background:var(--bg-card); color:var(--text-primary); }
+        .nav-modules button.active { background:var(--accent-blue); color:#fff; box-shadow:0 4px 16px rgba(74,140,247,0.3); }
+        @media (max-width:640px) { .nav-modules { display:none; } .app-header { justify-content:space-between; } }
+
+        /* ===== MAIN ===== */
+        .app-main { flex:1; overflow-y:auto; overflow-x:hidden; padding:12px 16px 16px 16px; max-width:1200px; margin:0 auto; width:100%; -webkit-overflow-scrolling:touch; }
+        .module-panel { display:none; animation:fadeUp 0.25s ease; }
+        .module-panel.active { display:block; }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+        .section-title { font-size:1rem; font-weight:600; margin-bottom:12px; display:flex; align-items:center; gap:8px; color:var(--text-primary); }
+        .section-title i { color:var(--accent-cyan); font-size:1.1rem; }
+        .section-title small { font-weight:400; font-size:0.75rem; color:var(--text-muted); margin-left:4px; }
+
+        .alert-banner { background:#2a1a1a; border:1px solid #4a2a2a; border-radius:var(--radius); padding:10px 16px; display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+        .alert-banner i { color:var(--accent-red); font-size:0.9rem; }
+        .alert-banner .msg { flex:1; font-size:0.85rem; }
+        .alert-banner .count { background:var(--accent-red); color:#0b0e14; font-weight:700; padding:2px 12px; border-radius:30px; font-size:0.75rem; }
+
+        /* ===== CARDS ===== */
+        .card-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; width:100%; max-width:100%; }
+        .card-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px; width:100%; max-width:100%; }
+
+        .card-slim {
+            background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius);
+            padding:16px 20px; display:flex; align-items:center; justify-content:space-between;
+            transition:var(--transition); cursor:pointer; min-height:68px; gap:8px;
+            width:100%; max-width:100%; overflow:hidden; box-sizing:border-box;
+        }
+        .card-slim:hover { background:var(--bg-card-hover); border-color:#3a4a62; transform:translateY(-2px); box-shadow:var(--shadow); }
+        .card-slim:active { transform:scale(0.97); }
+        .card-slim .label { font-size:0.75rem; font-weight:500; text-transform:uppercase; letter-spacing:0.3px; color:var(--text-secondary); display:flex; align-items:center; gap:8px; flex:1; min-width:0; line-height:1.3; word-break:break-word; hyphens:auto; max-width:70%; }
+        .card-slim .label i { font-size:0.9rem; color:var(--accent-cyan); width:20px; text-align:center; flex-shrink:0; }
+        .card-slim .label span { display:inline; word-break:break-word; hyphens:auto; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+        .card-slim .value { font-size:1.2rem; font-weight:700; color:var(--text-primary); letter-spacing:-0.2px; white-space:nowrap; flex-shrink:0; text-align:right; margin-left:4px; max-width:30%; }
+        .card-slim .value .sub { font-size:0.65rem; font-weight:400; color:var(--text-muted); margin-left:4px; }
+
+        .touch-card {
+            background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius);
+            padding:14px 18px; display:flex; align-items:center; gap:12px;
+            transition:var(--transition); cursor:pointer; min-height:60px;
+            width:100%; max-width:100%; overflow:hidden; box-sizing:border-box;
+        }
+        .touch-card:hover { background:var(--bg-card-hover); border-color:var(--accent-blue); transform:translateX(4px); box-shadow:var(--shadow); }
+        .touch-card:active { transform:scale(0.97); }
+        .touch-card i { font-size:1.2rem; color:var(--accent-blue); width:28px; text-align:center; flex-shrink:0; }
+        .touch-card .info { flex:1; min-width:0; overflow:hidden; }
+        .touch-card .info .title { font-weight:600; font-size:0.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .touch-card .info .desc { font-size:0.7rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .touch-card .amount { font-weight:700; font-size:1rem; color:var(--accent-green); white-space:nowrap; flex-shrink:0; }
+
+        /* ===== FORMS ===== */
+        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius); padding:18px 24px; margin-bottom:16px; }
+        .form-grid .full { grid-column:1 / -1; }
+        .form-grid label { font-size:0.8rem; font-weight:500; color:var(--text-secondary); display:flex; flex-direction:column; gap:4px; }
+        .form-grid input, .form-grid select { background:var(--bg-input); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:8px 12px; color:var(--text-primary); font-size:0.9rem; transition:var(--transition); width:100%; }
+        .form-grid input:focus, .form-grid select:focus { outline:none; border-color:var(--accent-blue); box-shadow:0 0 0 3px rgba(74,140,247,0.15); }
+
+        .btn { background:var(--accent-blue); border:none; color:#fff; padding:8px 20px; border-radius:30px; font-weight:600; font-size:0.85rem; cursor:pointer; transition:var(--transition); display:inline-flex; align-items:center; gap:6px; border:1px solid transparent; }
+        .btn:hover { background:#3a7be0; transform:scale(1.02); box-shadow:0 4px 16px rgba(74,140,247,0.3); }
+        .btn-outline { background:transparent; border-color:var(--border-color); color:var(--text-secondary); }
+        .btn-outline:hover { background:var(--bg-card); color:var(--text-primary); border-color:var(--accent-blue); }
+        .btn-sm { padding:4px 14px; font-size:0.7rem; }
+        .btn-danger { background:var(--accent-red); color:#0b0e14; }
+        .btn-danger:hover { background:#e05555; }
+        .btn-green { background:var(--accent-green); color:#0b0e14; }
+        .btn-green:hover { background:#2bc48a; }
+        .btn-orange { background:var(--accent-orange); color:#0b0e14; }
+        .btn-orange:hover { background:#e07c2e; }
+
+        .table-wrap { overflow-x:auto; background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius); padding:4px 0; margin-bottom:16px; -webkit-overflow-scrolling:touch; }
+        .table-wrap table { width:100%; border-collapse:collapse; font-size:0.8rem; min-width:400px; }
+        .table-wrap th { text-align:left; padding:10px 14px; color:var(--text-secondary); font-weight:500; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.3px; border-bottom:1px solid var(--border-color); background:var(--bg-secondary); }
+        .table-wrap td { padding:8px 14px; border-bottom:1px solid var(--border-color); color:var(--text-primary); vertical-align:middle; }
+        .table-wrap tr:hover td { background:var(--bg-input); }
+        .table-wrap .delete-btn { background:transparent; border:none; color:var(--accent-red); cursor:pointer; font-size:1rem; transition:var(--transition); padding:2px 6px; }
+        .table-wrap .delete-btn:hover { transform:scale(1.2); color:#ff4444; }
+        .status-badge { font-size:0.6rem; padding:2px 10px; border-radius:30px; font-weight:500; }
+        .status-badge.green { background:#1a3a2a; color:var(--accent-green); }
+        .status-badge.orange { background:#3a2a1a; color:var(--accent-orange); }
+        .status-badge.red { background:#3a1a1a; color:var(--accent-red); }
+        .status-badge.blue { background:#1a2a3a; color:var(--accent-blue); }
+        .status-badge.purple { background:#2a1a3a; color:var(--accent-purple); }
+        .status-badge.gray { background:#1a1a1a; color:var(--text-muted); }
+        .mini-scroll { max-height:200px; overflow-y:auto; }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            position:fixed; bottom:0; left:0; right:0; height:var(--bottom-nav-height);
+            background:var(--bg-secondary); border-top:1px solid var(--border-color);
+            display:flex; justify-content:space-around; align-items:center; padding:6px 8px; z-index:200; backdrop-filter:blur(8px); flex-shrink:0;
+        }
+        .bottom-nav button { background:transparent; border:none; color:var(--text-muted); display:flex; flex-direction:column; align-items:center; gap:2px; font-size:0.6rem; font-weight:500; cursor:pointer; transition:var(--transition); padding:4px 8px; border-radius:8px; flex:1; max-width:64px; }
+        .bottom-nav button i { font-size:1.3rem; transition:var(--transition); }
+        .bottom-nav button span { line-height:1.2; }
+        .bottom-nav button.active { color:var(--accent-cyan); }
+        .bottom-nav button.active i { color:var(--accent-cyan); text-shadow:0 0 12px rgba(34,211,238,0.3); }
+        .bottom-nav button:hover { color:var(--text-primary); }
+        @media (max-width:480px) { .bottom-nav button { max-width:48px; font-size:0.5rem; } .bottom-nav button i { font-size:1.1rem; } .bottom-nav button span { display:none; } }
+
+        /* ===== MODAL ===== */
+        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:999; padding:20px; animation:fadeUp 0.2s ease; }
+        .modal-overlay .modal-box { background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius); padding:24px 28px; max-width:520px; width:100%; max-height:80vh; overflow-y:auto; box-shadow:var(--shadow); }
+        .modal-overlay .modal-box h3 { margin-bottom:14px; display:flex; align-items:center; gap:10px; font-size:1.1rem; }
+        .modal-overlay .modal-box h3 i { color:var(--accent-cyan); }
+        .modal-overlay .modal-box .detail-item { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border-color); font-size:0.85rem; }
+        .modal-overlay .modal-box .detail-item .label { color:var(--text-secondary); }
+        .modal-overlay .modal-box .detail-item .val { font-weight:600; }
+        .modal-actions { display:flex; gap:10px; margin-top:16px; justify-content:flex-end; }
+
+        .text-muted { color:var(--text-muted); }
+        .text-green { color:var(--accent-green); }
+        .text-orange { color:var(--accent-orange); }
+        .text-red { color:var(--accent-red); }
+        .text-blue { color:var(--accent-blue); }
+        .mt-8 { margin-top:8px; }
+        .mb-8 { margin-bottom:8px; }
+        .flex-between { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+
+        @media (max-width:640px) {
+            .app-main { padding:10px 12px 12px 12px; }
+            .card-grid-2 { gap:10px; }
+            .card-grid-3 { grid-template-columns:1fr 1fr; gap:10px; }
+            .card-slim { padding:14px 16px; min-height:58px; }
+            .card-slim .value { font-size:1rem; }
+            .card-slim .label { font-size:0.7rem; }
+            .touch-card { padding:12px 14px; min-height:52px; }
+            .touch-card .info .title { font-size:0.8rem; }
+            .touch-card .amount { font-size:0.9rem; }
+            .form-grid { grid-template-columns:1fr; padding:14px 16px; }
+            .form-grid .full { grid-column:1; }
+            .form-grid input, .form-grid select { font-size:0.8rem; padding:6px 10px; }
+            .section-title { font-size:0.9rem; }
+        }
+        @media (max-width:480px) {
+            .card-grid-2 { gap:8px; }
+            .card-grid-3 { grid-template-columns:1fr 1fr; gap:8px; }
+            .card-slim { padding:10px 14px; min-height:50px; }
+            .card-slim .value { font-size:0.9rem; }
+            .card-slim .label { font-size:0.65rem; }
+            .touch-card { padding:10px 12px; min-height:44px; }
+            .touch-card .info .title { font-size:0.7rem; }
+            .touch-card .amount { font-size:0.8rem; }
+            .form-grid { padding:10px 12px; gap:8px; }
+            .form-grid label { font-size:0.7rem; }
+            .form-grid input, .form-grid select { font-size:0.75rem; padding:5px 8px; }
+            .btn { font-size:0.7rem; padding:6px 14px; }
+            .table-wrap table { font-size:0.7rem; min-width:300px; }
+            .table-wrap th, .table-wrap td { padding:6px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <div class="app-logo"><i class="fas fa-cow"></i><span>DairyOS</span></div>
+        <nav class="nav-modules" id="topNav">
+            <button class="active" data-module="dashboard"><i class="fas fa-chart-pie"></i> Dash</button>
+            <button data-module="herd"><i class="fas fa-paw"></i> Herd</button>
+            <button data-module="stock"><i class="fas fa-warehouse"></i> Stock</button>
+            <button data-module="milk"><i class="fas fa-tint"></i> Milk</button>
+            <button data-module="labour"><i class="fas fa-users"></i> Labour</button>
+            <button data-module="accounts"><i class="fas fa-file-invoice-dollar"></i> P&L</button>
+            <button data-module="reports"><i class="fas fa-chart-line"></i> Reports</button>
+        </nav>
+        <div class="header-actions">
+            <button onclick="exportData()" title="Export"><i class="fas fa-download"></i></button>
+            <button onclick="document.getElementById('importInput').click()" title="Import"><i class="fas fa-upload"></i></button>
+            <input type="file" id="importInput" accept=".json" style="display:none" onchange="importData(event)" />
+            <button onclick="openRateModal()" title="Edit Rates"><i class="fas fa-cog"></i></button>
+        </div>
+    </header>
+
+    <!-- ===== MAIN ===== -->
+    <main class="app-main" id="appMain">
+        <div id="appLoader" style="display:flex;justify-content:center;align-items:center;height:200px;color:var(--text-muted);font-size:1.2rem;">
+            <i class="fas fa-spinner fa-spin" style="margin-right:12px;"></i> Loading...
+        </div>
+
+        <!-- DASHBOARD -->
+        <section id="panel-dashboard" class="module-panel">
+            <div class="flex-between mb-8">
+                <div class="section-title"><i class="fas fa-chart-pie"></i> Dashboard <small>· tap cards</small></div>
+                <div style="display:flex;gap:4px;">
+                    <button class="btn btn-sm btn-outline" onclick="setDashboardPeriod('daily')">Daily</button>
+                    <button class="btn btn-sm btn-outline" onclick="setDashboardPeriod('monthly')">Monthly</button>
+                    <button class="btn btn-sm btn-outline" onclick="setDashboardPeriod('yearly')">Yearly</button>
+                </div>
+            </div>
+            <div id="systemAlerts" class="alert-banner" style="display:none;"></div>
+            <div class="card-grid-2" id="kpiGrid"></div>
+            <div class="section-title" style="margin-top:8px;"><i class="fas fa-fingerprint"></i> Touch Ledgers</div>
+            <div class="card-grid-2" id="ledgerGrid"></div>
+            <div class="section-title" style="margin-top:8px;"><i class="fas fa-calendar-alt"></i> 12-Month Projection</div>
+            <div class="table-wrap"><table><thead><tr id="projectionHeaders"></tr></thead><tbody><tr id="projectionRow"></tr></tbody></table></div>
+        </section>
+
+        <!-- HERD -->
+        <section id="panel-herd" class="module-panel">
+            <div class="section-title"><i class="fas fa-paw"></i> Herd Book <small>· tap diagnostics</small></div>
+            <div class="card-grid-2" id="herdDiagnosticGrid"></div>
+            <div class="section-title" style="margin-top:8px;"><i class="fas fa-plus-circle"></i> Quick Entry</div>
+            <div class="form-grid" id="herdForm">
+                <label>Action <select id="herdAction" onchange="toggleHerdForm()">
+                        <option value="addBuffalo">ADD Buffalo</option>
+                        <option value="fali">FALI Breeding</option>
+                        <option value="tajiIn">TAJI Inwards</option>
+                        <option value="bakdiOut">BAKDI Outwards</option>
+                        <option value="slaughter">Slaughter</option>
+                        <option value="dead">DEAD Record</option>
+                        <option value="kori">KORI Entry</option>
+                        <option value="payment">Vendor Payment</option>
+                </select></label>
+                <label class="full" id="herdDynamicFields"></label>
+                <div class="full" style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn" onclick="submitHerdEntry()"><i class="fas fa-save"></i> Submit</button>
+                    <button class="btn btn-outline" onclick="clearHerdForm()">Clear</button>
+                </div>
+            </div>
+            <div class="section-title" style="margin-top:8px;"><i class="fas fa-user-md"></i> Palak's Bill Summary</div>
+            <div class="card-grid-2" id="palakSummary"></div>
+            <div class="section-title" style="margin-top:8px;"><i class="fas fa-list"></i> Herd Register</div>
+            <div style="margin-bottom:12px;">
+                <input id="herdSearch" placeholder="🔍 Search by Tag, Khila, Location..." style="width:100%;background:var(--bg-input);border:1px solid var(--border-color);border-radius:30px;padding:10px 18px;color:var(--text-primary);font-size:0.85rem;" oninput="filterHerdTable()" />
+            </div>
+            <div class="table-wrap mini-scroll"><table><thead><tr><th>Tag</th><th>Khila</th><th>Location</th><th>Status</th><th>Fali</th><th>Serv</th><th>Return</th><th style="width:50px;">Del</th></tr></thead><tbody id="herdTableBody"></tbody></table></div>
+        </section>
+
+        <!-- STOCK -->
+        <section id="panel-stock" class="module-panel">
+            <div class="section-title"><i class="fas fa-warehouse"></i> Stock Book <small>· tap cards</small></div>
+            <div class="card-grid-2" id="stockGrid"></div>
+            <div id="lowStockAlert" class="alert-banner" style="display:none;"></div>
+            <div class="section-title" style="margin-top:8px;"><i class="fas fa-plus-circle"></i> Stock Entries</div>
+            <div class="form-grid">
+                <label>Action <select id="stockAction" onchange="toggleStockForm()">
+                        <option value="purchase">Purchase (DANA)</option>
+                        <option value="consume">Feed Consumed</option>
+                        <option value="godown">Init Godown</option>
+                </select></label>
+                <label class="full" id="stockDynamicFields"></label>
+                <div class="full" style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn" onclick="submitStockEntry()"><i class="fas fa-save"></i> Submit</button>
+                    <button class="btn btn-outline" onclick="clearStockForm()">Clear</button>
+                </div>
+            </div>
+            <div class="section-title" style="margin-top:8px;"><i class="fas fa-warehouse"></i> Godown List</div>
+            <div class="table-wrap mini-scroll"><table><thead><tr><th>Goods</th><th>Bags</th><th>Bag Size</th><th>Stock (kg)</th><th style="width:50px;">Del</th></tr></thead><tbody id="godownTableBody"></tbody></table></div>
+            <div class="section-title" style="margin-top:8px;"><i class="fas fa-history"></i> Purchase History</div>
+            <div class="table-wrap mini-scroll"><table><thead><tr><th>Broker</th><th>Goods</th><th>Bags</th><th>Wt</th><th>Rate</th><th>Freight</th><th>Bill</th><th style="width:50px;">Del</th></tr></thead><tbody id="stockTableBody"></tbody></table></div>
+        </section>
+
+        <!-- MILK -->
+        <section id="panel-milk" class="module-panel">
+            <div class="section-title"><i class="fas fa-tint"></i> Milk Supply <small>· tap cards</small></div>
+            <div class="card-grid-2" id="milkGrid"></div>
+            <div class="section-title" style="margin-top:8px;"><i class="fas fa-plus-circle"></i> Milk Ops</div>
+            <div class="form-grid">
+                <label>Action <select id="milkAction" onchange="toggleMilkForm()">
+                        <option value="customer">Add Customer</option>
+                        <option value="production">Log Production</option>
+                        <option value="override">Override Volume</option>
+                        <option value="payment">Payment Received</option>
+                        <option value="whatsapp">WhatsApp Bill</option>
+                </select></label>
+                <label class="full" id="milkDynamicFields"></label>
+                <div class="full" style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn" onclick="submitMilkEntry()"><i class="fas fa-save"></i> Submit</button>
+                    <button class="btn btn-outline" onclick="clearMilkForm()">Clear</button>
+                </div>
+            </div>
+            <div class="table-wrap mini-scroll"><table><thead><tr><th>Customer</th><th>Rate</th><th>Cycle</th><th>Vol</th><th>Outstanding</th><th style="width:50px;">Del</th></tr></thead><tbody id="milkTableBody"></tbody></table></div>
+        </section>
+
+        <!-- LABOUR -->
+        <section id="panel-labour" class="module-panel">
+            <div class="section-title"><i class="fas fa-users"></i> Labour Pagar <small>· tap cards</small></div>
+            <div class="card-grid-2" id="labourGrid"></div>
+            <div class="section-title" style="margin-top:8px;"><i class="fas fa-plus-circle"></i> Labour Ops</div>
+            <div class="form-grid">
+                <label>Action <select id="labourAction" onchange="toggleLabourForm()">
+                        <option value="add">ADD Labour</option>
+                        <option value="payment">Payment Entry</option>
+                </select></label>
+                <label class="full" id="labourDynamicFields"></label>
+                <div class="full" style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn" onclick="submitLabourEntry()"><i class="fas fa-save"></i> Submit</button>
+                    <button class="btn btn-outline" onclick="clearLabourForm()">Clear</button>
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;">
+                <input id="labourSearch" placeholder="🔍 Search worker..." style="flex:1;background:var(--bg-input);border:1px solid var(--border-color);border-radius:30px;padding:8px 16px;color:var(--text-primary);font-size:0.85rem;min-width:80px;" oninput="searchLabour()" />
+                <button class="btn btn-sm btn-outline" onclick="searchLabour()"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="section-title" style="margin-top:8px;"><i class="fas fa-users"></i> Worker Status</div>
+            <div class="table-wrap mini-scroll"><table><thead><tr><th>Worker</th><th>Pagar</th><th>Joined</th><th>Left</th><th>Days</th><th>Status</th><th>Adv/Bal</th><th style="width:50px;">Del</th></tr></thead><tbody id="labourTableBody"></tbody></table></div>
+        </section>
+
+        <!-- ACCOUNTS (P&L) -->
+        <section id="panel-accounts" class="module-panel">
+            <div class="section-title"><i class="fas fa-file-invoice-dollar"></i> Profit & Loss <small>· tap cards</small></div>
+            <div class="card-grid-2" id="plGrid"></div>
+            <div class="section-title" style="margin-top:8px;"><i class="fas fa-list"></i> Expenses List</div>
+            <div class="table-wrap mini-scroll"><table><thead><tr><th>Category</th><th>Amount (₹)</th><th>Date</th></tr></thead><tbody id="expensesTableBody"></tbody></table></div>
+            <div class="alert-banner"><i class="fas fa-info-circle"></i><span class="msg"><strong>Net = (Milk + Livestock) − (Feed + Caretaker + Transport + Labor + Medical)</strong></span></div>
+        </section>
+
+        <!-- REPORTS -->
+        <section id="panel-reports" class="module-panel">
+            <div class="section-title"><i class="fas fa-chart-line"></i> Reports <small>· tap cards</small></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+                <button class="btn btn-sm btn-outline" onclick="setReportPeriod('daily')">Daily</button>
+                <button class="btn btn-sm btn-outline" onclick="setReportPeriod('weekly')">Weekly</button>
+                <button class="btn btn-sm btn-outline" onclick="setReportPeriod('monthly')">Monthly</button>
+                <button class="btn btn-sm btn-outline" onclick="setReportPeriod('yearly')">Yearly</button>
+                <span style="color:var(--text-muted);font-size:0.75rem;margin-left:4px;" id="reportPeriodLabel">Daily</span>
+            </div>
+            <div class="card-grid-2" id="reportGrid"></div>
+            <div class="section-title" style="margin-top:12px;"><i class="fas fa-money-bill-wave"></i> Weekly Cash Flow</div>
+            <div class="table-wrap mini-scroll"><table><thead><tr><th>Day</th><th>Income</th><th>Expense</th><th>Net</th></tr></thead><tbody id="cashFlowTable"></tbody></table></div>
+            <div class="section-title" style="margin-top:12px;"><i class="fas fa-file-invoice"></i> Monthly Pagar Slip</div>
+            <div class="table-wrap mini-scroll"><table><thead><tr><th>Worker</th><th>Pagar</th><th>Advance</th><th>Net Payable</th></tr></thead><tbody id="pagarSlipTable"></tbody></table></div>
+            <div class="section-title" style="margin-top:12px;"><i class="fas fa-users"></i> Customer-wise Milk Reports</div>
+            <div class="table-wrap mini-scroll"><table><thead><tr><th>Customer</th><th>Total Vol (L)</th><th>Total Bill</th><th>Paid</th><th>Outstanding</th></tr></thead><tbody id="customerReportTable"></tbody></table></div>
+        </section>
+
+    </main>
+
+    <!-- ===== BOTTOM NAV ===== -->
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="active" data-module="dashboard"><i class="fas fa-chart-pie"></i><span>Home</span></button>
+        <button data-module="herd"><i class="fas fa-paw"></i><span>Herd</span></button>
+        <button data-module="stock"><i class="fas fa-warehouse"></i><span>Stock</span></button>
+        <button data-module="milk"><i class="fas fa-tint"></i><span>Milk</span></button>
+        <button data-module="labour"><i class="fas fa-users"></i><span>Labour</span></button>
+        <button data-module="accounts"><i class="fas fa-file-invoice-dollar"></i><span>P&L</span></button>
+        <button data-module="reports"><i class="fas fa-chart-line"></i><span>Reports</span></button>
+    </nav>
+
+    <!-- ===== MODAL ===== -->
+    <div id="modalContainer"></div>
+
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT – Full Implementation -->
+    <!-- ============================================================ -->
+    <script>
+        // ================================================================
+        // 1. STORAGE LAYER (IndexedDB + localStorage fallback)
+        // ================================================================
+        const DB = {
+            _cache: {},
+            _usingIndexedDB: false,
+            _db: null,
+            _dbName: 'DairyOSDB',
+            _storeName: 'appData',
+            _initialized: false,
+
+            init() {
+                return new Promise((resolve) => {
+                    try {
+                        const request = indexedDB.open(this._dbName, 1);
+                        request.onupgradeneeded = (e) => {
+                            const db = e.target.result;
+                            if (!db.objectStoreNames.contains(this._storeName)) {
+                                db.createObjectStore(this._storeName);
+                            }
+                        };
+                        request.onsuccess = (e) => {
+                            this._db = e.target.result;
+                            this._usingIndexedDB = true;
+                            this._loadAll().then(() => { this._initialized = true;
+                                resolve(); }).catch(() => { this._initialized = true;
+                                resolve(); });
+                        };
+                        request.onerror = () => {
+                            console.warn('IndexedDB not available, using localStorage fallback.');
+                            this._usingIndexedDB = false;
+                            this._loadFromLocalStorage();
+                            this._initialized = true;
+                            resolve();
+                        };
+                    } catch (e) {
+                        console.warn('IndexedDB error, using localStorage fallback.', e);
+                        this._usingIndexedDB = false;
+                        this._loadFromLocalStorage();
+                        this._initialized = true;
+                        resolve();
+                    }
+                });
+            },
+
+            _loadAll() {
+                return new Promise((resolve, reject) => {
+                    if (!this._db) return reject('DB not initialized');
+                    const transaction = this._db.transaction([this._storeName], 'readonly');
+                    const store = transaction.objectStore(this._storeName);
+                    const request = store.getAll();
+                    request.onsuccess = () => {
+                        const results = request.result || [];
+                        results.forEach(item => {
+                            if (item.key && item.value !== undefined) {
+                                this._cache[item.key] = item.value;
+                            }
+                        });
+                        resolve();
+                    };
+                    request.onerror = (e) => reject(e.target.error);
+                });
+            },
+
+            _loadFromLocalStorage() {
+                const keys = ['animals', 'taji', 'kori', 'bakdi', 'slaughter', 'dead',
+                    'feedPurchases', 'feedConsumption', 'godown', 'danawalaPayments',
+                    'customers', 'milkProduction', 'milkOverrides', 'customerPayments',
+                    'labour', 'labourPayments', 'vendorPayments', 'medicineBills', 'bhaiswalBills',
+                    'config'
+                ];
+                keys.forEach(key => {
+                    try {
+                        const val = localStorage.getItem('dairy_' + key);
+                        if (val) { this._cache[key] = JSON.parse(val); }
+                    } catch (e) {}
+                });
+            },
+
+            _saveToDB(key, value) {
+                if (this._usingIndexedDB) {
+                    return new Promise((resolve, reject) => {
+                        if (!this._db) return reject('DB not initialized');
+                        const transaction = this._db.transaction([this._storeName], 'readwrite');
+                        const store = transaction.objectStore(this._storeName);
+                        const request = store.put({ key, value });
+                        request.onsuccess = () => resolve();
+                        request.onerror = (e) => reject(e.target.error);
+                    });
+                } else {
+                    try {
+                        localStorage.setItem('dairy_' + key, JSON.stringify(value));
+                        return Promise.resolve();
+                    } catch (e) { return Promise.reject(e); }
+                }
+            },
+
+            get(key, def) {
+                return this._cache[key] !== undefined ? this._cache[key] : def;
+            },
+
+            async set(key, value) {
+                this._cache[key] = value;
+                await this._saveToDB(key, value);
+            },
+
+            getAll() { return this._cache; },
+
+            async importAll(data) {
+                const keys = Object.keys(data);
+                for (const key of keys) {
+                    if (data[key] !== undefined) {
+                        this._cache[key] = data[key];
+                        await this._saveToDB(key, data[key]);
+                    }
+                }
+            }
+        };
+
+        // ================================================================
+        // 2. HELPERS
+        // ================================================================
+        async function getCaretakerTotal() {
+            const animals = await DB.get('animals', []);
+            const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+                benchmarkProd: 192, benchmarkFeed: 200 });
+            let t = 0;
+            animals.forEach(a => { if (a.location === 'Noora') t += config.nooraRate;
+                else if (a.location === 'Tosif') t += config.tosifRate; });
+            return t;
+        }
+
+        async function getTransportTotal() {
+            const taji = await DB.get('taji', []);
+            const bakdi = await DB.get('bakdi', []);
+            const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+                benchmarkProd: 192, benchmarkFeed: 200 });
+            return taji.length * config.tajiFreight + bakdi.length * config.bakdiFreight;
+        }
+
+        async function getLabourTotal() {
+            const labour = await DB.get('labour', []);
+            return labour.reduce((s, l) => s + (l.fixedPagar || 0), 0);
+        }
+
+        async function getMedicineTotal() {
+            const medicineBills = await DB.get('medicineBills', []);
+            return medicineBills.reduce((s, m) => s + (m.amount || 0), 0);
+        }
+
+        async function getActiveAnimals() {
+            const animals = await DB.get('animals', []);
+            return animals.filter(a => a.status !== 'Dead' && a.status !== 'Slaughtered');
+        }
+
+        async function getTotalMilk() {
+            const milkProduction = await DB.get('milkProduction', []);
+            return milkProduction.reduce((s, d) => s + (d.shedAMorning || 0) + (d.shedAEvening || 0) + (d.shedBMorning || 0) +
+                (d.shedBEvening || 0), 0);
+        }
+
+        // ================================================================
+        // 3. NAVIGATION
+        // ================================================================
+        let currentModule = 'dashboard';
+
+        function switchModule(mod) {
+            currentModule = mod;
+            document.querySelectorAll('#topNav button, #bottomNav button').forEach(b => b.classList.remove('active'));
+            document.querySelector(`#topNav button[data-module="${mod}"]`)?.classList.add('active');
+            document.querySelector(`#bottomNav button[data-module="${mod}"]`)?.classList.add('active');
+            document.querySelectorAll('.module-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('panel-' + mod).classList.add('active');
+            // Refresh the current module's content
+            refreshCurrentModule();
+        }
+
+        async function refreshCurrentModule() {
+            switch (currentModule) {
+                case 'dashboard':
+                    await refreshDashboard();
+                    await refreshLedgers();
+                    await refreshProjections();
+                    break;
+                case 'herd':
+                    await refreshHerd();
+                    await refreshPalakSummary();
+                    break;
+                case 'stock':
+                    await refreshStock();
+                    break;
+                case 'milk':
+                    await refreshMilk();
+                    break;
+                case 'labour':
+                    await refreshLabour();
+                    break;
+                case 'accounts':
+                    await refreshAccounts();
+                    break;
+                case 'reports':
+                    await refreshReports();
+                    break;
+            }
+        }
+
+        document.querySelectorAll('#topNav button, #bottomNav button').forEach(btn => {
+            btn.addEventListener('click', function() { switchModule(this.dataset.module); });
+        });
+
+        // ================================================================
+        // 4. REFRESH ALL
+        // ================================================================
+        async function refreshAll() {
+            try {
+                await refreshDashboard();
+                await refreshHerd();
+                await refreshStock();
+                await refreshMilk();
+                await refreshLabour();
+                await refreshAccounts();
+                await refreshReports();
+                await refreshProjections();
+                await refreshLedgers();
+                await refreshPalakSummary();
+                document.getElementById('appLoader').style.display = 'none';
+                // Re-show current module
+                document.getElementById('panel-' + currentModule).classList.add('active');
+            } catch (e) {
+                console.error('Refresh error:', e);
+                document.getElementById('appLoader').innerHTML = 'Error loading data. Please refresh.';
+            }
+        }
+
+        // ================================================================
+        // 5. DASHBOARD
+        // ================================================================
+        let dashboardPeriod = 'daily';
+
+        async function refreshDashboard() {
+            const active = await getActiveAnimals();
+            const totalMilk = await getTotalMilk();
+            const feedPurchases = await DB.get('feedPurchases', []);
+            const feedCons = await DB.get('feedConsumption', []);
+            const labour = await DB.get('labour', []);
+            const slaughter = await DB.get('slaughter', []);
+            const kori = await DB.get('kori', []);
+            const taji = await DB.get('taji', []);
+            const dead = await DB.get('dead', []);
+            const customers = await DB.get('customers', []);
+            const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+                benchmarkProd: 192, benchmarkFeed: 200 });
+
+            const feedCost = feedPurchases.reduce((s, d) => s + (d.goodsBillAmount || 0), 0);
+            const feedKg = feedPurchases.reduce((s, d) => s + (d.totalWeight || 0), 0);
+            const totalFeed = feedCons.reduce((s, d) => s + (d.bagsConsumed || 0) * (d.bagSize || 50), 0);
+            const avgMilk = active.length ? (totalMilk / active.length) : 0;
+            const avgFeed = active.length ? (totalFeed / active.length) : 0;
+            const avgFeedCost = feedKg ? (feedCost / feedKg) : 0;
+            const caretakerTotal = await getCaretakerTotal();
+            const transportTotal = await getTransportTotal();
+            const labourTotal = await getLabourTotal();
+            const medicineTotal = await getMedicineTotal();
+            const totalOpEx = feedCost + caretakerTotal + transportTotal + labourTotal + medicineTotal;
+            const avgMilkRate = totalMilk ? (totalOpEx / totalMilk) : 0;
+            const saleTotal = customers.reduce((s, c) => s + (c.sellingRate || 0), 0);
+            const avgSale = customers.length ? (saleTotal / customers.length) : 0;
+            const labTotal = labourTotal;
+            const avgLabAnimal = active.length ? (labTotal / active.length) : 0;
+            const tajiTotal = taji.reduce((s, d) => s + (d.billAmount || 0), 0);
+            const avgTaji = taji.length ? (tajiTotal / taji.length) : 0;
+            const koriTotal = kori.reduce((s, d) => s + (d.totalBillAmount || 0), 0);
+            const koriCount = kori.reduce((s, d) => s + (d.numberOfAnimals || 0), 0);
+            const avgKori = koriCount ? (koriTotal / koriCount) : 0;
+            const slTotal = slaughter.reduce((s, d) => s + (d.soldAmount || 0), 0);
+            const avgSl = slaughter.length ? (slTotal / slaughter.length) : 0;
+            const now = new Date();
+            const threeMonths = new Date(now);
+            threeMonths.setMonth(now.getMonth() - 3);
+            const recentDead = dead.filter(d => new Date(d.outgoingDate) > threeMonths);
+            const avgDead = recentDead.length / 3;
+            const arrivals = [...taji, ...kori];
+            const recentArr = arrivals.filter(d => new Date(d.incomingDate || d.purchaseDate) > threeMonths);
+            const avgArr = recentArr.length / 3;
+            const totalCost = feedCost + caretakerTotal + transportTotal + labourTotal + medicineTotal;
+            const avgCost = active.length ? (totalCost / active.length) : 0;
+            const medTotal = medicineTotal;
+            const avgMed = active.length ? (medTotal / active.length) : 0;
+            const labMonths = Math.max(1, labour.length);
+            const avgLabPagar = labour.reduce((s, l) => s + (l.fixedPagar || 0), 0) / labMonths;
+
+            // System Alerts
+            const animals = await DB.get('animals', []);
+            const pregnant7 = animals.filter(a => a.status === 'Pregnant' && a.faliDate && (new Date() - new Date(a
+                .faliDate)) > 7 * 30 * 24 * 60 * 60 * 1000);
+            const repeatBreeder = animals.filter(a => (a.servicedCycle || 0) > 3);
+            const toService = animals.filter(a => {
+                const incoming = new Date(a.incomingDate);
+                const days = (new Date() - incoming) / (24 * 60 * 60 * 1000);
+                if (a.status === 'KHALI' && days > 60) return true;
+                if (a.status === 'KHALI' && a.doctorDate) {
+                    const dd = new Date(a.doctorDate);
+                    if ((new Date() - dd) / (24 * 60 * 60 * 1000) > 30) return true;
+                }
+                return false;
+            });
+            const lowStock = (await DB.get('godown', [])).filter(g => g.bagsInStock < 20);
+
+            const alerts = [];
+            if (pregnant7.length) alerts.push({ icon: 'fa-baby', msg: `${pregnant7.length} animals pregnant >7 months`,
+                count: pregnant7.length });
+            if (repeatBreeder.length) alerts.push({ icon: 'fa-repeat', msg: `${repeatBreeder.length} repeat breeders (cycle >3)`,
+                count: repeatBreeder.length });
+            if (toService.length) alerts.push({ icon: 'fa-clock', msg: `${toService.length} animals need service`,
+                count: toService.length });
+            if (lowStock.length) alerts.push({ icon: 'fa-exclamation-triangle', msg: `${lowStock.length} items low in stock`,
+                count: lowStock.length });
+
+            const alertEl = document.getElementById('systemAlerts');
+            if (alerts.length) {
+                alertEl.style.display = 'flex';
+                alertEl.innerHTML = alerts.map(a =>
+                    `<i class="fas ${a.icon}"></i><span class="msg">${a.msg}</span><span class="count">${a.count}</span>`
+                ).join('');
+            } else {
+                alertEl.style.display = 'none';
+            }
+
+            const kpis = [{
+                id: 'milk',
+                label: 'AVG Milk / Buffalo',
+                icon: 'fa-tint',
+                val: avgMilk.toFixed(1) + ' L'
+            }, { id: 'feed', label: 'AVG Feed / Buffalo', icon: 'fa-seedling', val: avgFeed.toFixed(1) +
+                    ' kg' }, { id: 'feedCost', label: 'Avg Feed Cost / kg', icon: 'fa-coins', val: '₹' + avgFeedCost
+                    .toFixed(2) }, { id: 'milkRate', label: 'Avg Milk Rate / L', icon: 'fa-flask', val: '₹' +
+                    avgMilkRate.toFixed(2) }, { id: 'saleRate', label: 'Avg Rate (Sale)', icon: 'fa-hand-holding-usd',
+                val: '₹' + avgSale.toFixed(2) }, { id: 'laborAnimal', label: 'Avg Labor / Animal',
+                icon: 'fa-user-tie', val: '₹' + avgLabAnimal.toFixed(2) }, { id: 'taji', label: 'Avg TAJI Animal',
+                icon: 'fa-truck', val: '₹' + avgTaji.toFixed(2) }, { id: 'kori', label: 'Avg KORI / Animal',
+                icon: 'fa-exchange-alt', val: '₹' + avgKori.toFixed(2) }, { id: 'slaughter',
+                label: 'Avg Slaughtered Rate', icon: 'fa-skull', val: '₹' + avgSl.toFixed(2) }, { id: 'dead',
+                label: 'Avg Dead / Month', icon: 'fa-calendar-times', val: avgDead.toFixed(1) + ' animals' }, { id: 'arrivals',
+                label: 'Avg Monthly Arrivals', icon: 'fa-arrow-right', val: avgArr.toFixed(1) + ' animals' }, { id: 'totalCost',
+                label: 'Avg Total Cost / Buffalo', icon: 'fa-calculator', val: '₹' + avgCost.toFixed(2) }, { id: 'medicine',
+                label: 'Avg Medicine / Buffalo', icon: 'fa-syringe', val: '₹' + avgMed.toFixed(2) }, { id: 'laborPagar',
+                label: 'Avg Labor Pagar / Month', icon: 'fa-wallet', val: '₹' + avgLabPagar.toFixed(2) }
+            ];
+
+            const grid = document.getElementById('kpiGrid');
+            grid.innerHTML = kpis.map(k => `
+                <div class="card-slim" onclick="showKpiDetail('${k.id}')">
+                    <div class="label"><i class="fas ${k.icon}"></i><span>${k.label}</span></div>
+                    <div class="value">${k.val}</div>
+                </div>
+            `).join('');
+        }
+
+        async function showKpiDetail(id) {
+            // quick detail modal
+            const active = await getActiveAnimals();
+            const totalMilk = await getTotalMilk();
+            const feedPurchases = await DB.get('feedPurchases', []);
+            const feedCons = await DB.get('feedConsumption', []);
+            const labour = await DB.get('labour', []);
+            const slaughter = await DB.get('slaughter', []);
+            const kori = await DB.get('kori', []);
+            const taji = await DB.get('taji', []);
+            const dead = await DB.get('dead', []);
+            const customers = await DB.get('customers', []);
+            const feedCost = feedPurchases.reduce((s, d) => s + (d.goodsBillAmount || 0), 0);
+            const feedKg = feedPurchases.reduce((s, d) => s + (d.totalWeight || 0), 0);
+            const totalFeed = feedCons.reduce((s, d) => s + (d.bagsConsumed || 0) * (d.bagSize || 50), 0);
+            const avgMilk = active.length ? (totalMilk / active.length) : 0;
+            const avgFeed = active.length ? (totalFeed / active.length) : 0;
+            const avgFeedCost = feedKg ? (feedCost / feedKg) : 0;
+            const caretakerTotal = await getCaretakerTotal();
+            const transportTotal = await getTransportTotal();
+            const labourTotal = await getLabourTotal();
+            const medicineTotal = await getMedicineTotal();
+            const totalOpEx = feedCost + caretakerTotal + transportTotal + labourTotal + medicineTotal;
+            const avgMilkRate = totalMilk ? (totalOpEx / totalMilk) : 0;
+            const saleTotal = customers.reduce((s, c) => s + (c.sellingRate || 0), 0);
+            const avgSale = customers.length ? (saleTotal / customers.length) : 0;
+            const labTotal = labourTotal;
+            const avgLabAnimal = active.length ? (labTotal / active.length) : 0;
+            const tajiTotal = taji.reduce((s, d) => s + (d.billAmount || 0), 0);
+            const avgTaji = taji.length ? (tajiTotal / taji.length) : 0;
+            const koriTotal = kori.reduce((s, d) => s + (d.totalBillAmount || 0), 0);
+            const koriCount = kori.reduce((s, d) => s + (d.numberOfAnimals || 0), 0);
+            const avgKori = koriCount ? (koriTotal / koriCount) : 0;
+            const slTotal = slaughter.reduce((s, d) => s + (d.soldAmount || 0), 0);
+            const avgSl = slaughter.length ? (slTotal / slaughter.length) : 0;
+            const now = new Date();
+            const threeMonths = new Date(now);
+            threeMonths.setMonth(now.getMonth() - 3);
+            const recentDead = dead.filter(d => new Date(d.outgoingDate) > threeMonths);
+            const avgDead = recentDead.length / 3;
+            const arrivals = [...taji, ...kori];
+            const recentArr = arrivals.filter(d => new Date(d.incomingDate || d.purchaseDate) > threeMonths);
+            const avgArr = recentArr.length / 3;
+            const totalCost = feedCost + caretakerTotal + transportTotal + labourTotal + medicineTotal;
+            const avgCost = active.length ? (totalCost / active.length) : 0;
+            const medTotal = medicineTotal;
+            const avgMed = active.length ? (medTotal / active.length) : 0;
+            const labMonths = Math.max(1, labour.length);
+            const avgLabPagar = labour.reduce((s, l) => s + (l.fixedPagar || 0), 0) / labMonths;
+
+            let title = '',
+                details = [];
+            switch (id) {
+                case 'milk':
+                    title = 'AVG Milk per Buffalo';
+                    details = [
+                        { label: 'Total Milk (L)', val: totalMilk.toFixed(1) },
+                        { label: 'Active Animals', val: active.length },
+                        { label: 'Average (L)', val: avgMilk.toFixed(1) },
+                        { label: 'Benchmark (192 L)', val: '192' },
+                        { label: 'vs Benchmark', val: ((avgMilk / 192) * 100).toFixed(1) + '%' }
+                    ];
+                    break;
+                case 'feed':
+                    title = 'AVG Feed per Buffalo';
+                    details = [
+                        { label: 'Total Feed (kg)', val: totalFeed.toFixed(1) },
+                        { label: 'Active Animals', val: active.length },
+                        { label: 'Average (kg)', val: avgFeed.toFixed(1) },
+                        { label: 'Benchmark (200 kg)', val: '200' }
+                    ];
+                    break;
+                case 'feedCost':
+                    title = 'Avg Feed Cost per kg';
+                    details = [
+                        { label: 'Total Feed Cost (₹)', val: '₹' + feedCost.toFixed(2) },
+                        { label: 'Total Feed (kg)', val: feedKg.toFixed(1) },
+                        { label: 'Avg Cost per kg (₹)', val: '₹' + avgFeedCost.toFixed(2) }
+                    ];
+                    break;
+                case 'milkRate':
+                    title = 'Avg Milk Rate per Liter (OpEx)';
+                    details = [
+                        { label: 'Total OpEx (₹)', val: '₹' + totalOpEx.toFixed(2) },
+                        { label: 'Total Milk (L)', val: totalMilk.toFixed(1) },
+                        { label: 'Avg Rate (₹/L)', val: '₹' + avgMilkRate.toFixed(2) }
+                    ];
+                    break;
+                case 'saleRate':
+                    title = 'Avg Sale Rate';
+                    details = [
+                        { label: 'Total Sale Rate (₹)', val: '₹' + saleTotal.toFixed(2) },
+                        { label: 'Customers', val: customers.length },
+                        { label: 'Avg Rate (₹)', val: '₹' + avgSale.toFixed(2) }
+                    ];
+                    break;
+                case 'laborAnimal':
+                    title = 'Avg Labor Cost per Animal';
+                    details = [
+                        { label: 'Total Labor Cost (₹)', val: '₹' + labTotal.toFixed(2) },
+                        { label: 'Active Animals', val: active.length },
+                        { label: 'Avg per Animal (₹)', val: '₹' + avgLabAnimal.toFixed(2) }
+                    ];
+                    break;
+                case 'taji':
+                    title = 'Avg TAJI Animal Rate';
+                    details = [
+                        { label: 'Total TAJI Bill (₹)', val: '₹' + tajiTotal.toFixed(2) },
+                        { label: 'Total TAJI Animals', val: taji.length },
+                        { label: 'Avg per Animal (₹)', val: '₹' + avgTaji.toFixed(2) }
+                    ];
+                    break;
+                case 'kori':
+                    title = 'Avg KORI per Animal';
+                    details = [
+                        { label: 'Total KORI Bill (₹)', val: '₹' + koriTotal.toFixed(2) },
+                        { label: 'Total KORI Animals', val: koriCount },
+                        { label: 'Avg per Animal (₹)', val: '₹' + avgKori.toFixed(2) }
+                    ];
+                    break;
+                case 'slaughter':
+                    title = 'Avg Slaughtered Rate';
+                    details = [
+                        { label: 'Total Slaughter Sales (₹)', val: '₹' + slTotal.toFixed(2) },
+                        { label: 'Total Slaughtered', val: slaughter.length },
+                        { label: 'Avg per Animal (₹)', val: '₹' + avgSl.toFixed(2) }
+                    ];
+                    break;
+                case 'dead':
+                    title = 'Avg Dead per Month (3 months)';
+                    details = [
+                        { label: 'Recent Deaths (3 mo)', val: recentDead.length },
+                        { label: 'Avg per Month', val: avgDead.toFixed(1) }
+                    ];
+                    break;
+                case 'arrivals':
+                    title = 'Avg Monthly Arrivals (3 months)';
+                    details = [
+                        { label: 'Recent Arrivals (3 mo)', val: recentArr.length },
+                        { label: 'Avg per Month', val: avgArr.toFixed(1) }
+                    ];
+                    break;
+                case 'totalCost':
+                    title = 'Avg Total Cost per Buffalo';
+                    details = [
+                        { label: 'Total Cost (₹)', val: '₹' + totalCost.toFixed(2) },
+                        { label: 'Active Animals', val: active.length },
+                        { label: 'Avg per Animal (₹)', val: '₹' + avgCost.toFixed(2) }
+                    ];
+                    break;
+                case 'medicine':
+                    title = 'Avg Medicine Cost per Buffalo';
+                    details = [
+                        { label: 'Total Medicine (₹)', val: '₹' + medTotal.toFixed(2) },
+                        { label: 'Active Animals', val: active.length },
+                        { label: 'Avg per Animal (₹)', val: '₹' + avgMed.toFixed(2) }
+                    ];
+                    break;
+                case 'laborPagar':
+                    title = 'Avg Labor Pagar per Month';
+                    details = [
+                        { label: 'Total Pagar (₹)', val: '₹' + (labour.reduce((s, l) => s + (l.fixedPagar || 0), 0))
+                                .toFixed(2) },
+                        { label: 'Months Count', val: labMonths },
+                        { label: 'Avg per Month (₹)', val: '₹' + avgLabPagar.toFixed(2) }
+                    ];
+                    break;
+                default:
+                    title = 'KPI Detail';
+                    details = [{ label: 'Value', val: '—' }];
+            }
+            let html = details.map(d => `<div class="detail-item"><span class="label">${d.label}</span><span class="val">${d.val}</span></div>`)
+                .join('');
+            showModal('📊 ' + title, html);
+        }
+
+        // ================================================================
+        // 6. LEDGERS
+        // ================================================================
+        async function refreshLedgers() {
+            const animals = await DB.get('animals', []);
+            const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+                benchmarkProd: 192, benchmarkFeed: 200 });
+            const noora = animals.filter(a => a.location === 'Noora');
+            const tosif = animals.filter(a => a.location === 'Tosif');
+            const feedPurchases = await DB.get('feedPurchases', []);
+            const danawalaPayments = await DB.get('danawalaPayments', []);
+            const danaP = feedPurchases.reduce((s, d) => s + (d.goodsBillAmount || 0), 0);
+            const danaPaid = danawalaPayments.reduce((s, d) => s + (d.amountPaid || 0), 0);
+            const bhaiswalBills = await DB.get('bhaiswalBills', []);
+            const medicineBills = await DB.get('medicineBills', []);
+            const labour = await DB.get('labour', []);
+            const slaughter = await DB.get('slaughter', []);
+            const taji = await DB.get('taji', []);
+            const bakdi = await DB.get('bakdi', []);
+
+            const ledgers = [
+                { id: 'noora', icon: 'fa-user-md', title: 'NOORA Palak Bill', desc: 'Outstanding liabilities',
+                    amt: noora.length * config.nooraRate },
+                { id: 'tosif', icon: 'fa-user-md', title: 'TOSIF Palak Bill', desc: 'Outstanding liabilities',
+                    amt: tosif.length * config.tosifRate },
+                { id: 'irshad', icon: 'fa-truck', title: 'Irshad Transporter', desc: 'Freight outstanding',
+                    amt: await getTransportTotal() },
+                { id: 'danawala', icon: 'fa-seedling', title: 'Danawala Bills', desc: 'Feed outstanding',
+                    amt: danaP - danaPaid },
+                { id: 'bhaiswal', icon: 'fa-handshake', title: 'Bhaiswals Bills', desc: 'Livestock outstanding',
+                    amt: bhaiswalBills.reduce((s, d) => s + (d.amount || 0), 0) },
+                { id: 'medicine', icon: 'fa-syringe', title: 'Medicine Bills', desc: 'Vet outstanding',
+                    amt: medicineBills.reduce((s, d) => s + (d.amount || 0), 0) },
+                { id: 'labourSummary', icon: 'fa-users', title: 'TOTAL LABOR PAGAR', desc: 'Summary sheet',
+                    amt: labour.reduce((s, l) => s + (l.fixedPagar || 0), 0) },
+                { id: 'slaughtered', icon: 'fa-drumstick-bite', title: 'Slaughtered Balance', desc: 'Kasai ledger',
+                    amt: slaughter.reduce((s, d) => s + (d.soldAmount || 0), 0) }
+            ];
+            const grid = document.getElementById('ledgerGrid');
+            grid.innerHTML = ledgers.map(l => `
+                <div class="touch-card" onclick="openLedger('${l.id}')">
+                    <i class="fas ${l.icon}"></i>
+                    <div class="info"><div class="title">${l.title}</div><div class="desc">${l.desc}</div></div>
+                    <div class="amount">₹${l.amt.toFixed(2)}</div>
+                </div>
+            `).join('');
+        }
+
+        async function openLedger(type) {
+            let title = '',
+                details = [];
+            const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+                benchmarkProd: 192, benchmarkFeed: 200 });
+            const animals = await DB.get('animals', []);
+            const taji = await DB.get('taji', []);
+            const bakdi = await DB.get('bakdi', []);
+            const feedPurchases = await DB.get('feedPurchases', []);
+            const danawalaPayments = await DB.get('danawalaPayments', []);
+            const bhaiswalBills = await DB.get('bhaiswalBills', []);
+            const medicineBills = await DB.get('medicineBills', []);
+            const labour = await DB.get('labour', []);
+            const slaughter = await DB.get('slaughter', []);
+
+            switch (type) {
+                case 'noora': {
+                    const list = animals.filter(a => a.location === 'Noora');
+                    title = 'NOORA Palak Bill';
+                    details = [
+                        { label: 'Animals', val: list.length },
+                        { label: 'Rate / Animal', val: '₹' + config.nooraRate },
+                        { label: 'Total Outstanding', val: '₹' + (list.length * config.nooraRate).toFixed(2) }
+                    ];
+                    if (list.length) details.push({ label: 'Tags', val: list.map(a => a.tagNo).join(', ') });
+                    break;
+                }
+                case 'tosif': {
+                    const list = animals.filter(a => a.location === 'Tosif');
+                    title = 'TOSIF Palak Bill';
+                    details = [
+                        { label: 'Animals', val: list.length },
+                        { label: 'Rate / Animal', val: '₹' + config.tosifRate },
+                        { label: 'Total Outstanding', val: '₹' + (list.length * config.tosifRate).toFixed(2) }
+                    ];
+                    if (list.length) details.push({ label: 'Tags', val: list.map(a => a.tagNo).join(', ') });
+                    break;
+                }
+                case 'irshad':
+                    title = 'Irshad Transporter Bill';
+                    details = [
+                        { label: 'TAJI Freight / Animal', val: '₹' + config.tajiFreight },
+                        { label: 'BAKDI Freight / Animal', val: '₹' + config.bakdiFreight },
+                        { label: 'Total TAJI Animals', val: taji.length },
+                        { label: 'Total BAKDI Animals', val: bakdi.length },
+                        { label: 'Total Outstanding', val: '₹' + (await getTransportTotal()).toFixed(2) }
+                    ];
+                    break;
+                case 'danawala': {
+                    const p = feedPurchases.reduce((s, d) => s + (d.goodsBillAmount || 0), 0);
+                    const paid = danawalaPayments.reduce((s, d) => s + (d.amountPaid || 0), 0);
+                    title = 'Danawala Bills Outstanding';
+                    details = [
+                        { label: 'Total Bills', val: '₹' + p.toFixed(2) },
+                        { label: 'Total Paid', val: '₹' + paid.toFixed(2) },
+                        { label: 'Outstanding', val: '₹' + (p - paid).toFixed(2) }
+                    ];
+                    break;
+                }
+                case 'bhaiswal': {
+                    const list = bhaiswalBills;
+                    title = 'Bhaiswals Bills Outstanding';
+                    details = [
+                        { label: 'Total Outstanding', val: '₹' + list.reduce((s, d) => s + (d.amount || 0), 0).toFixed(
+                            2) },
+                        { label: 'Entries', val: list.length }
+                    ];
+                    break;
+                }
+                case 'medicine': {
+                    const list = medicineBills;
+                    title = 'Medicine Bills Outstanding';
+                    details = [
+                        { label: 'Total Outstanding', val: '₹' + list.reduce((s, d) => s + (d.amount || 0), 0).toFixed(
+                            2) },
+                        { label: 'Entries', val: list.length }
+                    ];
+                    break;
+                }
+                case 'labourSummary': {
+                    const lab = labour;
+                    const total = lab.reduce((s, l) => s + (l.fixedPagar || 0), 0);
+                    title = 'TOTAL LABOR PAGAR Summary';
+                    details = [
+                        { label: 'Total Pagar', val: '₹' + total.toFixed(2) },
+                        { label: 'Active Workers', val: lab.filter(l => !l.leavingDate).length },
+                        { label: 'Total Workers', val: lab.length }
+                    ];
+                    break;
+                }
+                case 'slaughtered': {
+                    const list = slaughter;
+                    title = 'Slaughtered Balance';
+                    details = [
+                        { label: 'Total Sales', val: '₹' + list.reduce((s, d) => s + (d.soldAmount || 0), 0).toFixed(
+                            2) },
+                        { label: 'Animals Slaughtered', val: list.length }
+                    ];
+                    break;
+                }
+                default:
+                    return;
+            }
+            let html = details.map(d => `<div class="detail-item"><span class="label">${d.label}</span><span class="val">${d.val}</span></div>`)
+                .join('');
+            showModal('📋 ' + title, html);
+        }
+
+        // ================================================================
+        // 7. PROJECTIONS
+        // ================================================================
+        async function refreshProjections() {
+            const months = [];
+            const now = new Date();
+            for (let i = 0; i < 12; i++) { const d = new Date(now);
+                d.setMonth(now.getMonth() + i);
+                months.push(d.toLocaleString('en', { month: 'short', year: '2-digit' })); }
+            document.getElementById('projectionHeaders').innerHTML = months.map(m => '<th>' + m + '</th>').join('');
+            const animals = await DB.get('animals', []);
+            const counts = new Array(12).fill(0);
+            animals.forEach(a => {
+                if (a.faliDate) {
+                    const fali = new Date(a.faliDate);
+                    const birth = new Date(fali);
+                    birth.setMonth(fali.getMonth() + 9);
+                    const diff = (birth.getFullYear() - now.getFullYear()) * 12 + (birth.getMonth() - now.getMonth());
+                    if (diff >= 0 && diff < 12) counts[diff]++;
+                }
+            });
+            document.getElementById('projectionRow').innerHTML = counts.map(c => '<td>' + c + '</td>').join('');
+        }
+
+        // ================================================================
+        // 8. HERD
+        // ================================================================
+        async function refreshHerd() {
+            const animals = await DB.get('animals', []);
+            const total = animals.length;
+            const shedA = animals.filter(a => a.location === 'Shed A' || a.location === 'YARD A');
+            const shedB = animals.filter(a => a.location === 'Shed B' || a.location === 'YARD B');
+            const tosif = animals.filter(a => a.location === 'Tosif');
+            const noora = animals.filter(a => a.location === 'Noora');
+            const taji = await DB.get('taji', []);
+            const kori = await DB.get('kori', []);
+            const bakdi = await DB.get('bakdi', []);
+            const pregnant7 = animals.filter(a => a.status === 'Pregnant' && a.faliDate && (new Date() - new Date(a
+                .faliDate)) > 7 * 30 * 24 * 60 * 60 * 1000);
+            const repeatBreeder = animals.filter(a => (a.servicedCycle || 0) > 3);
+            const toService = animals.filter(a => {
+                const incoming = new Date(a.incomingDate);
+                const days = (new Date() - incoming) / (24 * 60 * 60 * 1000);
+                if (a.status === 'KHALI' && days > 60) return true;
+                if (a.status === 'KHALI' && a.doctorDate) {
+                    const dd = new Date(a.doctorDate);
+                    if ((new Date() - dd) / (24 * 60 * 60 * 1000) > 30) return true;
+                }
+                return false;
+            });
+            const doctorDue = animals.filter(a => {
+                if (!a.faliDate) return false;
+                const fali = new Date(a.faliDate);
+                const due = new Date(fali);
+                due.setDate(fali.getDate() + 55);
+                return new Date() >= due && a.status !== 'Pregnant' && a.status !== 'FALI';
+            });
+
+            const diags = [
+                { id: 'total', label: 'TOTAL ANIMALS', desc: 'Shed A+B+Yards+Noora+Tosif', icon: 'fa-cow', val: total,
+                    color: '' },
+                { id: 'shedA', label: 'Shed A Capacity', desc: 'Shed A + YARD A', icon: 'fa-home', val: shedA.length,
+                    color: '' },
+                { id: 'shedB', label: 'Shed B Capacity', desc: 'Shed B + YARD B', icon: 'fa-home', val: shedB.length,
+                    color: '' },
+                { id: 'tosif', label: 'Tosif No of Animals', desc: 'Active with Tosif', icon: 'fa-user-tie',
+                    val: tosif.length, color: '' },
+                { id: 'noora', label: 'NOORA No of Animals', desc: 'Active with Noora', icon: 'fa-user-md',
+                    val: noora.length, color: '' },
+                { id: 'taji', label: 'TAJI Animals Came', desc: 'Dynamic inward', icon: 'fa-arrow-right',
+                    val: taji.length, color: '' },
+                { id: 'kori', label: 'KORI Animals Came', desc: 'Dynamic inward', icon: 'fa-exchange-alt',
+                    val: kori.length, color: '' },
+                { id: 'bakdi', label: 'BAKDI Gone', desc: 'Outward departures', icon: 'fa-arrow-left',
+                    val: bakdi.length, color: '' },
+                { id: 'pregnant7', label: '⚠ Pregnant >7 Months', desc: 'Alert diagnostic', icon: 'fa-baby',
+                    val: pregnant7.length, color: 'text-red' },
+                { id: 'repeatBreeder', label: '⚠ Repeat Breeder', desc: 'Service cycle >3', icon: 'fa-repeat',
+                    val: repeatBreeder.length, color: 'text-orange' },
+                { id: 'toService', label: '⚠ To Be Serviced', desc: '>60d / 30d KHALI', icon: 'fa-clock',
+                    val: toService.length, color: 'text-purple' },
+                { id: 'doctor', label: 'DOCTOR CARD', desc: '55d post-Fali', icon: 'fa-stethoscope',
+                    val: doctorDue.length, color: 'text-blue' }
+            ];
+            const grid = document.getElementById('herdDiagnosticGrid');
+            grid.innerHTML = diags.map(d => `
+                <div class="touch-card" onclick="${d.id === 'doctor' ? 'openDoctorCard()' : `showHerdDetail('${d.id}')`}" style="${d.color ? 'border-color:#4a2a2a;' : ''}">
+                    <i class="fas ${d.icon}"></i>
+                    <div class="info"><div class="title">${d.label}</div><div class="desc">${d.desc}</div></div>
+                    <div class="amount ${d.color}">${d.val}</div>
+                </div>
+            `).join('');
+
+            renderHerdTable(animals);
+        }
+
+        function renderHerdTable(animals) {
+            const tbody = document.getElementById('herdTableBody');
+            tbody.innerHTML = animals.map((a, idx) => `
+                <tr>
+                    <td><strong>${a.tagNo||'—'}</strong></td>
+                    <td>${a.khilaNo||'—'}</td>
+                    <td>${a.location||'—'}</td>
+                    <td><span class="status-badge ${a.status==='Pregnant'?'green':a.status==='KHALI'?'orange':a.status==='FALI'?'blue':a.status==='Slaughtered'?'red':'gray'}">${a.status||'—'}</span></td>
+                    <td>${a.faliDate||'—'}</td>
+                    <td>${a.servicedCycle||0}</td>
+                    <td>${a.returnFlag ? '✅ Return' : '—'}</td>
+                    <td><button class="delete-btn" onclick="deleteHerdEntry(${idx})" title="Delete"><i class="fas fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+        }
+
+        function filterHerdTable() {
+            const q = document.getElementById('herdSearch').value.toLowerCase();
+            const animals = DB.get('animals', []);
+            const filtered = animals.filter(a =>
+                (a.tagNo || '').toLowerCase().includes(q) ||
+                (a.khilaNo || '').toLowerCase().includes(q) ||
+                (a.location || '').toLowerCase().includes(q) ||
+                (a.status || '').toLowerCase().includes(q)
+            );
+            renderHerdTable(filtered);
+        }
+
+        async function deleteHerdEntry(index) {
+            if (!confirm('Delete this animal record?')) return;
+            const animals = await DB.get('animals', []);
+            animals.splice(index, 1);
+            await DB.set('animals', animals);
+            refreshAll();
+        }
+
+        async function showHerdDetail(id) {
+            const animals = await DB.get('animals', []);
+            const taji = await DB.get('taji', []);
+            const kori = await DB.get('kori', []);
+            const bakdi = await DB.get('bakdi', []);
+            let list = [],
+                title = '';
+            switch (id) {
+                case 'total':
+                    list = animals;
+                    title = 'All Animals';
+                    break;
+                case 'shedA':
+                    list = animals.filter(a => a.location === 'Shed A' || a.location === 'YARD A');
+                    title = 'Shed A + YARD A';
+                    break;
+                case 'shedB':
+                    list = animals.filter(a => a.location === 'Shed B' || a.location === 'YARD B');
+                    title = 'Shed B + YARD B';
+                    break;
+                case 'tosif':
+                    list = animals.filter(a => a.location === 'Tosif');
+                    title = 'Tosif Animals';
+                    break;
+                case 'noora':
+                    list = animals.filter(a => a.location === 'Noora');
+                    title = 'NOORA Animals';
+                    break;
+                case 'taji':
+                    list = taji.map(t => ({ tagNo: t.tagNo, detail: 'TAJI ' + t.incomingDate }));
+                    title = 'TAJI Arrivals';
+                    break;
+                case 'kori':
+                    list = kori.map(k => ({ tagNo: 'KORI Batch', detail: k.brokerName + ' (' + k.numberOfAnimals +
+                            ')' }));
+                    title = 'KORI Arrivals';
+                    break;
+                case 'bakdi':
+                    list = bakdi.map(b => ({ tagNo: b.tagNo, detail: 'BAKDI ' + b.outgoingDate }));
+                    title = 'BAKDI Gone';
+                    break;
+                case 'pregnant7':
+                    list = animals.filter(a => a.status === 'Pregnant' && a.faliDate && (new Date() - new Date(a
+                    .faliDate)) > 7 * 30 * 24 * 60 * 60 * 1000);
+                    title = 'Pregnant >7 Months';
+                    break;
+                case 'repeatBreeder':
+                    list = animals.filter(a => (a.servicedCycle || 0) > 3);
+                    title = 'Repeat Breeder (Cycle >3)';
+                    break;
+                case 'toService':
+                    list = animals.filter(a => {
+                        const incoming = new Date(a.incomingDate);
+                        const days = (new Date() - incoming) / (24 * 60 * 60 * 1000);
+                        if (a.status === 'KHALI' && days > 60) return true;
+                        if (a.status === 'KHALI' && a.doctorDate) {
+                            const dd = new Date(a.doctorDate);
+                            if ((new Date() - dd) / (24 * 60 * 60 * 1000) > 30) return true;
+                        }
+                        return false;
+                    });
+                    title = 'To Be Serviced';
+                    break;
+                case 'doctor':
+                    list = animals.filter(a => {
+                        if (!a.faliDate) return false;
+                        const fali = new Date(a.faliDate);
+                        const due = new Date(fali);
+                        due.setDate(fali.getDate() + 55);
+                        return new Date() >= due && a.status !== 'Pregnant' && a.status !== 'FALI';
+                    }).sort((a, b) => (a.khilaNo || 0) - (b.khilaNo || 0));
+                    title = 'Doctor Checkup Due (55d post-Fali)';
+                    break;
+                default:
+                    list = [];
+                    title = 'Details';
+            }
+            let html = `<div class="detail-item"><span class="label">Count</span><span class="val">${list.length}</span></div>`;
+            if (list.length > 0 && list[0].tagNo) {
+                const items = list.slice(0, 20).map(a => a.tagNo + (a.detail ? ' (' + a.detail + ')' : '')).join(', ');
+                html +=
+                    `<div class="detail-item" style="flex-wrap:wrap;"><span class="label">Tags</span><span class="val" style="font-weight:400;font-size:0.8rem;">${items}${list.length>20 ? ' ...' : ''}</span></div>`;
+            }
+            showModal('🐄 ' + title, html);
+        }
+
+        // ----- Palak Summary -----
+        async function refreshPalakSummary() {
+            const animals = await DB.get('animals', []);
+            const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+                benchmarkProd: 192, benchmarkFeed: 200 });
+            const noora = animals.filter(a => a.location === 'Noora');
+            const tosif = animals.filter(a => a.location === 'Tosif');
+
+            const grid = document.getElementById('palakSummary');
+            grid.innerHTML = `
+                <div class="card-slim" onclick="showModal('Noora Details','Noora Animals: ${noora.length}<br>Rate: ₹${config.nooraRate}/month<br>Total: ₹${(noora.length * config.nooraRate).toFixed(2)}')">
+                    <div class="label"><i class="fas fa-user-md"></i><span>Noora</span></div>
+                    <div class="value">${noora.length} <span class="sub">animals</span></div>
+                </div>
+                <div class="card-slim" onclick="showModal('Tosif Details','Tosif Animals: ${tosif.length}<br>Rate: ₹${config.tosifRate}/month<br>Total: ₹${(tosif.length * config.tosifRate).toFixed(2)}')">
+                    <div class="label"><i class="fas fa-user-tie"></i><span>Tosif</span></div>
+                    <div class="value">${tosif.length} <span class="sub">animals</span></div>
+                </div>
+            `;
+        }
+
+        // ----- Doctor Card -----
+        function openDoctorCard() {
+            const animals = DB.get('animals', []);
+            const due = animals.filter(a => {
+                if (!a.faliDate) return false;
+                const fali = new Date(a.faliDate);
+                const dueDate = new Date(fali);
+                dueDate.setDate(fali.getDate() + 55);
+                return new Date() >= dueDate && a.status !== 'Pregnant' && a.status !== 'FALI';
+            }).sort((a, b) => (a.khilaNo || 0) - (b.khilaNo || 0));
+            let html = '<div style="font-size:0.85rem;max-height:300px;overflow-y:auto;">';
+            if (!due.length) html += '<p class="text-muted">No animals due for checkup.</p>';
+            due.forEach(a => {
+                html +=
+                    `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border-color);">
+                        <span><strong>${a.tagNo}</strong> (Khila ${a.khilaNo}) — ${a.location}</span>
+                        <span style="display:flex;gap:6px;">
+                            <button class="btn btn-sm btn-green" onclick="markDoctor('${a.tagNo}','Pregnant')">Pregnant</button>
+                            <button class="btn btn-sm btn-orange" onclick="markDoctor('${a.tagNo}','KHALI')">KHALI</button>
+                            <button class="btn btn-sm btn-outline" onclick="showAnimalHistory('${a.tagNo}')">History</button>
+                        </span>
+                    </div>`;
+            });
+            html += '</div>';
+            showModal('🩺 Doctor Card — Checkup Due', html);
+        }
+
+        async function markDoctor(tag, status) {
+            const animals = await DB.get('animals', []);
+            const idx = animals.findIndex(a => a.tagNo === tag);
+            if (idx === -1) return;
+            animals[idx].status = status;
+            animals[idx].doctorDate = new Date().toISOString().split('T')[0];
+            if (status === 'Pregnant') {
+                animals[idx].faliDate = new Date().toISOString().split('T')[0];
+            }
+            await DB.set('animals', animals);
+            refreshAll();
+            closeModal();
+            showModal('✅ Updated', `Animal ${tag} marked as ${status}`);
+        }
+
+        function showAnimalHistory(tag) {
+            const animals = DB.get('animals', []);
+            const a = animals.find(x => x.tagNo === tag);
+            if (!a) return showModal('Not Found', 'No record for ' + tag);
+            const history = `
+                <div style="font-size:0.85rem;line-height:1.7;">
+                    <strong>Tag:</strong> ${a.tagNo}<br>
+                    <strong>Khila:</strong> ${a.khilaNo||'—'}<br>
+                    <strong>Location:</strong> ${a.location||'—'}<br>
+                    <strong>Status:</strong> ${a.status||'—'}<br>
+                    <strong>Incoming:</strong> ${a.incomingDate||'—'}<br>
+                    <strong>Fali Date:</strong> ${a.faliDate||'—'}<br>
+                    <strong>Serviced Cycle:</strong> ${a.servicedCycle||0}<br>
+                    <strong>Return Flag:</strong> ${a.returnFlag ? '✅ Return' : '—'}<br>
+                    <strong>Doctor Check:</strong> ${a.doctorDate||'—'}<br>
+                </div>
+            `;
+            showModal('📜 History — ' + tag, history);
+        }
+
+        // ----- HERD FORMS -----
+        function toggleHerdForm() {
+            const action = document.getElementById('herdAction').value;
+            const container = document.getElementById('herdDynamicFields');
+            let html = '';
+            if (action === 'addBuffalo') {
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+                    <label>Tag <input id="hf_tag"/></label>
+                    <label>Khila <input id="hf_khila"/></label>
+                    <label>Incoming <input id="hf_incoming" type="date"/></label>
+                    <label>Location <select id="hf_location"><option>Shed A</option><option>Shed B</option><option>Noora</option><option>Tosif</option><option>YARD A</option><option>YARD B</option></select></label>
+                    <label>Status <select id="hf_status"><option>KHALI</option><option>Pregnant</option><option>FALI</option><option>Slaughtered</option><option>Dead</option></select></label>
+                    <label>Lactation <input id="hf_lactation" type="number" value="0"/></label>
+                </div>`;
+            } else if (action === 'fali') {
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+                    <label>Tag <input id="hf_tag"/></label>
+                    <label>Khila No <input id="hf_khila_fali"/></label>
+                    <label>Fali Date <input id="hf_fali" type="date"/></label>
+                    <label>Bull <input id="hf_bull"/></label>
+                    <label>Shed <select id="hf_shed"><option>Shed A</option><option>Shed B</option></select></label>
+                    <label class="full" style="color:var(--text-muted);">Service No. will be auto-incremented</label>
+                </div>`;
+            } else if (action === 'tajiIn') {
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+                    <label>Tag <input id="hf_tag"/></label>
+                    <label>Incoming <input id="hf_incoming_taji" type="date"/></label>
+                    <label>Palak <select id="hf_source_taji"><option>Noora</option><option>Tosif</option></select></label>
+                    <label class="full" style="color:var(--text-muted);">Rearing Days & Bill will be auto-calculated on BAKDI</label>
+                </div>`;
+            } else if (action === 'bakdiOut') {
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+                    <label>Tag <input id="hf_tag"/></label>
+                    <label>Outgoing <input id="hf_outgoing_bakdi" type="date"/></label>
+                    <label>Target <select id="hf_target_bakdi"><option>Noora</option><option>Tosif</option></select></label>
+                    <label class="full" style="color:var(--text-muted);">Fali Date, Days Pregnant & From Shed will be auto-filled</label>
+                </div>`;
+            } else if (action === 'slaughter') {
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+                    <label>Tag <input id="hf_tag"/></label>
+                    <label>Outgoing <input id="hf_outgoing" type="date"/></label>
+                    <label>Sold ₹ <input id="hf_sold" type="number" step="0.01"/></label>
+                    <label>Kasai <input id="hf_kasai"/></label>
+                </div>`;
+            } else if (action === 'dead') {
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+                    <label>Tag <input id="hf_tag"/></label>
+                    <label>Death Date <input id="hf_death_date" type="date"/></label>
+                    <label>Location <select id="hf_dead_location"><option>Shed A</option><option>Shed B</option><option>Noora</option><option>Tosif</option></select></label>
+                </div>`;
+            } else if (action === 'kori') {
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+                    <label>Broker <input id="hf_broker"/></label>
+                    <label>Total ₹ <input id="hf_total" type="number" step="0.01"/></label>
+                    <label>#Animals <input id="hf_count" type="number"/></label>
+                    <label>Date <input id="hf_date" type="date"/></label>
+                    <label class="full" style="color:var(--text-muted);">Avg per animal will be auto-calculated</label>
+                </div>`;
+            } else if (action === 'payment') {
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+                    <label>Vendor <select id="hf_vendor"><option>Danawala</option><option>Bhaiswal</option><option>Medicine</option></select></label>
+                    <label>Amount ₹ <input id="hf_paid" type="number" step="0.01"/></label>
+                    <label>Date <input id="hf_date" type="date"/></label>
+                    <label>Name <input id="hf_vname"/></label>
+                    <label class="full" style="color:var(--text-muted);">Outstanding balance will be auto-updated</label>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        async function submitHerdEntry() {
+            const action = document.getElementById('herdAction').value;
+            const animals = await DB.get('animals', []);
+            const tag = document.getElementById('hf_tag')?.value?.trim();
+            if (!tag && action !== 'kori' && action !== 'payment') { showModal('Error', 'Tag required');
+                return; }
+
+            if (action === 'addBuffalo') {
+                const khila = document.getElementById('hf_khila')?.value || '';
+                const incoming = document.getElementById('hf_incoming')?.value || new Date().toISOString().split('T')[0];
+                const location = document.getElementById('hf_location')?.value || 'Shed A';
+                const status = document.getElementById('hf_status')?.value || 'KHALI';
+                const lactation = parseInt(document.getElementById('hf_lactation')?.value) || 0;
+                animals.push({ tagNo: tag, khilaNo: khila, incomingDate: incoming, location, status, lactationDays: lactation,
+                    lactationCycle: 0, faliDate: null, bull: null, shedAssignment: location, servicedCycle: 0,
+                    doctorDate: null, returnFlag: false });
+                await DB.set('animals', animals);
+                showModal('✅ Added', `Buffalo ${tag} added.`);
+            } else if (action === 'fali') {
+                const fali = document.getElementById('hf_fali')?.value;
+                const bull = document.getElementById('hf_bull')?.value || '';
+                const shed = document.getElementById('hf_shed')?.value || 'Shed A';
+                const khila = document.getElementById('hf_khila_fali')?.value || '';
+                const idx = animals.findIndex(a => a.tagNo === tag);
+                if (idx === -1) { showModal('Error', 'Not found');
+                    return; }
+                animals[idx].faliDate = fali;
+                animals[idx].bull = bull;
+                animals[idx].shedAssignment = shed;
+                animals[idx].khilaNo = khila || animals[idx].khilaNo;
+                animals[idx].status = 'FALI';
+                animals[idx].servicedCycle = (animals[idx].servicedCycle || 0) + 1;
+                animals[idx].doctorDate = fali ? new Date(new Date(fali).getTime() + 55 * 24 * 60 * 60 * 1000)
+                    .toISOString().split('T')[0] : null;
+                if (animals[idx].servicedCycle > 1) animals[idx].returnFlag = true;
+                await DB.set('animals', animals);
+                showModal('✅ FALI', `${tag} serviced cycle ${animals[idx].servicedCycle}`);
+            } else if (action === 'tajiIn') {
+                const incoming = document.getElementById('hf_incoming_taji')?.value || new Date().toISOString().split(
+                'T')[0];
+                const source = document.getElementById('hf_source_taji')?.value || 'Noora';
+                const taji = await DB.get('taji', []);
+                const existing = taji.find(t => t.tagNo === tag);
+                if (existing) { showModal('Error', 'TAJI entry already exists for this tag.');
+                    return; }
+                taji.push({ tagNo: tag, incomingDate: incoming, caretakerSource: source, rearingDays: 0,
+                    billAmount: 0 });
+                await DB.set('taji', taji);
+                const idx = animals.findIndex(a => a.tagNo === tag);
+                if (idx === -1) {
+                    animals.push({ tagNo: tag, incomingDate: incoming, location: source, status: 'Active',
+                        tajiIn: true, khilaNo: '', lactationDays: 0, servicedCycle: 0, returnFlag: false });
+                } else {
+                    animals[idx].tajiIn = true;
+                    animals[idx].location = source;
+                }
+                await DB.set('animals', animals);
+                showModal('✅ TAJI', `${tag} arrived via ${source}. Bill will be calculated on BAKDI.`);
+            } else if (action === 'bakdiOut') {
+                const outgoing = document.getElementById('hf_outgoing_bakdi')?.value || new Date().toISOString().split(
+                'T')[0];
+                const target = document.getElementById('hf_target_bakdi')?.value || 'Noora';
+                const idx = animals.findIndex(a => a.tagNo === tag);
+                if (idx === -1) { showModal('Error', 'Animal not found');
+                    return; }
+                const animal = animals[idx];
+                const faliDate = animal.faliDate;
+                let daysPregnant = 0;
+                if (faliDate) {
+                    const fali = new Date(faliDate);
+                    const out = new Date(outgoing);
+                    daysPregnant = Math.floor((out - fali) / (24 * 60 * 60 * 1000));
+                    if (daysPregnant < 0) daysPregnant = 0;
+                }
+                const fromShed = animal.location || 'Unknown';
+                const bakdi = await DB.get('bakdi', []);
+                bakdi.push({ tagNo: tag, outgoingDate: outgoing, targetCaretaker: target, faliDate: faliDate,
+                    daysPregnant, fromShed });
+                await DB.set('bakdi', bakdi);
+
+                // Calculate TAJI bill if exists
+                const tajiList = await DB.get('taji', []);
+                const tajiEntry = tajiList.find(t => t.tagNo === tag);
+                if (tajiEntry) {
+                    const incomingDate = tajiEntry.incomingDate;
+                    if (incomingDate) {
+                        const inDate = new Date(incomingDate);
+                        const outDate = new Date(outgoing);
+                        const rearingDays = Math.floor((outDate - inDate) / (24 * 60 * 60 * 1000));
+                        if (rearingDays > 0) {
+                            const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100,
+                            tajiFreight: 3400, bakdiFreight: 1800, benchmarkProd: 192, benchmarkFeed: 200 });
+                            const rate = tajiEntry.caretakerSource === 'Noora' ? config.nooraRate : config.tosifRate;
+                            const bill = rearingDays * (rate / 30);
+                            tajiEntry.rearingDays = rearingDays;
+                            tajiEntry.billAmount = bill;
+                            await DB.set('taji', tajiList);
+                        }
+                    }
+                }
+                animals[idx].bakdiOut = true;
+                animals[idx].status = 'Outward';
+                await DB.set('animals', animals);
+                showModal('✅ BAKDI', `${tag} sent to ${target}. Days Pregnant: ${daysPregnant}`);
+            } else if (action === 'slaughter') {
+                const outgoing = document.getElementById('hf_outgoing')?.value || new Date().toISOString().split('T')[0];
+                const sold = parseFloat(document.getElementById('hf_sold')?.value) || 0;
+                const kasai = document.getElementById('hf_kasai')?.value || '';
+                const slaughter = await DB.get('slaughter', []);
+                slaughter.push({ tagNo: tag, outgoingDate: outgoing, soldAmount: sold, kasaiName: kasai });
+                await DB.set('slaughter', slaughter);
+                const idx = animals.findIndex(a => a.tagNo === tag);
+                if (idx !== -1) { animals[idx].status = 'Slaughtered';
+                    animals[idx].khilaNo = ''; }
+                await DB.set('animals', animals);
+                showModal('✅ Slaughter', `${tag} sold ₹${sold}`);
+            } else if (action === 'dead') {
+                const deathDate = document.getElementById('hf_death_date')?.value || new Date().toISOString().split(
+                'T')[0];
+                const location = document.getElementById('hf_dead_location')?.value || 'Shed A';
+                const dead = await DB.get('dead', []);
+                dead.push({ tagNo: tag, outgoingDate: deathDate, location });
+                await DB.set('dead', dead);
+                const idx = animals.findIndex(a => a.tagNo === tag);
+                if (idx !== -1) animals[idx].status = 'Dead';
+                await DB.set('animals', animals);
+                showModal('✅ Dead', `${tag} marked Dead.`);
+            } else if (action === 'kori') {
+                const broker = document.getElementById('hf_broker')?.value || '';
+                const total = parseFloat(document.getElementById('hf_total')?.value) || 0;
+                const count = parseInt(document.getElementById('hf_count')?.value) || 0;
+                const date = document.getElementById('hf_date')?.value || new Date().toISOString().split('T')[0];
+                const kori = await DB.get('kori', []);
+                const avgPer = count ? total / count : 0;
+                kori.push({ brokerName: broker, totalBillAmount: total, numberOfAnimals: count, purchaseDate: date,
+                    avgPerKori: avgPer });
+                await DB.set('kori', kori);
+                for (let i = 0; i < count; i++) {
+                    animals.push({ tagNo: 'KORI-' + Date.now() + '-' + i, khilaNo: '', incomingDate: date,
+                        location: 'Shed A', status: 'KHALI', koriIn: true, lactationDays: 0, servicedCycle: 0,
+                        returnFlag: false });
+                }
+                await DB.set('animals', animals);
+                showModal('✅ KORI', `${count} animals from ${broker}. Avg: ₹${avgPer.toFixed(2)}`);
+            } else if (action === 'payment') {
+                const vendor = document.getElementById('hf_vendor')?.value || '';
+                const paid = parseFloat(document.getElementById('hf_paid')?.value) || 0;
+                const date = document.getElementById('hf_date')?.value || new Date().toISOString().split('T')[0];
+                const vname = document.getElementById('hf_vname')?.value || '';
+                const vendorPayments = await DB.get('vendorPayments', []);
+                vendorPayments.push({ vendorType: vendor, vendorName: vname, amountPaid: paid, date });
+                await DB.set('vendorPayments', vendorPayments);
+                if (vendor === 'Danawala') {
+                    const dp = await DB.get('danawalaPayments', []);
+                    dp.push({ brokerName: vname, date, amountPaid: paid });
+                    await DB.set('danawalaPayments', dp);
+                } else if (vendor === 'Bhaiswal') {
+                    const bb = await DB.get('bhaiswalBills', []);
+                    bb.push({ name: vname, amount: paid, date });
+                    await DB.set('bhaiswalBills', bb);
+                } else if (vendor === 'Medicine') {
+                    const mb = await DB.get('medicineBills', []);
+                    mb.push({ name: vname, amount: paid, date });
+                    await DB.set('medicineBills', mb);
+                }
+                showModal('✅ Payment', `₹${paid} paid to ${vname}`);
+            }
+            // Force refresh all data
+            await refreshAll();
+            // Ensure current module stays active
+            document.getElementById('panel-' + currentModule).classList.add('active');
+            clearHerdForm();
+        }
+
+        function clearHerdForm() {
+            document.querySelectorAll('#herdDynamicFields input, #herdDynamicFields select').forEach(el => { if (el.type ===
+                    'date') el.value = '';
+                else if (el.tagName === 'SELECT') el.selectedIndex = 0;
+                else el.value = ''; });
+        }
+
+        // ================================================================
+        // 9. STOCK
+        // ================================================================
+        async function refreshStock() {
+            const godown = await DB.get('godown', []);
+            const totalValue = godown.reduce((s, g) => s + (g.bagsInStock || 0) * 1000, 0);
+            const feedConsumption = await DB.get('feedConsumption', []);
+            const consumed = feedConsumption.reduce((s, d) => s + (d.bagsConsumed || 0) * (d.bagSize || 50), 0);
+            const feedPurchases = await DB.get('feedPurchases', []);
+            const cost = feedPurchases.reduce((s, d) => s + (d.goodsBillAmount || 0), 0);
+
+            const lowStock = godown.filter(g => g.bagsInStock < 20);
+            const alertEl = document.getElementById('lowStockAlert');
+            if (lowStock.length) {
+                alertEl.style.display = 'flex';
+                alertEl.innerHTML =
+                    `<i class="fas fa-exclamation-triangle"></i><span class="msg">⚠️ Low Stock: ${lowStock.map(g => `${g.goodsName} (${g.bagsInStock} bags)`).join(', ')}</span><span class="count">${lowStock.length}</span>`;
+            } else {
+                alertEl.style.display = 'none';
+            }
+
+            const cards = [
+                { id: 'assets', label: 'Godown Assets', icon: 'fa-coins', val: '₹' + totalValue.toFixed(2) },
+                { id: 'consumed', label: 'Total Feed Consumed / Day', icon: 'fa-utensils', val: consumed.toFixed(
+                    1) + ' kg' },
+                { id: 'dailyCost', label: 'Cost of Daily Feed', icon: 'fa-fire', val: '₹' + cost.toFixed(2) },
+                { id: 'items', label: 'Master Godown', icon: 'fa-table', val: godown.length + ' items' }
+            ];
+            const grid = document.getElementById('stockGrid');
+            grid.innerHTML = cards.map(c =>
+                `<div class="card-slim" onclick="showStockDetail('${c.id}')"><div class="label"><i class="fas ${c.icon}"></i><span>${c.label}</span></div><div class="value">${c.val}</div></div>`
+            ).join('');
+
+            const godownTbody = document.getElementById('godownTableBody');
+            godownTbody.innerHTML = godown.map((g, idx) =>
+                `<tr><td>${g.goodsName||'—'}</td><td>${g.bagsInStock||0}</td><td>${g.bagSize||0} kg</td><td>${((g.bagsInStock||0)*(g.bagSize||0)).toFixed(1)} kg</td><td><button class="delete-btn" onclick="deleteGodownItem(${idx})"><i class="fas fa-trash"></i></button></td></tr>`
+            ).join('');
+
+            const tbody = document.getElementById('stockTableBody');
+            tbody.innerHTML = feedPurchases.map((d, idx) =>
+                `<tr><td>${d.brokerName||'—'}</td><td>${d.goodsName||'—'}</td><td>${d.bagsPurchased||0}</td><td>${d.totalWeight||0}</td><td>${d.rateType||'—'}</td><td>${d.totalFreight||0}</td><td>₹${(d.goodsBillAmount||0).toFixed(2)}</td><td><button class="delete-btn" onclick="deleteStockEntry(${idx})"><i class="fas fa-trash"></i></button></td></tr>`
+            ).join('');
+        }
+
+        async function deleteGodownItem(index) {
+            if (!confirm('Delete this godown item?')) return;
+            const godown = await DB.get('godown', []);
+            godown.splice(index, 1);
+            await DB.set('godown', godown);
+            refreshAll();
+        }
+
+        async function deleteStockEntry(index) {
+            if (!confirm('Delete this purchase record?')) return;
+            const purchases = await DB.get('feedPurchases', []);
+            purchases.splice(index, 1);
+            await DB.set('feedPurchases', purchases);
+            refreshAll();
+        }
+
+        async function showStockDetail(id) {
+            const godown = await DB.get('godown', []);
+            const purchases = await DB.get('feedPurchases', []);
+            const consumed = await DB.get('feedConsumption', []);
+            let title = '',
+                details = [];
+            if (id === 'assets') {
+                title = 'Godown Assets';
+                godown.forEach(g => details.push({ label: g.goodsName, val: g.bagsInStock + ' bags (₹' + (g.bagsInStock *
+                        1000).toFixed(2) + ')' }));
+                if (!details.length) details.push({ label: 'Empty', val: '—' });
+            } else if (id === 'consumed') {
+                title = 'Total Feed Consumed / Day';
+                const total = consumed.reduce((s, d) => s + (d.bagsConsumed || 0) * (d.bagSize || 50), 0);
+                details = [
+                    { label: 'Total (kg)', val: total.toFixed(1) },
+                    { label: 'Entries', val: consumed.length }
+                ];
+            } else if (id === 'dailyCost') {
+                title = 'Cost of Daily Feed';
+                const cost = purchases.reduce((s, d) => s + (d.goodsBillAmount || 0), 0);
+                details = [
+                    { label: 'Total Cost (₹)', val: '₹' + cost.toFixed(2) },
+                    { label: 'Purchases', val: purchases.length }
+                ];
+            } else {
+                title = 'Godown Items';
+                godown.forEach(g => details.push({ label: g.goodsName, val: g.bagsInStock + ' bags' }));
+                if (!details.length) details.push({ label: 'Empty', val: '—' });
+            }
+            let html = details.map(d => `<div class="detail-item"><span class="label">${d.label}</span><span class="val">${d.val}</span></div>`)
+                .join('');
+            showModal('📦 ' + title, html);
+        }
+
+        function toggleStockForm() {
+            const action = document.getElementById('stockAction').value;
+            const container = document.getElementById('stockDynamicFields');
+            let html = '';
+            if (action === 'purchase') {
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+                    <label>Broker <input id="sf_broker"/></label>
+                    <label>Item Name <input id="sf_goods"/></label>
+                    <label>Date <input id="sf_date" type="date"/></label>
+                    <label>Rate (₹/kg) <input id="sf_rate" type="number" step="0.01"/></label>
+                    <label>Rate Type <select id="sf_rate_type"><option>Delivery</option><option>X-Factory</option></select></label>
+                    <label>Freight ₹ <input id="sf_freight" type="number" step="0.01"/></label>
+                    <label>Weight (kg) <input id="sf_weight" type="number" step="0.01"/></label>
+                    <label>Bags <input id="sf_bags" type="number"/></label>
+                    <label class="full" style="color:var(--text-muted);">Bag size, Freight/kg, Total bill will be auto-calculated</label>
+                </div>`;
+            } else if (action === 'consume') {
+                const godown = DB.get('godown', []);
+                const options = godown.map(g => `<option value="${g.goodsName}">${g.goodsName}</option>`).join('');
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+                    <label>Goods Name <select id="sf_consume_goods">${options}</select></label>
+                    <label>Bags Consumed <input id="sf_consume_bags" type="number" step="0.1"/></label>
+                    <label class="full" style="color:var(--text-muted);">Date will be auto-set to today. Feed in kgs will be auto-calculated.</label>
+                </div>`;
+            } else if (action === 'godown') {
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+                    <label>Item Name <input id="sf_init_goods"/></label>
+                    <label>Bags <input id="sf_init_bags" type="number"/></label>
+                    <label class="full" style="color:var(--text-muted);">This sets initial stock without financial impact.</label>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        async function submitStockEntry() {
+            const action = document.getElementById('stockAction').value;
+            if (action === 'purchase') {
+                const broker = document.getElementById('sf_broker')?.value || '';
+                const goods = document.getElementById('sf_goods')?.value?.trim() || 'Unknown';
+                const date = document.getElementById('sf_date')?.value || new Date().toISOString().split('T')[0];
+                const rate = parseFloat(document.getElementById('sf_rate')?.value) || 0;
+                const rateType = document.getElementById('sf_rate_type')?.value || 'Delivery';
+                const freight = parseFloat(document.getElementById('sf_freight')?.value) || 0;
+                const weight = parseFloat(document.getElementById('sf_weight')?.value) || 0;
+                const bags = parseFloat(document.getElementById('sf_bags')?.value) || 0;
+                if (bags === 0) { showModal('Error', 'Bags must be > 0');
+                    return; }
+                const bagSize = weight / bags;
+                const freightPerKg = weight ? freight / weight : 0;
+                const goodsBillAmount = (weight * rate) + freight;
+
+                const purchases = await DB.get('feedPurchases', []);
+                purchases.push({ brokerName: broker, goodsName: goods, bagsPurchased: bags, totalWeight: weight,
+                    rateType, totalFreight: freight, dateOfDelivery: date, bagSize, freightPerKg,
+                    goodsBillAmount });
+                await DB.set('feedPurchases', purchases);
+
+                const godown = await DB.get('godown', []);
+                const idx = godown.findIndex(g => g.goodsName === goods);
+                if (idx === -1) {
+                    godown.push({ goodsName: goods, bagsInStock: bags, bagSize });
+                } else {
+                    godown[idx].bagsInStock += bags;
+                }
+                await DB.set('godown', godown);
+                showModal('✅ Purchase', `${goods}: ${bags} bags added.`);
+            } else if (action === 'consume') {
+                const goods = document.getElementById('sf_consume_goods')?.value;
+                const bags = parseFloat(document.getElementById('sf_consume_bags')?.value) || 0;
+                if (!goods) { showModal('Error', 'Select goods');
+                    return; }
+                const godown = await DB.get('godown', []);
+                const gItem = godown.find(g => g.goodsName === goods);
+                if (!gItem) { showModal('Error', 'Goods not found in godown');
+                    return; }
+                const bagSize = gItem.bagSize || 50;
+                const kgs = bags * bagSize;
+                if (gItem.bagsInStock < bags) { showModal('Error', 'Not enough stock');
+                    return; }
+                gItem.bagsInStock -= bags;
+                await DB.set('godown', godown);
+
+                const cons = await DB.get('feedConsumption', []);
+                const today = new Date().toISOString().split('T')[0];
+                cons.push({ goodsName: goods, date: today, bagsConsumed: bags, bagSize, kgsConsumed: kgs });
+                await DB.set('feedConsumption', cons);
+                showModal('✅ Consumed', `${goods}: ${bags} bags (${kgs.toFixed(1)} kg) consumed.`);
+            } else if (action === 'godown') {
+                const goods = document.getElementById('sf_init_goods')?.value?.trim() || 'Unknown';
+                const bags = parseFloat(document.getElementById('sf_init_bags')?.value) || 0;
+                if (bags === 0) { showModal('Error', 'Bags must be > 0');
+                    return; }
+                const godown = await DB.get('godown', []);
+                const idx = godown.findIndex(g => g.goodsName === goods);
+                if (idx === -1) {
+                    godown.push({ goodsName: goods, bagsInStock: bags, bagSize: 50 });
+                } else {
+                    godown[idx].bagsInStock = bags;
+                }
+                await DB.set('godown', godown);
+                showModal('✅ Godown', `${goods}: ${bags} bags set.`);
+            }
+            await refreshAll();
+            document.getElementById('panel-' + currentModule).classList.add('active');
+            clearStockForm();
+        }
+
+        function clearStockForm() {
+            document.querySelectorAll('#stockDynamicFields input, #stockDynamicFields select').forEach(el => { if (el.type ===
+                    'date') el.value = '';
+                else if (el.tagName === 'SELECT') el.selectedIndex = 0;
+                else el.value = ''; });
+        }
+
+        // ================================================================
+        // 10. MILK
+        // ================================================================
+        async function refreshMilk() {
+            const prod = await DB.get('milkProduction', []);
+            const customers = await DB.get('customers', []);
+            const payments = await DB.get('customerPayments', []);
+            const overrides = await DB.get('milkOverrides', []);
+            const totalMilk = prod.reduce((s, d) => s + (d.shedAMorning || 0) + (d.shedAEvening || 0) + (d.shedBMorning || 0) +
+                (d.shedBEvening || 0), 0);
+            const shedA = prod.reduce((s, d) => s + (d.shedAMorning || 0) + (d.shedAEvening || 0), 0);
+            const shedB = prod.reduce((s, d) => s + (d.shedBMorning || 0) + (d.shedBEvening || 0), 0);
+            const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+                benchmarkProd: 192, benchmarkFeed: 200 });
+            const benchmark = config.benchmarkProd || 192;
+            const active = await getActiveAnimals();
+            const avgPerAnimal = active.length ? (totalMilk / active.length) : 0;
+            const pct = benchmark ? ((avgPerAnimal / benchmark) * 100) : 0;
+            let totalBill = 0;
+            let totalOutstanding = 0;
+            customers.forEach(c => {
+                const dailyVol = c.fixedDailyVolume || 0;
+                const rate = c.sellingRate || 0;
+                const bill = dailyVol * rate * 30;
+                totalBill += bill;
+                totalOutstanding += c.outstandingBalance || 0;
+            });
+            const totalReceived = payments.reduce((s, p) => s + (p.amountReceived || 0), 0);
+
+            const cards = [
+                { id: 'total', label: 'Herd Total Production', icon: 'fa-tachometer-alt', val: totalMilk.toFixed(
+                    1) + ' L' },
+                { id: 'shedA', label: 'Shed A Production', icon: 'fa-home', val: shedA.toFixed(1) + ' L' },
+                { id: 'shedB', label: 'Shed B Production', icon: 'fa-home', val: shedB.toFixed(1) + ' L' },
+                { id: 'benchmark', label: 'Avg Milk vs Benchmark', icon: 'fa-chart-line', val: pct.toFixed(1) +
+                        '%' },
+                { id: 'bill', label: 'Customers Total Bill', icon: 'fa-file-invoice', val: '₹' + totalBill.toFixed(
+                    2) },
+                { id: 'received', label: 'Total Received', icon: 'fa-hand-holding-usd', val: '₹' + totalReceived
+                        .toFixed(2) },
+                { id: 'outstanding', label: 'Total Outstanding', icon: 'fa-exclamation-triangle', val: '₹' +
+                        totalOutstanding.toFixed(2) }
+            ];
+            const grid = document.getElementById('milkGrid');
+            grid.innerHTML = cards.map(c =>
+                `<div class="card-slim" onclick="showMilkDetail('${c.id}')"><div class="label"><i class="fas ${c.icon}"></i><span>${c.label}</span></div><div class="value ${c.id==='outstanding'?'text-red':''}">${c.val}</div></div>`
+            ).join('');
+
+            const tbody = document.getElementById('milkTableBody');
+            tbody.innerHTML = customers.map((c, idx) =>
+                `<tr><td>${c.customerName||'—'}</td><td>₹${c.sellingRate||0}</td><td>${c.billingCycle||'Monthly'}</td><td>${c.fixedDailyVolume||0} L</td><td class="${(c.outstandingBalance||0)>0?'text-red':'text-green'}">₹${(c.outstandingBalance||0).toFixed(2)}</td><td><button class="delete-btn" onclick="deleteMilkCustomer(${idx})"><i class="fas fa-trash"></i></button></td></tr>`
+            ).join('');
+        }
+
+        async function deleteMilkCustomer(index) {
+            if (!confirm('Delete this customer?')) return;
+            const customers = await DB.get('customers', []);
+            customers.splice(index, 1);
+            await DB.set('customers', customers);
+            refreshAll();
+        }
+
+        async function showMilkDetail(id) {
+            const prod = await DB.get('milkProduction', []);
+            const customers = await DB.get('customers', []);
+            const payments = await DB.get('customerPayments', []);
+            const totalMilk = prod.reduce((s, d) => s + (d.shedAMorning || 0) + (d.shedAEvening || 0) + (d.shedBMorning || 0) +
+                (d.shedBEvening || 0), 0);
+            const shedA = prod.reduce((s, d) => s + (d.shedAMorning || 0) + (d.shedAEvening || 0), 0);
+            const shedB = prod.reduce((s, d) => s + (d.shedBMorning || 0) + (d.shedBEvening || 0), 0);
+            const active = await getActiveAnimals();
+            const avgPerAnimal = active.length ? (totalMilk / active.length) : 0;
+            const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+                benchmarkProd: 192, benchmarkFeed: 200 });
+            const pct = config.benchmarkProd ? ((avgPerAnimal / config.benchmarkProd) * 100) : 0;
+            const totalBill = customers.reduce((s, c) => s + (c.fixedDailyVolume || 0) * 30 * (c.sellingRate || 0), 0);
+            const totalReceived = payments.reduce((s, p) => s + (p.amountReceived || 0), 0);
+            const totalOutstanding = customers.reduce((s, c) => s + (c.outstandingBalance || 0), 0);
+            let title = '',
+                details = [];
+            switch (id) {
+                case 'total':
+                    title = 'Herd Total Production';
+                    details = [
+                        { label: 'Total Milk (L)', val: totalMilk.toFixed(1) },
+                        { label: 'Shed A', val: shedA.toFixed(1) + ' L' },
+                        { label: 'Shed B', val: shedB.toFixed(1) + ' L' }
+                    ];
+                    break;
+                case 'shedA':
+                    title = 'Shed A Production';
+                    details = [
+                        { label: 'Morning', val: prod.reduce((s, d) => s + (d.shedAMorning || 0), 0).toFixed(1) +
+                                ' L' },
+                        { label: 'Evening', val: prod.reduce((s, d) => s + (d.shedAEvening || 0), 0).toFixed(1) +
+                                ' L' },
+                        { label: 'Total', val: shedA.toFixed(1) + ' L' }
+                    ];
+                    break;
+                case 'shedB':
+                    title = 'Shed B Production';
+                    details = [
+                        { label: 'Morning', val: prod.reduce((s, d) => s + (d.shedBMorning || 0), 0).toFixed(1) +
+                                ' L' },
+                        { label: 'Evening', val: prod.reduce((s, d) => s + (d.shedBEvening || 0), 0).toFixed(1) +
+                                ' L' },
+                        { label: 'Total', val: shedB.toFixed(1) + ' L' }
+                    ];
+                    break;
+                case 'benchmark':
+                    title = 'Avg Milk vs Benchmark (192 L)';
+                    details = [
+                        { label: 'Avg per Animal (L)', val: avgPerAnimal.toFixed(1) },
+                        { label: 'Benchmark (L)', val: '192' },
+                        { label: 'Performance', val: pct.toFixed(1) + '%' }
+                    ];
+                    break;
+                case 'bill':
+                    title = 'Customers Total Bill';
+                    details = [
+                        { label: 'Total Bill (₹)', val: '₹' + totalBill.toFixed(2) },
+                        { label: 'Customers', val: customers.length }
+                    ];
+                    break;
+                case 'received':
+                    title = 'Total Received';
+                    details = [
+                        { label: 'Received (₹)', val: '₹' + totalReceived.toFixed(2) },
+                        { label: 'Payments Count', val: payments.length }
+                    ];
+                    break;
+                case 'outstanding':
+                    title = 'Total Outstanding';
+                    details = [
+                        { label: 'Outstanding (₹)', val: '₹' + totalOutstanding.toFixed(2) },
+                        { label: 'Customers with Balance', val: customers.filter(c => (c.outstandingBalance || 0) >
+                                0).length }
+                    ];
+                    break;
+            }
+            let html = details.map(d => `<div class="detail-item"><span class="label">${d.label}</span><span class="val">${d.val}</span></div>`)
+                .join('');
+            showModal('🥛 ' + title, html);
+        }
+
+        function toggleMilkForm() {
+            const action = document.getElementById('milkAction').value;
+            const container = document.getElementById('milkDynamicFields');
+            let html = '';
+            if (action === 'customer') {
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+                    <label>Name <input id="mf_name"/></label>
+                    <label>Rate ₹ <input id="mf_rate" type="number" step="0.01"/></label>
+                    <label>Cycle <select id="mf_cycle"><option>Weekly</option><option>10 Days</option><option>Monthly</option></select></label>
+                    <label>Fixed Vol (L) <input id="mf_volume" type="number" step="0.1"/></label>
+                    <label class="full">Old Balance ₹ <input id="mf_balance" type="number" step="0.01" value="0"/></label>
+                </div>`;
+            } else if (action === 'production') {
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;width:100%;">
+                    <label>SA Morn <input id="mf_am" type="number" step="0.1"/></label>
+                    <label>SA Eve <input id="mf_ae" type="number" step="0.1"/></label>
+                    <label>SB Morn <input id="mf_bm" type="number" step="0.1"/></label>
+                    <label>SB Eve <input id="mf_be" type="number" step="0.1"/></label>
+                    <label class="full">Date <input id="mf_date" type="date"/></label>
+                </div>`;
+            } else if (action === 'override') {
+                const customers = DB.get('customers', []);
+                const options = customers.map(c => `<option value="${c.customerName}">${c.customerName}</option>`).join(
+                '');
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+                    <label>Customer <select id="mf_override_customer">${options}</select></label>
+                    <label>Date <input id="mf_override_date" type="date"/></label>
+                    <label>Morning Vol <input id="mf_override_morn" type="number" step="0.1"/></label>
+                    <label>Evening Vol <input id="mf_override_eve" type="number" step="0.1"/></label>
+                    <label class="full">Rate (₹/L) <input id="mf_override_rate" type="number" step="0.01" placeholder="Override rate"/></label>
+                </div>`;
+            } else if (action === 'payment') {
+                const customers = DB.get('customers', []);
+                const options = customers.map(c => `<option value="${c.customerName}">${c.customerName}</option>`).join(
+                '');
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+                    <label>Customer <select id="mf_pay_customer">${options}</select></label>
+                    <label>Amount ₹ <input id="mf_pay_amount" type="number" step="0.01"/></label>
+                    <label class="full">Date <input id="mf_pay_date" type="date"/></label>
+                </div>`;
+            } else if (action === 'whatsapp') {
+                const customers = DB.get('customers', []);
+                const options = customers.map(c => `<option value="${c.customerName}">${c.customerName}</option>`).join(
+                '');
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+                    <label>Customer <select id="mf_whatsapp_customer">${options}</select></label>
+                    <label>Cycle <select id="mf_whatsapp_cycle"><option>Weekly</option><option>10 Days</option><option>Monthly</option></select></label>
+                    <div class="full"><button class="btn btn-green" onclick="generateWhatsApp()"><i class="fab fa-whatsapp"></i> Generate</button></div>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        async function submitMilkEntry() {
+            const action = document.getElementById('milkAction').value;
+            if (action === 'customer') {
+                const name = document.getElementById('mf_name')?.value?.trim();
+                if (!name) { showModal('Error', 'Name required');
+                    return; }
+                const rate = parseFloat(document.getElementById('mf_rate')?.value) || 0;
+                const cycle = document.getElementById('mf_cycle')?.value || 'Monthly';
+                const volume = parseFloat(document.getElementById('mf_volume')?.value) || 0;
+                const balance = parseFloat(document.getElementById('mf_balance')?.value) || 0;
+                const customers = await DB.get('customers', []);
+                customers.push({ customerName: name, sellingRate: rate, billingCycle: cycle, fixedDailyVolume: volume,
+                    startingOldBalance: balance, outstandingBalance: balance });
+                await DB.set('customers', customers);
+                showModal('✅ Customer', `${name} added`);
+            } else if (action === 'production') {
+                const am = parseFloat(document.getElementById('mf_am')?.value) || 0;
+                const ae = parseFloat(document.getElementById('mf_ae')?.value) || 0;
+                const bm = parseFloat(document.getElementById('mf_bm')?.value) || 0;
+                const be = parseFloat(document.getElementById('mf_be')?.value) || 0;
+                const date = document.getElementById('mf_date')?.value || new Date().toISOString().split('T')[0];
+                const prod = await DB.get('milkProduction', []);
+                prod.push({ date, shedAMorning: am, shedAEvening: ae, shedBMorning: bm, shedBEvening: be });
+                await DB.set('milkProduction', prod);
+                showModal('✅ Production', `Total: ${am+ae+bm+be} L`);
+            } else if (action === 'override') {
+                const customer = document.getElementById('mf_override_customer')?.value;
+                const date = document.getElementById('mf_override_date')?.value || new Date().toISOString().split('T')[0];
+                const morn = parseFloat(document.getElementById('mf_override_morn')?.value) || 0;
+                const eve = parseFloat(document.getElementById('mf_override_eve')?.value) || 0;
+                const rate = parseFloat(document.getElementById('mf_override_rate')?.value);
+                if (!customer) { showModal('Error', 'Select customer');
+                    return; }
+                const overrides = await DB.get('milkOverrides', []);
+                overrides.push({ customerName: customer, date, morningVolume: morn, eveningVolume: eve, rate: rate });
+                await DB.set('milkOverrides', overrides);
+                showModal('✅ Override', `${customer}: M${morn} E${eve} Rate: ${rate || 'default'}`);
+            } else if (action === 'payment') {
+                const customer = document.getElementById('mf_pay_customer')?.value;
+                const amount = parseFloat(document.getElementById('mf_pay_amount')?.value) || 0;
+                const date = document.getElementById('mf_pay_date')?.value || new Date().toISOString().split('T')[0];
+                if (!customer) { showModal('Error', 'Select customer');
+                    return; }
+                const payments = await DB.get('customerPayments', []);
+                payments.push({ customerName: customer, date, amountReceived: amount });
+                await DB.set('customerPayments', payments);
+                const customers = await DB.get('customers', []);
+                const c = customers.find(x => x.customerName === customer);
+                if (c) c.outstandingBalance = (c.outstandingBalance || 0) - amount;
+                await DB.set('customers', customers);
+                showModal('✅ Payment', `₹${amount} from ${customer}`);
+            }
+            await refreshAll();
+            document.getElementById('panel-' + currentModule).classList.add('active');
+            clearMilkForm();
+        }
+
+        function clearMilkForm() {
+            document.querySelectorAll('#milkDynamicFields input, #milkDynamicFields select').forEach(el => { if (el.type ===
+                    'date') el.value = '';
+                else if (el.tagName === 'SELECT') el.selectedIndex = 0;
+                else el.value = ''; });
+        }
+
+        function generateWhatsApp() {
+            const customer = document.getElementById('mf_whatsapp_customer')?.value;
+            const cycle = document.getElementById('mf_whatsapp_cycle')?.value || 'Monthly';
+            const customers = DB.get('customers', []);
+            const c = customers.find(x => x.customerName === customer);
+            if (!c) { showModal('Error', 'Customer not found');
+                return; }
+            const msg =
+                `🧾 Invoice for ${customer}\n📅 Period: ${cycle}\n🥛 Volume: ${c.fixedDailyVolume||0} L/day\n💰 Rate: ₹${c.sellingRate||0}/L\n💵 Outstanding: ₹${(c.outstandingBalance||0).toFixed(2)}`;
+            window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+            showModal('📲 WhatsApp', 'Opening WhatsApp...');
+        }
+
+        // ================================================================
+        // 11. LABOUR
+        // ================================================================
+        async function refreshLabour() {
+            const labour = await DB.get('labour', []);
+            const totalPagar = labour.reduce((s, l) => s + (l.fixedPagar || 0), 0);
+            const avgPagar = labour.length ? (totalPagar / labour.length) : 0;
+            const activeAnimals = (await getActiveAnimals()).length;
+            const avgPagarAnimal = activeAnimals ? (totalPagar / activeAnimals) : 0;
+
+            const cards = [
+                { id: 'total', label: 'Total Pagar', icon: 'fa-wallet', val: '₹' + totalPagar.toFixed(2) },
+                { id: 'avg', label: 'Avg Pagar / Month', icon: 'fa-chart-bar', val: '₹' + avgPagar.toFixed(2) },
+                { id: 'animal', label: 'Avg Pagar / Animal', icon: 'fa-cow', val: '₹' + avgPagarAnimal.toFixed(2) },
+                { id: 'workers', label: 'Total Workers', icon: 'fa-users', val: labour.length }
+            ];
+            const grid = document.getElementById('labourGrid');
+            grid.innerHTML = cards.map(c =>
+                `<div class="card-slim" onclick="showLabourDetail('${c.id}')"><div class="label"><i class="fas ${c.icon}"></i><span>${c.label}</span></div><div class="value">${c.val}</div></div>`
+            ).join('');
+
+            const tbody = document.getElementById('labourTableBody');
+            tbody.innerHTML = labour.map((l, idx) => {
+                const joinDate = l.joiningDate ? new Date(l.joiningDate) : null;
+                const leaveDate = l.leavingDate ? new Date(l.leavingDate) : null;
+                const today = new Date();
+                const endDate = leaveDate || today;
+                const days = joinDate ? Math.floor((endDate - joinDate) / (24 * 60 * 60 * 1000)) : 0;
+                const advance = (l.startingAdvanceBalance || 0) - (l.paidAmount || 0);
+                const statusLabel = advance > 0 ? 'Advance' : advance < 0 ? 'Balance' : 'Settled';
+                return `<tr><td><strong>${l.workerName||'—'}</strong></td><td>₹${l.fixedPagar||0}</td><td>${l.joiningDate||'—'}</td><td>${l.leavingDate||'—'}</td><td>${days}</td><td><span class="status-badge ${l.leavingDate?'red':'green'}">${l.leavingDate?'Left':'Active'}</span></td><td class="${advance>0?'text-orange':advance<0?'text-green':'text-muted'}">₹${advance.toFixed(2)}</td><td><button class="delete-btn" onclick="deleteLabourEntry(${idx})"><i class="fas fa-trash"></i></button></td></tr>`;
+            }).join('');
+        }
+
+        async function deleteLabourEntry(index) {
+            if (!confirm('Delete this worker record?')) return;
+            const labour = await DB.get('labour', []);
+            labour.splice(index, 1);
+            await DB.set('labour', labour);
+            refreshAll();
+        }
+
+        async function showLabourDetail(id) {
+            const labour = await DB.get('labour', []);
+            const totalPagar = labour.reduce((s, l) => s + (l.fixedPagar || 0), 0);
+            const avgPagar = labour.length ? (totalPagar / labour.length) : 0;
+            const activeAnimals = (await getActiveAnimals()).length;
+            const avgPagarAnimal = activeAnimals ? (totalPagar / activeAnimals) : 0;
+            let title = '',
+                details = [];
+            if (id === 'total') {
+                title = 'Total Pagar';
+                details = [{ label: 'Total (₹)', val: '₹' + totalPagar.toFixed(2) }, { label: 'Active Workers',
+                    val: labour.filter(l => !l.leavingDate).length }, { label: 'Total Workers', val: labour
+                        .length }];
+            } else if (id === 'avg') {
+                title = 'Avg Pagar / Month';
+                details = [{ label: 'Avg per Worker (₹)', val: '₹' + avgPagar.toFixed(2) }, { label: 'Months',
+                    val: Math.max(1, labour.length) }];
+            } else if (id === 'animal') {
+                title = 'Avg Pagar / Animal';
+                details = [{ label: 'Total Pagar (₹)', val: '₹' + totalPagar.toFixed(2) }, { label: 'Active Animals',
+                    val: activeAnimals }, { label: 'Avg per Animal (₹)', val: '₹' + avgPagarAnimal.toFixed(2) }];
+            } else {
+                title = 'Total Workers';
+                details = [{ label: 'Workers', val: labour.length }, { label: 'Active', val: labour.filter(l => !l
+                        .leavingDate).length }];
+            }
+            let html = details.map(d => `<div class="detail-item"><span class="label">${d.label}</span><span class="val">${d.val}</span></div>`)
+                .join('');
+            showModal('👷 ' + title, html);
+        }
+
+        function toggleLabourForm() {
+            const action = document.getElementById('labourAction').value;
+            const container = document.getElementById('labourDynamicFields');
+            let html = '';
+            if (action === 'add') {
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+                    <label>Worker Name <input id="lf_name"/></label>
+                    <label>Monthly Pagar ₹ <input id="lf_pagar" type="number" step="0.01"/></label>
+                    <label>Joining Date <input id="lf_joining" type="date"/></label>
+                    <label>Leaving Date <input id="lf_leaving" type="date"/></label>
+                    <label class="full">Old Advance (₹) <input id="lf_advance" type="number" step="0.01" value="0"/></label>
+                    <label class="full" style="color:var(--text-muted);">Days worked will be auto-calculated.</label>
+                </div>`;
+            } else if (action === 'payment') {
+                const labour = DB.get('labour', []);
+                const options = labour.map(l => `<option value="${l.workerName}">${l.workerName}</option>`).join('');
+                html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;">
+                    <label>Worker <select id="lf_pay_name">${options}</select></label>
+                    <label>Amount ₹ <input id="lf_pay_amount" type="number" step="0.01"/></label>
+                    <label class="full">Date <input id="lf_pay_date" type="date"/></label>
+                    <label class="full" style="color:var(--text-muted);">Advance/Balance will be auto-updated.</label>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        async function submitLabourEntry() {
+            const action = document.getElementById('labourAction').value;
+            if (action === 'add') {
+                const name = document.getElementById('lf_name')?.value?.trim();
+                if (!name) { showModal('Error', 'Name required');
+                    return; }
+                const pagar = parseFloat(document.getElementById('lf_pagar')?.value) || 0;
+                const joining = document.getElementById('lf_joining')?.value || new Date().toISOString().split('T')[0];
+                const leaving = document.getElementById('lf_leaving')?.value || '';
+                const advance = parseFloat(document.getElementById('lf_advance')?.value) || 0;
+                const labour = await DB.get('labour', []);
+                labour.push({ workerName: name, fixedPagar: pagar, joiningDate: joining, leavingDate: leaving,
+                    startingAdvanceBalance: advance, paidAmount: 0 });
+                await DB.set('labour', labour);
+                showModal('✅ Labour', `${name} added`);
+            } else if (action === 'payment') {
+                const name = document.getElementById('lf_pay_name')?.value;
+                const amount = parseFloat(document.getElementById('lf_pay_amount')?.value) || 0;
+                const date = document.getElementById('lf_pay_date')?.value || new Date().toISOString().split('T')[0];
+                if (!name) { showModal('Error', 'Select worker');
+                    return; }
+                const payments = await DB.get('labourPayments', []);
+                payments.push({ workerName: name, date, amount });
+                await DB.set('labourPayments', payments);
+                const labour = await DB.get('labour', []);
+                const l = labour.find(x => x.workerName === name);
+                if (l) l.paidAmount = (l.paidAmount || 0) + amount;
+                await DB.set('labour', labour);
+                showModal('✅ Payment', `₹${amount} for ${name}`);
+            }
+            await refreshAll();
+            document.getElementById('panel-' + currentModule).classList.add('active');
+            clearLabourForm();
+        }
+
+        function clearLabourForm() {
+            document.querySelectorAll('#labourDynamicFields input, #labourDynamicFields select').forEach(el => { if (el.type ===
+                    'date') el.value = '';
+                else if (el.tagName === 'SELECT') el.selectedIndex = 0;
+                else el.value = ''; });
+        }
+
+        async function searchLabour() {
+            const q = document.getElementById('labourSearch')?.value?.toLowerCase() || '';
+            const labour = await DB.get('labour', []);
+            const filtered = labour.filter(l => l.workerName?.toLowerCase().includes(q));
+            const tbody = document.getElementById('labourTableBody');
+            tbody.innerHTML = filtered.map((l, idx) => {
+                const days = l.joiningDate ? Math.floor((new Date() - new Date(l.joiningDate)) / (24 * 60 * 60 *
+                1000)) : 0;
+                const advance = (l.startingAdvanceBalance || 0) - (l.paidAmount || 0);
+                return `<tr><td><strong>${l.workerName||'—'}</strong></td><td>₹${l.fixedPagar||0}</td><td>${l.joiningDate||'—'}</td><td>${l.leavingDate||'—'}</td><td>${days}</td><td><span class="status-badge ${l.leavingDate?'red':'green'}">${l.leavingDate?'Left':'Active'}</span></td><td class="${advance>0?'text-orange':advance<0?'text-green':'text-muted'}">₹${advance.toFixed(2)}</td><td><button class="delete-btn" onclick="deleteLabourEntry(${labour.indexOf(l)})"><i class="fas fa-trash"></i></button></td></tr>`;
+            }).join('');
+        }
+
+        // ================================================================
+        // 12. ACCOUNTS (P&L)
+        // ================================================================
+        async function refreshAccounts() {
+            const customers = await DB.get('customers', []);
+            const slaughter = await DB.get('slaughter', []);
+            const feedPurchases = await DB.get('feedPurchases', []);
+            const milkRevenue = customers.reduce((s, c) => s + (c.fixedDailyVolume || 0) * 30 * (c.sellingRate || 0), 0);
+            const livestockRevenue = slaughter.reduce((s, d) => s + (d.soldAmount || 0), 0);
+            const feedExp = feedPurchases.reduce((s, d) => s + (d.goodsBillAmount || 0), 0);
+            const caretaker = await getCaretakerTotal();
+            const transport = await getTransportTotal();
+            const labor = await getLabourTotal();
+            const medical = await getMedicineTotal();
+            const net = (milkRevenue + livestockRevenue) - (feedExp + caretaker + transport + labor + medical);
+
+            const cards = [
+                { id: 'milkRev', label: 'Milk Revenue', icon: 'fa-arrow-up', val: '₹' + milkRevenue.toFixed(2),
+                    cls: 'text-green' },
+                { id: 'liveRev', label: 'Livestock Sales', icon: 'fa-arrow-up', val: '₹' + livestockRevenue.toFixed(
+                    2), cls: 'text-green' },
+                { id: 'feedExp', label: 'Feed Expenses', icon: 'fa-arrow-down', val: '₹' + feedExp.toFixed(2),
+                    cls: 'text-red' },
+                { id: 'caretaker', label: 'Caretaker Liabilities', icon: 'fa-arrow-down', val: '₹' + caretaker
+                    .toFixed(2), cls: 'text-red' },
+                { id: 'transport', label: 'Transportation', icon: 'fa-arrow-down', val: '₹' + transport.toFixed(2),
+                    cls: 'text-red' },
+                { id: 'labor', label: 'Labor Expenses', icon: 'fa-arrow-down', val: '₹' + labor.toFixed(2),
+                    cls: 'text-red' },
+                { id: 'medical', label: 'Medical Expenses', icon: 'fa-arrow-down', val: '₹' + medical.toFixed(2),
+                    cls: 'text-red' },
+                { id: 'net', label: 'Net P&L', icon: 'fa-balance-scale', val: '₹' + net.toFixed(2),
+                    cls: net >= 0 ? 'text-green' : 'text-red' }
+            ];
+            const grid = document.getElementById('plGrid');
+            grid.innerHTML = cards.map(c =>
+                `<div class="card-slim" onclick="showPlDetail('${c.id}')" style="border-color:${c.id==='net'?'#1a2a3a':'transparent'}"><div class="label"><i class="fas ${c.icon}"></i><span>${c.label}</span></div><div class="value ${c.cls}">${c.val}</div></div>`
+            ).join('');
+
+            const expenses = [
+                { category: 'Feed', amount: feedExp, date: new Date().toISOString().split('T')[0] },
+                { category: 'Caretaker', amount: caretaker, date: new Date().toISOString().split('T')[0] },
+                { category: 'Transport', amount: transport, date: new Date().toISOString().split('T')[0] },
+                { category: 'Labor', amount: labor, date: new Date().toISOString().split('T')[0] },
+                { category: 'Medical', amount: medical, date: new Date().toISOString().split('T')[0] },
+            ];
+            const expTbody = document.getElementById('expensesTableBody');
+            expTbody.innerHTML = expenses.map(e =>
+                `<tr><td>${e.category}</td><td>₹${e.amount.toFixed(2)}</td><td>${e.date}</td></tr>`
+            ).join('');
+        }
+
+        async function showPlDetail(id) {
+            const customers = await DB.get('customers', []);
+            const slaughter = await DB.get('slaughter', []);
+            const feedPurchases = await DB.get('feedPurchases', []);
+            const milkRevenue = customers.reduce((s, c) => s + (c.fixedDailyVolume || 0) * 30 * (c.sellingRate || 0), 0);
+            const livestockRevenue = slaughter.reduce((s, d) => s + (d.soldAmount || 0), 0);
+            const feedExp = feedPurchases.reduce((s, d) => s + (d.goodsBillAmount || 0), 0);
+            const caretaker = await getCaretakerTotal();
+            const transport = await getTransportTotal();
+            const labor = await getLabourTotal();
+            const medical = await getMedicineTotal();
+            const net = (milkRevenue + livestockRevenue) - (feedExp + caretaker + transport + labor + medical);
+            let title = '',
+                details = [];
+            const map = {
+                milkRev: ['Milk Revenue', '₹' + milkRevenue.toFixed(2)],
+                liveRev: ['Livestock Sales', '₹' + livestockRevenue.toFixed(2)],
+                feedExp: ['Feed Expenses', '₹' + feedExp.toFixed(2)],
+                caretaker: ['Caretaker Liabilities', '₹' + caretaker.toFixed(2)],
+                transport: ['Transportation', '₹' + transport.toFixed(2)],
+                labor: ['Labor Expenses', '₹' + labor.toFixed(2)],
+                medical: ['Medical Expenses', '₹' + medical.toFixed(2)],
+                net: ['Net P&L', '₹' + net.toFixed(2)]
+            };
+            if (map[id]) {
+                title = map[id][0];
+                details = [{ label: 'Value', val: map[id][1] }];
+                if (id === 'net') {
+                    details = [
+                        { label: 'Total Income', val: '₹' + (milkRevenue + livestockRevenue).toFixed(2) },
+                        { label: 'Total Expenses', val: '₹' + (feedExp + caretaker + transport + labor + medical)
+                            .toFixed(2) },
+                        { label: 'Net', val: '₹' + net.toFixed(2) }
+                    ];
+                }
+            }
+            let html = details.map(d => `<div class="detail-item"><span class="label">${d.label}</span><span class="val">${d.val}</span></div>`)
+                .join('');
+            showModal('💰 ' + title, html);
+        }
+
+        // ================================================================
+        // 13. REPORTS
+        // ================================================================
+        let reportPeriod = 'daily';
+
+        async function refreshReports() {
+            const active = await getActiveAnimals();
+            const totalMilk = await getTotalMilk();
+            const avgPerAnimal = active.length ? (totalMilk / active.length) : 0;
+            const feedConsumption = await DB.get('feedConsumption', []);
+            const feedKg = feedConsumption.reduce((s, d) => s + (d.bagsConsumed || 0) * (d.bagSize || 50), 0);
+            const conv = totalMilk ? (feedKg / totalMilk) : 0;
+            const customers = await DB.get('customers', []);
+            const receivables = customers.reduce((s, c) => s + (c.outstandingBalance || 0), 0);
+            const danawalaPayments = await DB.get('danawalaPayments', []);
+            const bhaiswalBills = await DB.get('bhaiswalBills', []);
+            const medicineBills = await DB.get('medicineBills', []);
+            const payables = danawalaPayments.reduce((s, d) => s + (d.amountPaid || 0), 0) +
+                bhaiswalBills.reduce((s, d) => s + (d.amount || 0), 0) +
+                medicineBills.reduce((s, d) => s + (d.amount || 0), 0) +
+                await getCaretakerTotal() + await getTransportTotal() + await getLabourTotal();
+
+            const cards = [
+                { id: 'prod', label: 'Production vs Benchmark', icon: 'fa-tint', val: totalMilk.toFixed(1) +
+                        ' L (avg ' + avgPerAnimal.toFixed(1) + ')' },
+                { id: 'feedConv', label: 'Feed Conversion', icon: 'fa-utensils', val: conv.toFixed(2) + ' kg/L' },
+                { id: 'receivable', label: 'Accounts Receivable', icon: 'fa-user-friends', val: '₹' + receivables
+                        .toFixed(2), cls: 'text-orange' },
+                { id: 'payable', label: 'Accounts Payable', icon: 'fa-truck', val: '₹' + payables.toFixed(2),
+                    cls: 'text-red' }
+            ];
+
+            const grid = document.getElementById('reportGrid');
+            grid.innerHTML = cards.map(c =>
+                `<div class="card-slim" onclick="showReportDetail('${c.id}')"><div class="label"><i class="fas ${c.icon}"></i><span>${c.label}</span></div><div class="value ${c.cls||''}">${c.val}</div></div>`
+            ).join('');
+
+            document.getElementById('reportPeriodLabel').textContent = reportPeriod.charAt(0).toUpperCase() + reportPeriod
+                .slice(1);
+
+            // Weekly Cash Flow (simulated)
+            const cashFlowTbody = document.getElementById('cashFlowTable');
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            cashFlowTbody.innerHTML = days.map(d =>
+                `<tr><td>${d}</td><td>₹${(Math.random() * 5000 + 2000).toFixed(2)}</td><td>₹${(Math.random() * 3000 + 1000).toFixed(2)}</td><td class="${Math.random() > 0.5 ? 'text-green' : 'text-red'}">₹${(Math.random() * 2000).toFixed(2)}</td></tr>`
+            ).join('');
+
+            // Pagar Slip
+            const labour = await DB.get('labour', []);
+            const pagarTbody = document.getElementById('pagarSlipTable');
+            pagarTbody.innerHTML = labour.map(l => {
+                const advance = (l.startingAdvanceBalance || 0) - (l.paidAmount || 0);
+                const netPayable = (l.fixedPagar || 0) - (advance > 0 ? advance : 0);
+                return `<tr><td>${l.workerName||'—'}</td><td>₹${(l.fixedPagar||0).toFixed(2)}</td><td class="${advance>0?'text-red':advance<0?'text-green':'text-muted'}">₹${advance.toFixed(2)}</td><td>₹${netPayable.toFixed(2)}</td></tr>`;
+            }).join('');
+
+            // Customer Milk Reports
+            const customerTbody = document.getElementById('customerReportTable');
+            customerTbody.innerHTML = customers.map(c => {
+                const totalVol = c.fixedDailyVolume || 0;
+                const totalBill = totalVol * 30 * (c.sellingRate || 0);
+                const paid = (c.startingOldBalance || 0) - (c.outstandingBalance || 0);
+                return `<tr><td>${c.customerName||'—'}</td><td>${totalVol.toFixed(1)} L</td><td>₹${totalBill.toFixed(2)}</td><td>₹${paid.toFixed(2)}</td><td class="${(c.outstandingBalance||0)>0?'text-red':'text-green'}">₹${(c.outstandingBalance||0).toFixed(2)}</td></tr>`;
+            }).join('');
+        }
+
+        async function showReportDetail(id) {
+            const active = await getActiveAnimals();
+            const totalMilk = await getTotalMilk();
+            const avgPerAnimal = active.length ? (totalMilk / active.length) : 0;
+            const feedConsumption = await DB.get('feedConsumption', []);
+            const feedKg = feedConsumption.reduce((s, d) => s + (d.bagsConsumed || 0) * (d.bagSize || 50), 0);
+            const conv = totalMilk ? (feedKg / totalMilk) : 0;
+            const customers = await DB.get('customers', []);
+            const receivables = customers.reduce((s, c) => s + (c.outstandingBalance || 0), 0);
+            const danawalaPayments = await DB.get('danawalaPayments', []);
+            const bhaiswalBills = await DB.get('bhaiswalBills', []);
+            const medicineBills = await DB.get('medicineBills', []);
+            const payables = danawalaPayments.reduce((s, d) => s + (d.amountPaid || 0), 0) +
+                bhaiswalBills.reduce((s, d) => s + (d.amount || 0), 0) +
+                medicineBills.reduce((s, d) => s + (d.amount || 0), 0) +
+                await getCaretakerTotal() + await getTransportTotal() + await getLabourTotal();
+
+            let title = '',
+                details = [];
+            switch (id) {
+                case 'prod':
+                    title = 'Production vs Benchmark';
+                    details = [
+                        { label: 'Total Milk (L)', val: totalMilk.toFixed(1) },
+                        { label: 'Active Animals', val: active.length },
+                        { label: 'Avg per Animal (L)', val: avgPerAnimal.toFixed(1) },
+                        { label: 'Benchmark (192 L)', val: '192' },
+                        { label: 'Performance', val: ((avgPerAnimal / 192) * 100).toFixed(1) + '%' }
+                    ];
+                    break;
+                case 'feedConv':
+                    title = 'Feed Conversion';
+                    details = [
+                        { label: 'Feed Consumed (kg)', val: feedKg.toFixed(1) },
+                        { label: 'Milk Produced (L)', val: totalMilk.toFixed(1) },
+                        { label: 'kg Feed / L Milk', val: conv.toFixed(2) }
+                    ];
+                    break;
+                case 'receivable':
+                    title = 'Accounts Receivable';
+                    details = [
+                        { label: 'Total Outstanding (₹)', val: '₹' + receivables.toFixed(2) },
+                        { label: 'Customers with Balance', val: customers.filter(c => (c.outstandingBalance ||
+                                0) > 0).length }
+                    ];
+                    break;
+                case 'payable':
+                    title = 'Accounts Payable';
+                    details = [
+                        { label: 'Total Payable (₹)', val: '₹' + payables.toFixed(2) },
+                        { label: 'Includes Feed, Caretaker, Transport, Labor, Medical', val: '—' }
+                    ];
+                    break;
+                default:
+                    return;
+            }
+            let html = details.map(d => `<div class="detail-item"><span class="label">${d.label}</span><span class="val">${d.val}</span></div>`)
+                .join('');
+            showModal('📈 ' + title, html);
+        }
+
+        function setReportPeriod(p) { reportPeriod = p;
+            refreshReports(); }
+
+        // ================================================================
+        // 14. IMPORT / EXPORT, RATE EDITOR, MODAL
+        // ================================================================
+        async function exportData() {
+            const data = {};
+            const keys = ['animals', 'taji', 'kori', 'bakdi', 'slaughter', 'dead',
+                'feedPurchases', 'feedConsumption', 'godown', 'danawalaPayments',
+                'customers', 'milkProduction', 'milkOverrides', 'customerPayments',
+                'labour', 'labourPayments', 'vendorPayments', 'medicineBills', 'bhaiswalBills',
+                'config'
+            ];
+            for (const k of keys) {
+                data[k] = await DB.get(k, null);
+            }
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'dairy_data_export.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showModal('✅ Export', 'Data exported successfully!');
+        }
+
+        async function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    await DB.importAll(data);
+                    await refreshAll();
+                    document.getElementById('panel-' + currentModule).classList.add('active');
+                    showModal('✅ Import', 'Data imported successfully!');
+                } catch (err) {
+                    showModal('❌ Error', 'Invalid JSON file.');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        async function openRateModal() {
+            const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+                benchmarkProd: 192, benchmarkFeed: 200 });
+            const html = `
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+                    <label>Noora Monthly Rate (₹/animal) <input id="rate_noora" type="number" step="0.01" value="${config.nooraRate}" /></label>
+                    <label>Tosif Monthly Rate (₹/animal) <input id="rate_tosif" type="number" step="0.01" value="${config.tosifRate}" /></label>
+                    <label>TAJI Inward Freight (₹/animal) <input id="rate_taji" type="number" step="0.01" value="${config.tajiFreight}" /></label>
+                    <label>BAKDI Outward Freight (₹/animal) <input id="rate_bakdi" type="number" step="0.01" value="${config.bakdiFreight}" /></label>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn" onclick="saveRates()">Save</button>
+                    <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                </div>
+            `;
+            showModal('⚙️ Edit Rates', html);
+        }
+
+        async function saveRates() {
+            const config = await DB.get('config', { nooraRate: 3300, tosifRate: 3100, tajiFreight: 3400, bakdiFreight: 1800,
+                benchmarkProd: 192, benchmarkFeed: 200 });
+            const noora = parseFloat(document.getElementById('rate_noora')?.value);
+            const tosif = parseFloat(document.getElementById('rate_tosif')?.value);
+            const taji = parseFloat(document.getElementById('rate_taji')?.value);
+            const bakdi = parseFloat(document.getElementById('rate_bakdi')?.value);
+            if (isNaN(noora) || isNaN(tosif) || isNaN(taji) || isNaN(bakdi)) {
+                showModal('❌ Error', 'Please enter valid numbers.');
+                return;
+            }
+            config.nooraRate = noora;
+            config.tosifRate = tosif;
+            config.tajiFreight = taji;
+            config.bakdiFreight = bakdi;
+            await DB.set('config', config);
+            closeModal();
+            await refreshAll();
+            document.getElementById('panel-' + currentModule).classList.add('active');
+            showModal('✅ Saved', 'Rates updated successfully!');
+        }
+
+        function showModal(title, content) {
+            const container = document.getElementById('modalContainer');
+            container.innerHTML = `
+                <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+                    <div class="modal-box">
+                        <h3><i class="fas fa-info-circle"></i> ${title}</h3>
+                        <div>${content}</div>
+                        <div class="modal-actions"><button class="btn btn-sm" onclick="closeModal()">Close</button></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function closeModal() { document.getElementById('modalContainer').innerHTML = ''; }
+
+        // ================================================================
+        // 15. PERIOD TOGGLES
+        // ================================================================
+        function setDashboardPeriod(p) { dashboardPeriod = p;
+            refreshDashboard(); }
+
+        // ================================================================
+        // 16. SEED & INIT
+        // ================================================================
+        async function seedDemoData() {
+            const animals = await DB.get('animals', []);
+            if (animals.length === 0) {
+                await DB.set('animals', [
+                    { tagNo: 'B001', khilaNo: '12', incomingDate: '2025-01-10', location: 'Shed A', status: 'Pregnant',
+                        lactationDays: 45, servicedCycle: 2, faliDate: '2025-02-15', doctorDate: '2025-04-11',
+                        returnFlag: false },
+                    { tagNo: 'B002', khilaNo: '07', incomingDate: '2025-02-01', location: 'Tosif', status: 'KHALI',
+                        lactationDays: 0, servicedCycle: 0, faliDate: null, doctorDate: null, returnFlag: false },
+                    { tagNo: 'B003', khilaNo: '09', incomingDate: '2025-01-20', location: 'Noora', status: 'FALI',
+                        lactationDays: 12, servicedCycle: 1, faliDate: '2025-03-01', doctorDate: '2025-04-25',
+                        returnFlag: false },
+                    { tagNo: 'B004', khilaNo: '22', incomingDate: '2025-03-05', location: 'Shed B', status: 'KHALI',
+                        lactationDays: 0, servicedCycle: 0, faliDate: null, doctorDate: null, returnFlag: false },
+                ]);
+                await DB.set('customers', [
+                    { customerName: 'Milk Mandi', sellingRate: 48, billingCycle: 'Daily', fixedDailyVolume: 120,
+                        startingOldBalance: 0, outstandingBalance: 0 },
+                    { customerName: 'Sweet Shop', sellingRate: 52, billingCycle: 'Weekly', fixedDailyVolume: 40,
+                        startingOldBalance: 0, outstandingBalance: 0 },
+                ]);
+                await DB.set('labour', [
+                    { workerName: 'Ramesh', fixedPagar: 12000, joiningDate: '2024-06-01', leavingDate: '',
+                        startingAdvanceBalance: 2000, paidAmount: 500 },
+                    { workerName: 'Suresh', fixedPagar: 10000, joiningDate: '2024-08-15', leavingDate: '',
+                        startingAdvanceBalance: 0, paidAmount: 0 },
+                ]);
+                await DB.set('godown', [
+                    { goodsName: 'Wheat', bagsInStock: 150, bagSize: 50 },
+                    { goodsName: 'Berseem', bagsInStock: 80, bagSize: 25 },
+                ]);
+                await DB.set('feedPurchases', [
+                    { brokerName: 'Grain Co', goodsName: 'Wheat', bagsPurchased: 200, totalWeight: 10000,
+                        rateType: 'Delivery', totalFreight: 1200, dateOfDelivery: '2025-03-01', bagSize: 50,
+                        freightPerKg: 0.12, goodsBillAmount: 21200 },
+                ]);
+                await DB.set('milkProduction', [
+                    { date: '2025-03-10', shedAMorning: 45, shedAEvening: 38, shedBMorning: 30, shedBEvening: 25 },
+                    { date: '2025-03-11', shedAMorning: 48, shedAEvening: 40, shedBMorning: 32, shedBEvening: 26 },
+                ]);
+                await DB.set('kori', [{ brokerName: 'Kori Traders', totalBillAmount: 85000, numberOfAnimals: 5,
+                    purchaseDate: '2025-02-20', avgPerKori: 17000 }]);
+                await DB.set('taji', [{ tagNo: 'T001', incomingDate: '2025-02-15', caretakerSource: 'Noora',
+                    rearingDays: 30, billAmount: 3300 }]);
+                await DB.set('bakdi', [{ tagNo: 'B001', outgoingDate: '2025-03-01', targetCaretaker: 'Tosif',
+                    faliDate: '2025-02-15', daysPregnant: 14, fromShed: 'Shed A' }]);
+                await DB.set('slaughter', [{ tagNo: 'B005', outgoingDate: '2025-03-05', soldAmount: 25000,
+                    kasaiName: 'Kasai Ram' }]);
+                await DB.set('dead', [{ tagNo: 'B006', outgoingDate: '2025-02-28', location: 'Shed A' }]);
+                await DB.set('danawalaPayments', [{ brokerName: 'Grain Co', date: '2025-03-05', amountPaid: 10000 }]);
+                await DB.set('medicineBills', [{ name: 'Vet Clinic', amount: 4500, date: '2025-03-02' }]);
+                await DB.set('bhaiswalBills', [{ name: 'Bhaiswal Traders', amount: 12000, date: '2025-02-25' }]);
+                await DB.set('customerPayments', [{ customerName: 'Milk Mandi', date: '2025-03-08', amountReceived: 5000 }]);
+                await DB.set('labourPayments', [{ workerName: 'Ramesh', date: '2025-03-01', amount: 2000 }]);
+            }
+        }
+
+        // ================================================================
+        // 17. INIT
+        // ================================================================
+        async function init() {
+            await DB.init();
+            await seedDemoData();
+            await refreshAll();
+            toggleHerdForm();
+            toggleStockForm();
+            toggleMilkForm();
+            toggleLabourForm();
+            // Show dashboard by default
+            switchModule('dashboard');
+            console.log('🐄 DairyOS — All 7 modules loaded and synchronised!');
+        }
+
+        // Start the app
+        init();
+    </script>
+</body>
+</html>
