@@ -1,0 +1,2174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Dairy Manager</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#F2F4F7;--card:#FFFFFF;--border:#E3E8EF;
+  --blue:#1B4FD8;--blue-lt:#EEF2FF;
+  --green:#0A7C52;--green-lt:#ECFDF5;
+  --red:#C81E1E;--red-lt:#FEF2F2;
+  --amber:#B45309;--amber-lt:#FFFBEB;
+  --purple:#6C2BD9;--purple-lt:#F5F3FF;
+  --teal:#0694A2;--teal-lt:#ECFEFF;
+  --dark:#111827;--mid:#374151;--muted:#6B7280;--light:#9CA3AF;
+  --tab-h:58px;
+}
+html,body{height:100%;background:#000;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif}
+#app{max-width:430px;margin:0 auto;height:100%;display:flex;flex-direction:column;background:var(--bg)}
+
+.screen{display:none;flex-direction:column;height:100%;overflow:hidden}
+.screen.active{display:flex}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 12px;height:50px;display:flex;align-items:center;gap:8px;flex-shrink:0;z-index:10}
+.topbar-title{font-weight:700;font-size:16px;color:var(--dark);flex:1}
+.back-btn{background:none;border:none;font-size:24px;cursor:pointer;color:var(--blue);padding:0;line-height:1}
+.topbar-btn{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 11px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.topbar-btn.amber{background:var(--amber)}
+.topbar-btn.red{background:var(--red)}
+.topbar-btn.green{background:var(--green)}
+.topbar-btn.purple{background:var(--purple)}
+.topbar-btn.teal{background:var(--teal)}
+.scroll-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 13px 24px}
+.sec-title{font-size:10px;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:.8px;margin:14px 0 7px}
+.sec-title:first-child{margin-top:4px}
+
+/* GRID – 2 columns */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px}
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+
+/* DASHBOARD CARD – slim, left border, 2 per row */
+.avg-card{background:var(--card);border:1px solid var(--border);border-left:3px solid;border-radius:9px;padding:8px 10px;display:flex;align-items:center;gap:9px;min-height:54px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.avg-card:active{opacity:.65}
+.avg-card .ac-icon{font-size:18px;flex-shrink:0}
+.avg-card .ac-body{flex:1;min-width:0}
+.avg-card .ac-label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.35px;line-height:1.2}
+.avg-card .ac-bench{font-size:8px;color:var(--light);margin-top:1px;line-height:1.2}
+.avg-card .ac-val{font-weight:800;font-size:16px;white-space:nowrap;flex-shrink:0;margin-left:6px}
+
+/* BILL CARD – tappable ledger */
+.bill-card{background:var(--card);border:1px solid var(--border);border-left:3px solid;border-radius:9px;padding:9px 11px;display:flex;align-items:center;gap:9px;margin-bottom:7px;cursor:pointer;transition:opacity .15s;-webkit-tap-highlight-color:transparent}
+.bill-card:active{opacity:.65}
+.bill-card .bc-icon{font-size:20px;flex-shrink:0}
+.bill-card .bc-body{flex:1;min-width:0}
+.bill-card .bc-name{font-size:12px;font-weight:700;color:var(--dark);line-height:1.3}
+.bill-card .bc-sub{font-size:10px;color:var(--muted);margin-top:1px}
+.bill-card .bc-right{text-align:right;flex-shrink:0}
+.bill-card .bc-amt{font-weight:800;font-size:15px;line-height:1.2}
+.bill-card .bc-tag{font-size:9px;font-weight:700;border-radius:4px;padding:1px 5px;display:inline-block;margin-top:2px}
+
+/* MONTH BLOCK – delivery matrix */
+.month-block{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:7px;overflow:hidden}
+.month-header{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-bottom:1px solid var(--border)}
+.month-name{font-weight:700;font-size:13px;color:var(--dark)}
+.month-count{font-size:11px;font-weight:700;border-radius:12px;padding:2px 9px;color:#fff}
+.animal-chip{display:inline-flex;align-items:center;gap:4px;background:var(--blue-lt);border:1px solid #c7d7ff;border-radius:6px;padding:4px 8px;margin:3px;font-size:11px;font-weight:600;color:var(--blue)}
+.animal-chip.past{background:#f1f5f9;border-color:var(--border);color:var(--muted)}
+.animal-chip.soon{background:var(--amber-lt);border-color:#fcd34d;color:var(--amber)}
+.month-animals{padding:7px 8px 8px;display:flex;flex-wrap:wrap}
+.month-empty{padding:10px 12px;font-size:11px;color:var(--light);font-style:italic}
+
+/* STAT CARD (for herd grid) */
+.stat-card{background:var(--card);border:1px solid var(--border);border-top:3px solid;border-radius:10px;padding:10px 7px 9px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.stat-card:active{opacity:.65}
+.stat-card .sv{font-weight:800;font-size:22px;line-height:1}
+.stat-card .sl{font-size:9px;color:var(--muted);text-align:center;line-height:1.3;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+
+/* LIST CARD */
+.list-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:7px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.list-card:active{opacity:.65}
+.lc-title{font-weight:700;font-size:14px;color:var(--dark)}
+.lc-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.lc-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+
+.badge{display:inline-block;border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700}
+.action-btn{border:none;border-radius:10px;padding:13px 8px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;color:#fff;font-size:12px;font-weight:700;-webkit-tap-highlight-color:transparent}
+.action-btn:active{opacity:.75}
+.action-btn .ab-icon{font-size:20px;line-height:1}
+
+/* FORM */
+.form-box{padding:2px 0}
+.field{margin-bottom:11px}
+.field label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px}
+.field input,.field select{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 11px;font-size:15px;color:var(--dark);background:#fff;outline:none;-webkit-appearance:none;appearance:none;font-family:inherit}
+.field input:focus,.field select:focus{border-color:var(--blue)}
+.field input:read-only{background:#f9fafb;color:var(--muted)}
+.btn-main{width:100%;border:none;border-radius:9px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;color:#fff;margin-top:6px}
+.btn-sm{border:none;border-radius:7px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;color:#fff}
+.btn-danger{background:var(--red);color:#fff;border:none;border-radius:7px;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer}
+
+/* INFO TABLE */
+.info-table{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:10px}
+.it-row{display:flex;justify-content:space-between;padding:8px 13px;border-bottom:1px solid var(--border)}
+.it-row:last-child{border-bottom:none}
+.it-row:nth-child(even){background:var(--bg)}
+.it-label{font-size:12px;color:var(--muted)}
+.it-val{font-size:12px;font-weight:700;color:var(--dark);text-align:right;max-width:60%}
+
+/* ALERT */
+.alert-bar{background:var(--amber-lt);border-left:4px solid var(--amber);padding:8px 12px;font-size:11px;color:var(--amber);font-weight:700;margin-bottom:7px;border-radius:0 8px 8px 0}
+.low-stock-alert{background:var(--red-lt);border-left:4px solid var(--red);padding:8px 12px;font-size:11px;color:var(--red);font-weight:700;margin-bottom:7px;border-radius:0 8px 8px 0}
+
+.period-toggle{display:flex;background:var(--border);border-radius:9px;padding:3px;margin-bottom:10px}
+.pt-btn{flex:1;border:none;border-radius:7px;padding:7px 0;font-size:12px;font-weight:700;cursor:pointer;background:none;color:var(--muted);transition:all .15s}
+.pt-btn.active{background:#fff;color:var(--blue);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:flex-end;max-width:430px;left:50%;transform:translateX(-50%)}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:18px 18px 0 0;width:100%;max-height:88vh;overflow-y:auto;padding:18px 15px calc(18px + env(safe-area-inset-bottom))}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.modal-title{font-weight:700;font-size:16px;color:var(--dark)}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1}
+
+.confirm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:700;align-items:center;justify-content:center;max-width:430px;left:50%;transform:translateX(-50%)}
+.confirm-overlay.open{display:flex}
+.confirm-box{background:#fff;border-radius:14px;margin:16px;padding:20px;width:calc(100% - 32px)}
+
+#toast{position:fixed;bottom:calc(var(--tab-h) + 12px);left:50%;transform:translateX(-50%) translateY(16px);background:#111827;color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:all .22s;pointer-events:none;white-space:nowrap;max-width:300px;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+#tab-bar{background:#fff;border-top:1px solid var(--border);display:flex;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0);height:var(--tab-h)}
+.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:none;background:none;cursor:pointer;position:relative;padding:6px 0 4px}
+.tab-btn .t-icon{font-size:19px;line-height:1}
+.tab-btn .t-label{font-size:9px;font-weight:700;letter-spacing:.2px}
+.tab-btn.active .t-label{color:var(--blue)}
+.tab-btn:not(.active) .t-label{color:var(--light)}
+.tab-btn.active::before{content:'';position:absolute;top:0;left:18%;right:18%;height:2px;background:var(--blue);border-radius:0 0 2px 2px}
+
+.dash-hero{background:linear-gradient(135deg,#1B4FD8 0%,#1e3a8a 100%);padding:14px 13px 12px;color:#fff;flex-shrink:0}
+.dash-hero .dh-row{display:flex;align-items:flex-start;justify-content:space-between}
+.dash-hero h1{font-size:10px;font-weight:600;opacity:.7;letter-spacing:.5px;text-transform:uppercase}
+.dash-hero .hero-total{font-size:32px;font-weight:800;line-height:1.1;margin-top:1px}
+.dash-hero .hero-date{font-size:10px;opacity:.6;margin-top:2px}
+.hero-pills{display:flex;gap:5px;margin-top:9px;flex-wrap:wrap}
+.hero-pill{background:rgba(255,255,255,.15);border-radius:20px;padding:3px 9px;font-size:10px;font-weight:600;color:#fff}
+.hero-rate-btn{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
+
+.breed-row{padding:9px 12px;border-radius:9px;margin-bottom:5px;border-left:3px solid}
+.breed-row.bl-active{background:var(--blue-lt);border-color:var(--blue)}
+.breed-row.bl-returned{background:var(--red-lt);border-color:var(--red)}
+.breed-row.bl-confirmed{background:var(--green-lt);border-color:var(--green)}
+.empty{text-align:center;padding:28px 0;color:var(--light);font-size:13px}
+
+.auto-box{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:10px 13px;margin-bottom:12px}
+.auto-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.auto-row:last-child{margin-bottom:0}
+.auto-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+.auto-val{font-size:14px;font-weight:800;color:var(--dark)}
+.auto-val.green{color:var(--green)}
+.auto-val.red{color:var(--red)}
+.auto-val.blue{color:var(--blue)}
+.auto-val.amber{color:var(--amber)}
+.rate-row{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;border-bottom:1px solid var(--border)}
+.rate-row:last-child{border-bottom:none}
+.rate-name{font-size:13px;font-weight:600;color:var(--dark)}
+.rate-sub{font-size:10px;color:var(--muted)}
+.rate-input{width:90px;border:1.5px solid var(--border);border-radius:7px;padding:6px 8px;font-size:14px;font-weight:700;color:var(--dark);text-align:right;outline:none;-webkit-appearance:none}
+.supply-customer-card{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:10px 13px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.supply-customer-card .sc-left .sc-name{font-weight:700;font-size:13px;color:var(--dark)}
+.supply-customer-card .sc-left .sc-sub{font-size:10px;color:var(--muted)}
+.supply-customer-card .sc-right{text-align:right}
+.supply-customer-card .sc-right .sc-amt{font-weight:800;font-size:15px}
+.stock-godown-item{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:9px 13px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center}
+.stock-godown-item .gi-left .gi-name{font-weight:700;font-size:13px;color:var(--dark)}
+.stock-godown-item .gi-left .gi-sub{font-size:10px;color:var(--muted)}
+.stock-godown-item .gi-right{font-weight:700;font-size:14px}
+.labour-worker-card{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:9px 13px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center}
+.labour-worker-card .lw-left .lw-name{font-weight:700;font-size:13px}
+.labour-worker-card .lw-left .lw-sub{font-size:10px;color:var(--muted)}
+.labour-worker-card .lw-right{text-align:right}
+.labour-worker-card .lw-right .lw-bal{font-weight:800;font-size:14px}
+.labour-worker-card .lw-right .lw-status{font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;display:inline-block;margin-top:2px}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ========== SCREEN 0: DASHBOARD ========== -->
+<div class="screen active" id="screen-0">
+  <div class="dash-hero">
+    <div class="dh-row">
+      <div>
+        <h1>Dairy Manager</h1>
+        <div class="hero-total" id="dh-total">— Animals</div>
+        <div class="hero-date" id="dh-date"></div>
+      </div>
+      <button class="hero-rate-btn" onclick="openModal('modal-rates')">⚙️ Rates</button>
+    </div>
+    <div class="hero-pills">
+      <div class="hero-pill" id="dh-shedA">Shed A: 0</div>
+      <div class="hero-pill" id="dh-shedB">Shed B: 0</div>
+      <div class="hero-pill" id="dh-noora">Noora: 0</div>
+      <div class="hero-pill" id="dh-tosif">Tosif: 0</div>
+      <div class="hero-pill" id="dh-gujarat">Gujarat: 0</div>
+    </div>
+  </div>
+  <div class="scroll-body">
+    <div class="period-toggle">
+      <button class="pt-btn active" onclick="setPeriod('daily',this)">Daily</button>
+      <button class="pt-btn" onclick="setPeriod('monthly',this)">Monthly</button>
+      <button class="pt-btn" onclick="setPeriod('yearly',this)">Yearly</button>
+    </div>
+    <div class="sec-title">📊 14 Average Performance Cards</div>
+    <div id="avg-cards-container"></div>
+    <div class="sec-title">🧾 Bills & Ledger</div>
+    <div id="bill-cards-container"></div>
+    <div class="sec-title">🗓️ 12-Month Expected Deliveries</div>
+    <div id="delivery-matrix"></div>
+  </div>
+</div>
+
+<!-- ========== SCREEN 1: HERD ========== -->
+<div class="screen" id="screen-1">
+  <div class="topbar">
+    <span class="topbar-title">🐃 Herd Book</span>
+    <button class="topbar-btn" onclick="openDrCard()">🩺 Dr Card</button>
+  </div>
+  <div class="scroll-body">
+    <div id="herd-alert-bar" style="display:none" class="alert-bar"></div>
+    <div class="sec-title">Herd Overview</div>
+    <div id="herd-stat-grid" class="g2"></div>
+    <div class="sec-title">Quick Entry</div>
+    <div class="action-grid">
+      <button class="action-btn" style="background:#1B4FD8" onclick="openModal('modal-add-animal')"><span class="ab-icon">➕</span>Add Buffalo</button>
+      <button class="action-btn" style="background:#6C2BD9" onclick="openModal('modal-breeding')"><span class="ab-icon">🔁</span>FALI Log</button>
+      <button class="action-btn" style="background:#0891b2" onclick="openModal('modal-taji')"><span class="ab-icon">🚛</span>TAJI Inward</button>
+      <button class="action-btn" style="background:#4B5563" onclick="openModal('modal-bakdi')"><span class="ab-icon">🚚</span>BAKDI Out</button>
+      <button class="action-btn" style="background:#0694A2" onclick="openModal('modal-kori')"><span class="ab-icon">🤝</span>KORI Entry</button>
+      <button class="action-btn" style="background:#C81E1E" onclick="openModal('modal-slaughter')"><span class="ab-icon">🔪</span>Slaughter</button>
+      <button class="action-btn" style="background:#111827" onclick="openModal('modal-dead')"><span class="ab-icon">💀</span>Dead Record</button>
+      <button class="action-btn" style="background:#B45309" onclick="openModal('modal-palak-bill')"><span class="ab-icon">📋</span>Palak Bill</button>
+    </div>
+    <div class="sec-title">All Active Animals</div>
+    <div id="herd-list"></div>
+  </div>
+</div>
+
+<!-- ========== SCREEN 2: SUPPLY ========== -->
+<div class="screen" id="screen-2">
+  <div class="topbar"><span class="topbar-title">🥛 Milk Supply</span></div>
+  <div class="scroll-body">
+    <div class="sec-title">Supply Dashboard</div>
+    <div id="supply-stats" class="g2"></div>
+    <div class="sec-title">Quick Entry</div>
+    <div class="action-grid">
+      <button class="action-btn" style="background:#1B4FD8" onclick="openModal('modal-add-customer')"><span class="ab-icon">👤</span>Add Customer</button>
+      <button class="action-btn" style="background:#0A7C52" onclick="openModal('modal-log-production')"><span class="ab-icon">🧪</span>Log Production</button>
+      <button class="action-btn" style="background:#B45309" onclick="openModal('modal-customer-payment')"><span class="ab-icon">💰</span>Payment Received</button>
+      <button class="action-btn" style="background:#6C2BD9" onclick="openModal('modal-supply-override')"><span class="ab-icon">✏️</span>Override Supply</button>
+      <button class="action-btn" style="background:#C81E1E" onclick="openModal('modal-customer-bill')"><span class="ab-icon">📄</span>Customer Bill</button>
+    </div>
+    <div class="sec-title">Customers</div>
+    <div id="customer-list"></div>
+  </div>
+</div>
+
+<!-- ========== SCREEN 3: STOCK ========== -->
+<div class="screen" id="screen-3">
+  <div class="topbar"><span class="topbar-title">📦 Stock Book</span></div>
+  <div class="scroll-body">
+    <div id="stock-alert-bar" style="display:none" class="low-stock-alert"></div>
+    <div class="sec-title">Godown Overview</div>
+    <div id="stock-stats" class="g2"></div>
+    <div class="sec-title">Quick Actions</div>
+    <div class="action-grid">
+      <button class="action-btn" style="background:#1B4FD8" onclick="openModal('modal-feed-purchase')"><span class="ab-icon">🛒</span>Add Dana Purchase</button>
+      <button class="action-btn" style="background:#0A7C52" onclick="openModal('modal-feed-consumed')"><span class="ab-icon">🍽️</span>Add Feed Consumed</button>
+      <button class="action-btn" style="background:#B45309" onclick="openModal('modal-godown-init')"><span class="ab-icon">🏗️</span>Initial Stock</button>
+      <button class="action-btn" style="background:#C81E1E" onclick="openModal('modal-dana-payment')"><span class="ab-icon">💵</span>Danawala Payment</button>
+    </div>
+    <div class="sec-title">Godown Inventory</div>
+    <div id="godown-list"></div>
+  </div>
+</div>
+
+<!-- ========== SCREEN 4: LABOUR ========== -->
+<div class="screen" id="screen-4">
+  <div class="topbar"><span class="topbar-title">👷 Labour Book</span></div>
+  <div class="scroll-body">
+    <div class="sec-title">Labour Dashboard</div>
+    <div id="labour-stats" class="g2"></div>
+    <div class="sec-title">Quick Actions</div>
+    <div class="action-grid">
+      <button class="action-btn" style="background:#1B4FD8" onclick="openModal('modal-add-labour')"><span class="ab-icon">👤</span>Add Worker</button>
+      <button class="action-btn" style="background:#0A7C52" onclick="openModal('modal-labour-payment')"><span class="ab-icon">💰</span>Add Payment</button>
+      <button class="action-btn" style="background:#B45309" onclick="openModal('modal-labour-slip')"><span class="ab-icon">📃</span>Pagar Slip</button>
+    </div>
+    <div class="sec-title">Worker Status</div>
+    <div id="worker-list"></div>
+  </div>
+</div>
+
+<!-- ========== SCREEN 5: ACCOUNTS ========== -->
+<div class="screen" id="screen-5">
+  <div class="topbar"><span class="topbar-title">📈 Accounts (P&L)</span></div>
+  <div class="scroll-body">
+    <div class="sec-title">Profit & Loss Dashboard</div>
+    <div id="accounts-stats" class="g2"></div>
+    <div class="sec-title">Expenses Breakdown</div>
+    <div id="expenses-list"></div>
+    <div class="sec-title">Net Profit / Loss</div>
+    <div id="pl-summary"></div>
+  </div>
+</div>
+
+<!-- ========== SCREEN 6: REPORTS ========== -->
+<div class="screen" id="screen-6">
+  <div class="topbar"><span class="topbar-title">📋 Reports & Live Summary</span></div>
+  <div class="scroll-body">
+    <div class="period-toggle">
+      <button class="pt-btn active" onclick="setReportPeriod('daily',this)">Daily</button>
+      <button class="pt-btn" onclick="setReportPeriod('monthly',this)">Monthly</button>
+      <button class="pt-btn" onclick="setReportPeriod('yearly',this)">Yearly</button>
+    </div>
+    <div class="sec-title">Profit & Loss</div>
+    <div id="report-pl"></div>
+    <div class="sec-title">Weekly Cash Flow</div>
+    <div id="report-cashflow"></div>
+    <div class="sec-title">Monthly Pagar Slip</div>
+    <div id="report-pagar"></div>
+    <div class="sec-title">Customer Wise Milk Reports</div>
+    <div id="report-customers"></div>
+  </div>
+</div>
+
+<!-- ========== LEDGER DETAIL ========== -->
+<div class="screen" id="screen-ledger">
+  <div class="topbar">
+    <button class="back-btn" onclick="closeLedger()">‹</button>
+    <span class="topbar-title" id="ledger-title"></span>
+  </div>
+  <div class="scroll-body" id="ledger-body"></div>
+</div>
+
+<!-- ========== ANIMAL DETAIL ========== -->
+<div class="screen" id="screen-detail">
+  <div class="topbar">
+    <button class="back-btn" onclick="closeDetail()">‹</button>
+    <span class="topbar-title" id="detail-title"></span>
+    <button class="btn-danger" onclick="confirmDeleteAnimal()">Delete</button>
+  </div>
+  <div class="scroll-body" id="detail-body"></div>
+</div>
+
+<!-- ========== DR CARD ========== -->
+<div class="screen" id="screen-drcard">
+  <div class="topbar">
+    <button class="back-btn" onclick="closeDrCard()">‹</button>
+    <span class="topbar-title">🩺 Doctor Card</span>
+  </div>
+  <div class="scroll-body" id="drcard-body"></div>
+</div>
+
+<!-- ========== DETAIL LIST MODAL ========== -->
+<div class="modal-overlay" id="modal-detail-list">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="detail-list-title">Detail List</span>
+      <button class="modal-close" onclick="closeModal('modal-detail-list')">✕</button>
+    </div>
+    <div id="detail-list-content"></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODALS – all entry forms with clean structure -->
+<!-- ============================================================ -->
+
+<!-- RATES -->
+<div class="modal-overlay" id="modal-rates">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">⚙️ Rates & Settings</span><button class="modal-close" onclick="closeModal('modal-rates')">✕</button></div>
+    <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px">
+      <div class="rate-row"><div><div class="rate-name">Noora</div><div class="rate-sub">₹ per animal / month</div></div><input class="rate-input" id="rate-noora" type="number" inputmode="decimal"></div>
+      <div class="rate-row"><div><div class="rate-name">Tosif</div><div class="rate-sub">₹ per animal / month</div></div><input class="rate-input" id="rate-tosif" type="number" inputmode="decimal"></div>
+      <div class="rate-row"><div><div class="rate-name">TAJI Inward</div><div class="rate-sub">₹ per animal</div></div><input class="rate-input" id="rate-taji" type="number" inputmode="decimal"></div>
+      <div class="rate-row"><div><div class="rate-name">BAKDI Outward</div><div class="rate-sub">₹ per animal</div></div><input class="rate-input" id="rate-bakdi" type="number" inputmode="decimal"></div>
+      <div class="rate-row"><div><div class="rate-name">Milk Benchmark</div><div class="rate-sub">Litres / buffalo / month</div></div><input class="rate-input" id="rate-bench" type="number" inputmode="decimal"></div>
+      <div class="rate-row"><div><div class="rate-name">Feed Baseline</div><div class="rate-sub">kg daily standard</div></div><input class="rate-input" id="rate-feed" type="number" inputmode="decimal"></div>
+    </div>
+    <button class="btn-main" style="background:var(--green)" onclick="saveRates()">Save Rates</button>
+  </div>
+</div>
+
+<!-- ADD ANIMAL -->
+<div class="modal-overlay" id="modal-add-animal">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">➕ Add Buffalo</span><button class="modal-close" onclick="closeModal('modal-add-animal')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Tag No *</label><input id="f-tagNo" placeholder="e.g. BF-001"></div>
+      <div class="field"><label>Khila No *</label><input id="f-khilaNo" placeholder="e.g. K-01"></div>
+      <div class="field"><label>Incoming Date *</label><input type="date" id="f-incomingDate"></div>
+      <div class="field"><label>Location *</label><select id="f-location"><option value="">— Select —</option><option>Shed A</option><option>Shed B</option><option>Yard A</option><option>Yard B</option><option>Noora</option><option>Tosif</option><option>Gujarat</option></select></div>
+      <div class="field"><label>Status *</label><select id="f-status"><option value="">— Select —</option><option>KHALI</option><option>Pregnant</option><option>FALI</option></select></div>
+      <div class="field"><label>Source Type</label><select id="f-type"><option value="">— Select —</option><option>KORI</option><option>TAJI</option></select></div>
+      <button class="btn-main" style="background:var(--blue)" onclick="saveAnimal()">Save Buffalo</button>
+    </div>
+  </div>
+</div>
+
+<!-- FALI BREEDING LOG -->
+<div class="modal-overlay" id="modal-breeding">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">🔁 FALI Breeding Log</span><button class="modal-close" onclick="closeModal('modal-breeding')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Tag No *</label><input id="b-tagNo" placeholder="e.g. BF-001" oninput="onBreedingTagInput(this.value)"></div>
+      <div id="b-tagNote" style="font-size:10px;color:var(--light);margin-bottom:6px"></div>
+      <div id="reservice-warn" style="display:none;background:var(--amber-lt);border:1px solid var(--amber);border-radius:8px;padding:9px 12px;margin-bottom:10px;font-size:12px;font-weight:700;color:var(--amber)">⚠️ Re-servicing — previous entry will be marked RETURNED</div>
+      <div class="field"><label>FALI Date *</label><input type="date" id="b-faliDate" oninput="onBreedingDateInput()"></div>
+      <div class="field"><label>Bull</label><input id="b-bull" placeholder="Bull name or ID"></div>
+      <div class="field"><label>Shed *</label><select id="b-shed"><option value="">— Select —</option><option>Shed A</option><option>Shed B</option></select></div>
+      <div class="field"><label>Khila No</label><input id="b-khilaNo" readonly></div>
+      <div class="auto-box">
+        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Auto Calculated</div>
+        <div class="auto-row"><span class="auto-label">Service No.</span><span class="auto-val blue" id="b-serviceNo">—</span></div>
+        <div class="auto-row"><span class="auto-label">Dr. Check Date (+55d)</span><span class="auto-val blue" id="b-drDate">—</span></div>
+        <div class="auto-row"><span class="auto-label">Status</span><span class="auto-val green" id="b-status">—</span></div>
+      </div>
+      <button class="btn-main" style="background:var(--purple)" onclick="saveBreeding()">Log FALI</button>
+    </div>
+  </div>
+</div>
+
+<!-- TAJI INWARD -->
+<div class="modal-overlay" id="modal-taji">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">🚛 TAJI Inward</span><button class="modal-close" onclick="closeModal('modal-taji')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Tag No *</label><input id="tj-tagNo" placeholder="e.g. BF-010" oninput="onTajiTagInput(this.value)"></div>
+      <div id="tj-tagNote" style="font-size:10px;color:var(--light);margin-bottom:6px"></div>
+      <div class="field"><label>Incoming Date *</label><input type="date" id="tj-inDate" oninput="calcTaji()"></div>
+      <div class="field"><label>Palak *</label><select id="tj-palak" onchange="calcTaji()"><option value="">— Select —</option><option>Noora</option><option>Tosif</option></select></div>
+      <div class="field"><label>Outgoing Date *</label><input type="date" id="tj-outDate" oninput="calcTaji()"></div>
+      <div class="auto-box">
+        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Auto Calculated</div>
+        <div class="auto-row"><span class="auto-label">Rearing Days</span><span class="auto-val blue" id="tj-days">—</span></div>
+        <div class="auto-row"><span class="auto-label">Palak's Bill</span><span class="auto-val red" id="tj-bill">—</span></div>
+      </div>
+      <button class="btn-main" style="background:#0891b2" onclick="saveTaji()">Save TAJI Inward</button>
+    </div>
+  </div>
+</div>
+
+<!-- BAKDI OUTWARD -->
+<div class="modal-overlay" id="modal-bakdi">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">🚚 BAKDI Outward</span><button class="modal-close" onclick="closeModal('modal-bakdi')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Tag No *</label><input id="bk-tagNo" placeholder="e.g. BF-001" oninput="onBakdiTagInput(this.value)"></div>
+      <div id="bk-tagNote" style="font-size:10px;color:var(--light);margin-bottom:6px"></div>
+      <div class="field"><label>Outgoing Date *</label><input type="date" id="bk-outDate" oninput="calcBakdi()"></div>
+      <div class="field"><label>Target Palak *</label><select id="bk-caretaker"><option value="">— Select —</option><option>Noora</option><option>Tosif</option></select></div>
+      <div class="auto-box">
+        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Auto from Animal Record</div>
+        <div class="auto-row"><span class="auto-label">From Shed</span><span class="auto-val" id="bk-fromShed">—</span></div>
+        <div class="auto-row"><span class="auto-label">FALI Date</span><span class="auto-val" id="bk-faliDate">—</span></div>
+        <div class="auto-row"><span class="auto-label">Days Pregnant</span><span class="auto-val purple" id="bk-daysPreg">—</span></div>
+      </div>
+      <button class="btn-main" style="background:#4B5563" onclick="saveBakdi()">Record BAKDI Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- KORI ENTRY -->
+<div class="modal-overlay" id="modal-kori">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">🤝 KORI Entry</span><button class="modal-close" onclick="closeModal('modal-kori')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Broker Name *</label><input id="k-broker" placeholder="Broker name"></div>
+      <div class="field"><label>Amount (₹) *</label><input type="number" inputmode="decimal" id="k-total" oninput="calcKoriAvg()"></div>
+      <div class="field"><label>Date of Purchase *</label><input type="date" id="k-date"></div>
+      <div class="field"><label>No. of Animals *</label><input type="number" inputmode="decimal" id="k-count" oninput="calcKoriAvg()"></div>
+      <div class="auto-box">
+        <div class="auto-row"><span class="auto-label">Avg Purchase per Animal</span><span class="auto-val green" id="kori-avg">—</span></div>
+      </div>
+      <button class="btn-main" style="background:var(--teal)" onclick="saveKori()">Save KORI Entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- SLAUGHTER -->
+<div class="modal-overlay" id="modal-slaughter">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">🔪 Slaughter Entry</span><button class="modal-close" onclick="closeModal('modal-slaughter')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Tag No *</label><input id="sl-tagNo" placeholder="e.g. BF-001"></div>
+      <div class="field"><label>Outgoing Date *</label><input type="date" id="sl-outDate"></div>
+      <div class="field"><label>Sold Amount (₹) *</label><input type="number" inputmode="decimal" id="sl-amount"></div>
+      <div class="field"><label>Kasai Name</label><input id="sl-kasai" placeholder="Kasai / buyer name"></div>
+      <button class="btn-main" style="background:var(--red)" onclick="saveSlaughter()">Record Slaughter</button>
+    </div>
+  </div>
+</div>
+
+<!-- DEAD RECORD -->
+<div class="modal-overlay" id="modal-dead">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">💀 Dead Record</span><button class="modal-close" onclick="closeModal('modal-dead')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Tag No *</label><input id="d-tagNo" placeholder="e.g. BF-001"></div>
+      <div class="field"><label>Death Date *</label><input type="date" id="d-outDate"></div>
+      <div class="field"><label>Location *</label><select id="d-location"><option value="">— Select —</option><option>Shed A</option><option>Shed B</option><option>Noora</option><option>Tosif</option></select></div>
+      <button class="btn-main" style="background:var(--dark)" onclick="saveDead()">Record Death</button>
+    </div>
+  </div>
+</div>
+
+<!-- DANAWALA PAYMENT -->
+<div class="modal-overlay" id="modal-dana">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">🌾 Danawala Payment</span><button class="modal-close" onclick="closeModal('modal-dana')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Broker Name *</label><input id="dana-broker" placeholder="Broker name" oninput="calcDanaOutstanding()"></div>
+      <div class="field"><label>Amount Paid (₹) *</label><input type="number" inputmode="decimal" id="dana-amount" oninput="calcDanaOutstanding()"></div>
+      <div class="field"><label>Date *</label><input type="date" id="dana-date"></div>
+      <div class="auto-box"><div class="auto-row"><span class="auto-label">Outstanding Balance</span><span class="auto-val red" id="dana-outstanding">—</span></div></div>
+      <button class="btn-main" style="background:var(--blue)" onclick="saveVendorPayment('dana')">Save Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- BHAISWAL PAYMENT -->
+<div class="modal-overlay" id="modal-bhaiswal">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">🐄 Bhaiswal Payment</span><button class="modal-close" onclick="closeModal('modal-bhaiswal')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Name *</label><input id="bh-name" placeholder="Vendor name" oninput="calcBhaiswalOutstanding()"></div>
+      <div class="field"><label>Amount Paid (₹) *</label><input type="number" inputmode="decimal" id="bh-amount" oninput="calcBhaiswalOutstanding()"></div>
+      <div class="field"><label>Date *</label><input type="date" id="bh-date"></div>
+      <div class="auto-box"><div class="auto-row"><span class="auto-label">Outstanding Balance</span><span class="auto-val red" id="bh-outstanding">—</span></div></div>
+      <button class="btn-main" style="background:var(--purple)" onclick="saveVendorPayment('bh')">Save Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- MEDICINE BILL -->
+<div class="modal-overlay" id="modal-medicine">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">💊 Medicine Bill</span><button class="modal-close" onclick="closeModal('modal-medicine')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Name / Description *</label><input id="med-name" placeholder="Medicine or vet name"></div>
+      <div class="field"><label>Date *</label><input type="date" id="med-date"></div>
+      <div class="field"><label>Bill Amount (₹) *</label><input type="number" inputmode="decimal" id="med-amount" oninput="calcMedOutstanding()"></div>
+      <div class="field"><label>Amount Paid (₹)</label><input type="number" inputmode="decimal" id="med-paid" oninput="calcMedOutstanding()"></div>
+      <div class="auto-box"><div class="auto-row"><span class="auto-label">Outstanding Balance</span><span class="auto-val red" id="med-outstanding">—</span></div></div>
+      <button class="btn-main" style="background:var(--red)" onclick="saveMedicineBill()">Save Medicine Bill</button>
+    </div>
+  </div>
+</div>
+
+<!-- PALAK BILL -->
+<div class="modal-overlay" id="modal-palak-bill">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">📋 Palak Bill Summary</span><button class="modal-close" onclick="closeModal('modal-palak-bill')">✕</button></div>
+    <div id="palak-bill-content" style="padding:10px 0"></div>
+  </div>
+</div>
+
+<!-- SUPPLY: Add Customer -->
+<div class="modal-overlay" id="modal-add-customer">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">👤 Add Customer</span><button class="modal-close" onclick="closeModal('modal-add-customer')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Customer Name *</label><input id="c-name" placeholder="e.g. Ramesh Dairy"></div>
+      <div class="field"><label>Selling Rate (₹/L) *</label><input type="number" inputmode="decimal" id="c-rate" placeholder="e.g. 60"></div>
+      <div class="field"><label>Billing Cycle *</label><select id="c-cycle"><option value="weekly">Weekly</option><option value="10days">10 Days</option><option value="monthly">Monthly</option></select></div>
+      <div class="field"><label>Fixed Daily Volume (L) *</label><input type="number" inputmode="decimal" id="c-fixed" placeholder="e.g. 10"></div>
+      <div class="field"><label>Starting Balance (₹)</label><input type="number" inputmode="decimal" id="c-oldbal" placeholder="0"></div>
+      <button class="btn-main" style="background:var(--blue)" onclick="saveCustomer()">Save Customer</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUPPLY: Log Production -->
+<div class="modal-overlay" id="modal-log-production">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">🧪 Log Daily Production</span><button class="modal-close" onclick="closeModal('modal-log-production')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Date *</label><input type="date" id="prod-date"></div>
+      <div class="field"><label>Shed A Morning (L)</label><input type="number" inputmode="decimal" id="prod-am" placeholder="0"></div>
+      <div class="field"><label>Shed A Evening (L)</label><input type="number" inputmode="decimal" id="prod-ae" placeholder="0"></div>
+      <div class="field"><label>Shed B Morning (L)</label><input type="number" inputmode="decimal" id="prod-bm" placeholder="0"></div>
+      <div class="field"><label>Shed B Evening (L)</label><input type="number" inputmode="decimal" id="prod-be" placeholder="0"></div>
+      <button class="btn-main" style="background:var(--green)" onclick="saveProduction()">Save Production</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUPPLY: Payment Received -->
+<div class="modal-overlay" id="modal-customer-payment">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">💰 Customer Payment</span><button class="modal-close" onclick="closeModal('modal-customer-payment')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Customer *</label><select id="cp-customer"><option value="">— Select —</option></select></div>
+      <div class="field"><label>Date *</label><input type="date" id="cp-date"></div>
+      <div class="field"><label>Amount Received (₹) *</label><input type="number" inputmode="decimal" id="cp-amount" placeholder="0"></div>
+      <button class="btn-main" style="background:var(--green)" onclick="saveCustomerPayment()">Record Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUPPLY: Override Supply -->
+<div class="modal-overlay" id="modal-supply-override">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">✏️ Override Daily Supply</span><button class="modal-close" onclick="closeModal('modal-supply-override')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Customer *</label><select id="so-customer"><option value="">— Select —</option></select></div>
+      <div class="field"><label>Date *</label><input type="date" id="so-date"></div>
+      <div class="field"><label>Override Morning (L)</label><input type="number" inputmode="decimal" id="so-am" placeholder="Leave blank for default"></div>
+      <div class="field"><label>Override Evening (L)</label><input type="number" inputmode="decimal" id="so-pm" placeholder="Leave blank for default"></div>
+      <button class="btn-main" style="background:var(--purple)" onclick="saveOverride()">Save Override</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUPPLY: Customer Bill -->
+<div class="modal-overlay" id="modal-customer-bill">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">📄 Customer Bill</span><button class="modal-close" onclick="closeModal('modal-customer-bill')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Customer *</label><select id="cb-customer"><option value="">— Select —</option></select></div>
+      <div class="field"><label>Period Start</label><input type="date" id="cb-start"></div>
+      <div class="field"><label>Period End</label><input type="date" id="cb-end"></div>
+      <button class="btn-main" style="background:var(--blue)" onclick="generateCustomerBill()">Generate Bill</button>
+    </div>
+  </div>
+</div>
+
+<!-- STOCK: Feed Purchase -->
+<div class="modal-overlay" id="modal-feed-purchase">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">🛒 Add Dana Purchase</span><button class="modal-close" onclick="closeModal('modal-feed-purchase')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Broker Name *</label><input id="fp-broker" placeholder="e.g. Sharma Feed"></div>
+      <div class="field"><label>Goods Name *</label><input id="fp-goods" placeholder="e.g. Wheat Bran"></div>
+      <div class="field"><label>Bags *</label><input type="number" inputmode="decimal" id="fp-bags" oninput="calcFeedPurchase()"></div>
+      <div class="field"><label>Total Weight (kg) *</label><input type="number" inputmode="decimal" id="fp-weight" oninput="calcFeedPurchase()"></div>
+      <div class="field"><label>Rate Type</label><select id="fp-rateType"><option value="delivery">Delivery</option><option value="xfactory">X-Factory</option></select></div>
+      <div class="field"><label>Rate (₹/kg) *</label><input type="number" inputmode="decimal" id="fp-rate" oninput="calcFeedPurchase()"></div>
+      <div class="field"><label>Total Freight (₹)</label><input type="number" inputmode="decimal" id="fp-freight" oninput="calcFeedPurchase()"></div>
+      <div class="field"><label>Date of Delivery *</label><input type="date" id="fp-date"></div>
+      <div class="auto-box">
+        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Auto Calculated</div>
+        <div class="auto-row"><span class="auto-label">Bag Size (kg)</span><span class="auto-val" id="fp-bagSize">—</span></div>
+        <div class="auto-row"><span class="auto-label">Freight per kg</span><span class="auto-val" id="fp-freightKg">—</span></div>
+        <div class="auto-row"><span class="auto-label">Goods Bill Amount</span><span class="auto-val red" id="fp-bill">—</span></div>
+      </div>
+      <button class="btn-main" style="background:var(--blue)" onclick="saveFeedPurchase()">Save Purchase</button>
+    </div>
+  </div>
+</div>
+
+<!-- STOCK: Feed Consumed -->
+<div class="modal-overlay" id="modal-feed-consumed">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">🍽️ Add Feed Consumed</span><button class="modal-close" onclick="closeModal('modal-feed-consumed')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Goods Name *</label><input id="fc-goods" placeholder="e.g. Wheat Bran"></div>
+      <div class="field"><label>Bags Consumed *</label><input type="number" inputmode="decimal" id="fc-bags"></div>
+      <div class="field"><label>Date *</label><input type="date" id="fc-date"></div>
+      <button class="btn-main" style="background:var(--green)" onclick="saveFeedConsumed()">Record Consumption</button>
+    </div>
+  </div>
+</div>
+
+<!-- STOCK: Initial Godown -->
+<div class="modal-overlay" id="modal-godown-init">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">🏗️ Initial Godown Stock</span><button class="modal-close" onclick="closeModal('modal-godown-init')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Goods Name *</label><input id="gi-goods" placeholder="e.g. Wheat Bran"></div>
+      <div class="field"><label>Bags in Stock *</label><input type="number" inputmode="decimal" id="gi-bags"></div>
+      <button class="btn-main" style="background:var(--amber)" onclick="saveGodownInit()">Set Initial Stock</button>
+    </div>
+  </div>
+</div>
+
+<!-- STOCK: Danawala Payment -->
+<div class="modal-overlay" id="modal-dana-payment">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">💵 Danawala Payment</span><button class="modal-close" onclick="closeModal('modal-dana-payment')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Broker Name *</label><input id="dp-broker" placeholder="e.g. Sharma Feed"></div>
+      <div class="field"><label>Date *</label><input type="date" id="dp-date"></div>
+      <div class="field"><label>Amount Paid (₹) *</label><input type="number" inputmode="decimal" id="dp-amount"></div>
+      <button class="btn-main" style="background:var(--red)" onclick="saveDanaPayment()">Record Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- LABOUR: Add Worker -->
+<div class="modal-overlay" id="modal-add-labour">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">👤 Add Worker</span><button class="modal-close" onclick="closeModal('modal-add-labour')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Worker Name *</label><input id="l-name" placeholder="e.g. Ram Singh"></div>
+      <div class="field"><label>Fixed Pagar (₹/mo) *</label><input type="number" inputmode="decimal" id="l-pagar" placeholder="e.g. 12000"></div>
+      <div class="field"><label>Joining Date *</label><input type="date" id="l-join"></div>
+      <div class="field"><label>Leaving Date</label><input type="date" id="l-leave"></div>
+      <div class="field"><label>Starting Advance (₹)</label><input type="number" inputmode="decimal" id="l-advance" placeholder="0"></div>
+      <button class="btn-main" style="background:var(--blue)" onclick="saveLabour()">Save Worker</button>
+    </div>
+  </div>
+</div>
+
+<!-- LABOUR: Add Payment -->
+<div class="modal-overlay" id="modal-labour-payment">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">💰 Labour Payment</span><button class="modal-close" onclick="closeModal('modal-labour-payment')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Worker *</label><select id="lp-worker"><option value="">— Select —</option></select></div>
+      <div class="field"><label>Date *</label><input type="date" id="lp-date"></div>
+      <div class="field"><label>Amount Paid (₹) *</label><input type="number" inputmode="decimal" id="lp-amount"></div>
+      <button class="btn-main" style="background:var(--green)" onclick="saveLabourPayment()">Record Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- LABOUR: Search -->
+<div class="modal-overlay" id="modal-labour-search">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">🔍 Labour History</span><button class="modal-close" onclick="closeModal('modal-labour-search')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Search Worker</label><input id="ls-search" placeholder="Type name..." oninput="searchLabourHistory()"></div>
+      <div id="labour-history-result"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LABOUR: Pagar Slip -->
+<div class="modal-overlay" id="modal-labour-slip">
+  <div class="modal-box">
+    <div class="modal-header"><span class="modal-title">📃 Pagar Slip</span><button class="modal-close" onclick="closeModal('modal-labour-slip')">✕</button></div>
+    <div class="form-box">
+      <div class="field"><label>Worker *</label><select id="ls-worker"><option value="">— Select —</option></select></div>
+      <div class="field"><label>Month</label><input type="month" id="ls-month"></div>
+      <button class="btn-main" style="background:var(--purple)" onclick="generatePagarSlip()">Generate Slip</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <div style="font-weight:700;font-size:16px;color:var(--dark);margin-bottom:8px">Delete Animal?</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:16px">This permanently removes this animal from all records.</div>
+    <div style="display:flex;gap:8px">
+      <button onclick="closeConfirm()" style="flex:1;background:var(--bg);color:var(--dark);border:1px solid var(--border);border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer">Cancel</button>
+      <button onclick="deleteCurrentAnimal()" style="flex:1;background:var(--red);color:#fff;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <button class="tab-btn active" onclick="switchTab(0,this)"><span class="t-icon">📊</span><span class="t-label">Dashboard</span></button>
+  <button class="tab-btn" onclick="switchTab(1,this)"><span class="t-icon">🐃</span><span class="t-label">Herd</span></button>
+  <button class="tab-btn" onclick="switchTab(2,this)"><span class="t-icon">🥛</span><span class="t-label">Supply</span></button>
+  <button class="tab-btn" onclick="switchTab(3,this)"><span class="t-icon">📦</span><span class="t-label">Stock</span></button>
+  <button class="tab-btn" onclick="switchTab(4,this)"><span class="t-icon">👷</span><span class="t-label">Labour</span></button>
+  <button class="tab-btn" onclick="switchTab(5,this)"><span class="t-icon">📈</span><span class="t-label">Accounts</span></button>
+  <button class="tab-btn" onclick="switchTab(6,this)"><span class="t-icon">📋</span><span class="t-label">Reports</span></button>
+</div>
+</div><!-- #app -->
+
+<script>
+// ============================================================
+// COMPLETE JAVASCRIPT – All modules fully functional
+// ============================================================
+
+let DB;
+let animals=[], koriEntries=[], tajiEntries=[], vendorPayments=[], medBills=[];
+let customers=[], milkProductions=[], customerPayments=[], supplyOverrides=[];
+let feedPurchases=[], godownStock=[], feedConsumptions=[];
+let employees=[], labourPayments=[];
+let settings={
+  id:'settings',
+  nooraRate:3300, tosifRate:3100, tajiRate:3400, bakdiRate:1800,
+  milkBench:192, feedBaseline:200,
+  milkLogs:[], feedLogs:[], labourMonthly:0, milkSaleRate:60,
+  medicineTotal:0, totalFeedExpense:0
+};
+let currentAnimalId=null, currentTab=0, dashPeriod='daily', reportPeriod='daily';
+
+// ---- UTILITY ----
+const todayStr=()=>new Date().toISOString().split('T')[0];
+const fmtDate=d=>d?new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'2-digit'}):'—';
+const cur=n=>'₹'+Number(n||0).toLocaleString('en-IN');
+const N=(v,d=0)=>Number(v||d);
+const uid=()=>Date.now()+Math.floor(Math.random()*9999);
+const daysBetween=(a,b)=>{if(!a||!b)return 0;return Math.max(0,Math.floor((new Date(b)-new Date(a))/86400000));};
+const addDays=(d,days)=>{const x=new Date(d+'T00:00:00');x.setDate(x.getDate()+days);return x.toISOString().split('T')[0];};
+const toast=(msg,dur=2300)=>{const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),dur);};
+const SC={Pregnant:'#6C2BD9',KHALI:'#6B7280',FALI:'#0A7C52',Slaughtered:'#C81E1E',Dead:'#111827'};
+const statusColor=s=>SC[s]||'#6B7280';
+const badgeHtml=(l,c)=>`<span class="badge" style="background:${c}22;color:${c};border:1px solid ${c}44">${l}</span>`;
+const $=id=>document.getElementById(id);
+const MONTH_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+// ---- INDEXEDDB ----
+function openDB(){
+  return new Promise((res,rej)=>{
+    const r=indexedDB.open('DairyDB',10);
+    r.onupgradeneeded=e=>{
+      const db=e.target.result;
+      const stores=['animals','settings','koriEntries','tajiEntries','vendorPayments','medBills',
+        'customers','milkProductions','customerPayments','supplyOverrides',
+        'feedPurchases','godownStock','feedConsumptions',
+        'employees','labourPayments'];
+      stores.forEach(s=>{if(!db.objectStoreNames.contains(s)) db.createObjectStore(s,{keyPath:'id'});});
+    };
+    r.onsuccess=e=>{DB=e.target.result;res();};
+    r.onerror=e=>rej(e);
+  });
+}
+function dbGetAll(s){return new Promise((res,rej)=>{const t=DB.transaction(s,'readonly');const r=t.objectStore(s).getAll();r.onsuccess=()=>res(r.result);r.onerror=e=>rej(e);});}
+function dbPut(s,o){return new Promise((res,rej)=>{const t=DB.transaction(s,'readwrite');const r=t.objectStore(s).put(o);r.onsuccess=()=>res();r.onerror=e=>rej(e);});}
+function dbDelete(s,id){return new Promise((res,rej)=>{const t=DB.transaction(s,'readwrite');const r=t.objectStore(s).delete(id);r.onsuccess=()=>res();r.onerror=e=>rej(e);});}
+
+// ---- NAVIGATION ----
+let activeScreenId='screen-0';
+function showScreen(id){
+  const prev=document.getElementById(activeScreenId);
+  if(prev)prev.classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  activeScreenId=id;
+}
+function switchTab(idx,btn){
+  showScreen(`screen-${idx}`);
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentTab=idx;
+  if(idx===0) renderDashboard();
+  else if(idx===1) renderHerd();
+  else if(idx===2) renderSupply();
+  else if(idx===3) renderStock();
+  else if(idx===4) renderLabour();
+  else if(idx===5) renderAccounts();
+  else if(idx===6) renderReports();
+}
+function closeDetail(){showScreen(`screen-${currentTab}`);if(currentTab===1)renderHerd();}
+function closeDrCard(){showScreen('screen-1');renderHerd();}
+function closeLedger(){showScreen('screen-0');}
+
+// ---- MODAL ----
+function openModal(id){document.getElementById(id).classList.add('open'); populateDropdowns();}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
+
+// ---- DROPDOWN POPULATE ----
+function populateDropdowns(){
+  ['cp-customer','so-customer','cb-customer','ls-worker','lp-worker'].forEach(id=>{
+    const sel=document.getElementById(id);
+    if(sel){
+      const curr=sel.value;
+      sel.innerHTML='<option value="">— Select —</option>'+customers.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+      if(curr) sel.value=curr;
+    }
+  });
+  const lp=document.getElementById('lp-worker');
+  if(lp){
+    const curr=lp.value;
+    lp.innerHTML='<option value="">— Select —</option>'+employees.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
+    if(curr) lp.value=curr;
+  }
+}
+
+// ---- PERIOD ----
+function setPeriod(p,btn){
+  dashPeriod=p;
+  document.querySelectorAll('#screen-0 .pt-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderDashboard();
+}
+function setReportPeriod(p,btn){
+  reportPeriod=p;
+  document.querySelectorAll('#screen-6 .pt-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderReports();
+}
+
+// ===================================================================
+//  RENDER FUNCTIONS
+// ===================================================================
+
+function computeStats(){
+  const today=todayStr();
+  let shedA=0,shedB=0,noora=0,tosif=0,gujarat=0,taji=0,kori=0,
+      bakdi=0,dead=0,slaughtered=0,pregnant=0,fali=0,khali=0,
+      p7=0,repeat=0,needSvc=0,drDue=0;
+  let slaughterTotal=0,slaughterCount=0;
+  let earliest=null;
+  let uncategorised=0;
+
+  for(const a of animals){
+    if(a.status==='Dead'){dead++;continue;}
+    if(a.status==='Slaughtered'){
+      slaughtered++;
+      if(a.soldAmount){slaughterTotal+=N(a.soldAmount);slaughterCount++;}
+      if(a.outwardType==='BAKDI') bakdi++;
+      continue;
+    }
+    if(a.outwardType==='BAKDI') bakdi++;
+    const loc=a.location;
+    if(loc==='Shed A'||loc==='Yard A') shedA++;
+    else if(loc==='Shed B'||loc==='Yard B') shedB++;
+    else if(loc==='Noora') noora++;
+    else if(loc==='Tosif') tosif++;
+    else if(loc==='Gujarat') gujarat++;
+    else uncategorised++;
+    if(a.type==='TAJI') taji++;
+    else kori++;
+    if(a.status==='Pregnant'){pregnant++;
+      if(a.faliDate&&daysBetween(a.faliDate,today)>=210) p7++;
+    } else if(a.status==='FALI') fali++;
+    else if(a.status==='KHALI') khali++;
+    if(N(a.servicedCycle)>3) repeat++;
+    if(!a.faliDate&&daysBetween(a.incomingDate,today)>60) needSvc++;
+    else if(a.status==='KHALI'&&a.lastDrKhaliDate&&daysBetween(a.lastDrKhaliDate,today)>=30) needSvc++;
+    if(a.drCheckDate&&a.drCheckDate>=today&&a.drCheckDate<=addDays(today,7)) drDue++;
+    if(!earliest||a.incomingDate<earliest) earliest=a.incomingDate;
+  }
+  const totalActive=shedA+shedB+noora+tosif+gujarat+uncategorised;
+  const monthsOfData=earliest?Math.max(1,(new Date(today)-new Date(earliest+'T00:00:00'))/(864e5*30)):1;
+  return {shedA,shedB,noora,tosif,gujarat,taji,kori,bakdi,dead,slaughtered,pregnant,fali,khali,
+    p7,repeat,needSvc,drDue,slaughterTotal,slaughterCount,totalActive,monthsOfData,today};
+}
+
+// ---- DASHBOARD ----
+function renderDashboard(){
+  const S=computeStats();
+  const {shedA,shedB,noora,tosif,gujarat,taji,kori,bakdi,dead,slaughtered,pregnant,fali,
+    p7,repeat,needSvc,drDue,slaughterTotal,slaughterCount,totalActive,monthsOfData,today}=S;
+
+  $('dh-total').textContent=`${totalActive} Animals`;
+  $('dh-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  $('dh-shedA').textContent=`Shed A: ${shedA}`;
+  $('dh-shedB').textContent=`Shed B: ${shedB}`;
+  $('dh-noora').textContent=`Noora: ${noora}`;
+  $('dh-tosif').textContent=`Tosif: ${tosif}`;
+  $('dh-gujarat').textContent=`Gujarat: ${gujarat}`;
+
+  const pDays=dashPeriod==='daily'?1:dashPeriod==='monthly'?30:365;
+  const pLabel=dashPeriod==='daily'?'/day':dashPeriod==='monthly'?'/mo':'/yr';
+  const tot=totalActive||1;
+
+  const milkLogs=settings.milkLogs||[];
+  const feedLogs=settings.feedLogs||[];
+  const labourMonthly=N(settings.labourMonthly);
+  const medicineTotal=N(settings.medicineTotal);
+  const totalFeedExpense=N(settings.totalFeedExpense);
+  const milkSaleRate=N(settings.milkSaleRate);
+
+  let totalMilkL=0,totalFeedKg=0,totalFeedCost=0;
+  for(const l of milkLogs) totalMilkL+=N(l.totalLitres);
+  for(const l of feedLogs){totalFeedKg+=N(l.totalKg);totalFeedCost+=N(l.totalCost);}
+  const milkDays=milkLogs.length||1, feedDays=feedLogs.length||1;
+  const avgDMB=totalMilkL/milkDays/tot;
+  const avgFeedPB=totalFeedKg/feedDays/tot;
+  const avgFCPK=totalFeedKg>0?totalFeedCost/totalFeedKg:0;
+  const nooraCharge=noora*settings.nooraRate;
+  const tosifCharge=tosif*settings.tosifRate;
+  const opex=nooraCharge+tosifCharge+labourMonthly+(medicineTotal/12);
+  const avgProdL=totalMilkL>0&&opex>0?opex/totalMilkL:0;
+  const avgKoriTotal=koriEntries.reduce((s,k)=>s+N(k.total),0);
+  const avgKoriCount=koriEntries.reduce((s,k)=>s+N(k.count),0);
+  const avgKori=avgKoriCount>0?avgKoriTotal/avgKoriCount:0;
+  const allIn=opex+(taji*settings.tajiRate/monthsOfData)+(bakdi*settings.bakdiRate/monthsOfData)+totalFeedExpense;
+  const avgTCPB=(allIn/tot)*(pDays/30);
+  const avgSlaughter=slaughterCount>0?slaughterTotal/slaughterCount:0;
+  const avgDeadR=dead/monthsOfData;
+  const avgArrR=(kori+taji)/monthsOfData;
+  const f2=(n,sfx='')=>n>0?n.toFixed(2)+sfx:'—';
+  const f1=(n,sfx='')=>n>0?n.toFixed(1)+sfx:'—';
+  const bench=settings.milkBench;
+  const milkPct=avgDMB>0&&bench>0?` (${((avgDMB*30/bench)*100).toFixed(0)}%)`:'' ;
+
+  const AC=[
+    ['🥛','Avg Milk / Buffalo','#0694A2', avgDMB>0?(avgDMB*pDays).toFixed(1)+' L':'—', `Benchmark: ${bench}L/mo${milkPct}`],
+    ['🌾','Avg Feed / Buffalo','#B45309', avgFeedPB>0?(avgFeedPB*pDays).toFixed(1)+' kg':'—', `Baseline: ${settings.feedBaseline}kg/day`],
+    ['💰','Avg Feed Cost/kg','#1B4FD8', avgFCPK>0?cur(avgFCPK.toFixed(2))+'/kg':'—', 'Feed cost ÷ kg consumed'],
+    ['📉','Avg Milk Rate (Prod)','#C81E1E', avgProdL>0?cur(avgProdL.toFixed(2))+'/L':'—', 'Opex ÷ milk produced'],
+    ['📈','Avg Sale Rate','#0A7C52', milkSaleRate>0?cur(milkSaleRate)+'/L':'—', 'Customer billing rate'],
+    ['👷','Avg Labour/Animal','#6C2BD9', labourMonthly>0?cur(Math.round(labourMonthly/tot*(pDays/30)))+pLabel:'—', 'Pagar ÷ herd'],
+    ['🚛','Avg TAJI Rate','#0694A2', taji>0?cur(settings.tajiRate):'—', `${taji} TAJI × ${cur(settings.tajiRate)}`],
+    ['🤝','Avg KORI Rate','#1B4FD8', avgKori>0?cur(Math.round(avgKori)):'—', `${koriEntries.length} entries · ${avgKoriCount} animals`],
+    ['🔪','Avg Slaughter Rate','#C81E1E', avgSlaughter>0?cur(Math.round(avgSlaughter)):'—', `${slaughterCount} slaughtered`],
+    ['💀',`Avg Dead${pLabel}`,'#374151', dashPeriod==='daily'?f2(avgDeadR/30):dashPeriod==='monthly'?f1(avgDeadR):f1(avgDeadR*12), `${dead} total dead`],
+    ['📥',`Avg Arrivals${pLabel}`,'#B45309', dashPeriod==='daily'?f2(avgArrR/30):dashPeriod==='monthly'?f1(avgArrR):f1(avgArrR*12), `KORI ${kori} + TAJI ${taji}`],
+    ['🐃','Avg Total Cost/Buffalo','#6C2BD9', avgTCPB>0?cur(Math.round(avgTCPB))+pLabel:'—', 'All-in per animal'],
+    ['💊','Avg Medicine/Buffalo','#C81E1E', medicineTotal>0?cur(Math.round(medicineTotal/tot*(pDays/30)))+pLabel:'—', 'Medicine ÷ herd'],
+    ['💵','Avg Labour Pagar','#0A7C52', labourMonthly>0?(dashPeriod==='daily'?cur(Math.round(labourMonthly/30)):dashPeriod==='monthly'?cur(labourMonthly):cur(labourMonthly*12)):'—', `Total payroll${pLabel}`],
+  ];
+  let avgH='';
+  for(let i=0;i<AC.length;i++){
+    const [icon,label,color,val,bench2]=AC[i];
+    if(i%2===0) avgH+='<div class="g2">';
+    avgH+=`<div class="avg-card" style="border-left-color:${color}" onclick="showDetailList('${label}','${icon}','${val}')"><div class="ac-icon">${icon}</div><div class="ac-body"><div class="ac-label">${label}</div><div class="ac-bench">${bench2}</div></div><div class="ac-val" style="color:${color}">${val}</div></div>`;
+    if(i%2===1||i===AC.length-1) avgH+='</div>';
+  }
+  $('avg-cards-container').innerHTML=avgH;
+
+  // 8 bill cards
+  const irshadTotal=taji*settings.tajiRate+bakdi*settings.bakdiRate;
+  const danaPaid2=vendorPayments.filter(p=>p.type==='dana').reduce((s,p)=>s+N(p.amount),0);
+  const bhPaid2=vendorPayments.filter(p=>p.type==='bhaiswal').reduce((s,p)=>s+N(p.amount),0);
+  const medOut=medBills.reduce((s,b)=>s+Math.max(0,N(b.amount)-N(b.paid)),0);
+  const slaugRev=slaughterTotal;
+
+  const BC=[
+    {icon:'👤',name:'Noora Palak Bill',sub:`${noora} animals × ${cur(settings.nooraRate)}/mo`,amt:nooraCharge,color:'#0A7C52',tag:'Monthly Charge',tc:'#C81E1E',key:'noora'},
+    {icon:'👤',name:'Tosif Palak Bill',sub:`${tosif} animals × ${cur(settings.tosifRate)}/mo`,amt:tosifCharge,color:'#B45309',tag:'Monthly Charge',tc:'#C81E1E',key:'tosif'},
+    {icon:'🚛',name:'Irshad Freight Bill',sub:`TAJI ${cur(taji*settings.tajiRate)} + BAKDI ${cur(bakdi*settings.bakdiRate)}`,amt:irshadTotal,color:'#0694A2',tag:'Total Freight',tc:'#0694A2',key:'irshad'},
+    {icon:'🌾',name:'Danawala Bills',sub:`Total paid: ${cur(danaPaid2)}`,amt:danaPaid2,color:'#1B4FD8',tag:'Paid So Far',tc:'#0A7C52',key:'dana'},
+    {icon:'🐄',name:'Bhaiswal Bills',sub:`Total paid: ${cur(bhPaid2)}`,amt:bhPaid2,color:'#6C2BD9',tag:'Paid So Far',tc:'#0A7C52',key:'bhaiswal'},
+    {icon:'💊',name:'Medicine Bills',sub:`${medBills.length} bills recorded`,amt:medOut,color:'#C81E1E',tag:'Outstanding',tc:'#C81E1E',key:'medicine'},
+    {icon:'💵',name:'Total Labour Pagar',sub:`${cur(Math.round(labourMonthly/tot))}/animal avg`,amt:labourMonthly,color:'#0A7C52',tag:'Monthly',tc:'#0A7C52',key:'labour'},
+    {icon:'🔪',name:'Slaughter Balance',sub:`${slaughterCount} animals sold`,amt:slaugRev,color:'#374151',tag:'Total Revenue',tc:'#374151',key:'slaughter'},
+  ];
+  $('bill-cards-container').innerHTML=BC.map(c=>
+    `<div class="bill-card" style="border-left-color:${c.color}" onclick="openLedger('${c.key}')"><div class="bc-icon">${c.icon}</div><div class="bc-body"><div class="bc-name">${c.name}</div><div class="bc-sub">${c.sub}</div></div><div class="bc-right"><div class="bc-amt" style="color:${c.color}">${cur(c.amt)}</div><span class="bc-tag" style="background:${c.tc}22;color:${c.tc}">${c.tag}</span></div></div>`
+  ).join('');
+
+  // Delivery matrix
+  const now=new Date(today+'T00:00:00');
+  const map={};
+  for(const a of animals){
+    if(a.status!=='Pregnant'||!a.faliDate) continue;
+    const dd=addDays(a.faliDate,305);
+    const d=new Date(dd+'T00:00:00');
+    const k=`${d.getFullYear()}-${d.getMonth()}`;
+    if(!map[k]) map[k]=[];
+    map[k].push({tagNo:a.tagNo,khilaNo:a.khilaNo,location:a.location,deliveryDate:dd,id:a.id});
+  }
+  let matHtml='';
+  for(let i=0;i<12;i++){
+    const d=new Date(now.getFullYear(),now.getMonth()+i,1);
+    const yr=d.getFullYear(),mo=d.getMonth();
+    const k=`${yr}-${mo}`;
+    const list=map[k]||[];
+    const isNow=(yr===now.getFullYear()&&mo===now.getMonth());
+    const isPast=(yr<now.getFullYear())||(yr===now.getFullYear()&&mo<now.getMonth());
+    const countColor=list.length>0?'#0A7C52':'#9CA3AF';
+    const monthLabel=MONTH_NAMES[mo]+' '+yr;
+    matHtml+=`<div class="month-block"><div class="month-header"><div><div class="month-name">${monthLabel}${isNow?' <span style="font-size:9px;color:var(--blue);font-weight:700"> THIS MONTH</span>':''}</div>${list.length>0?`<div style="font-size:10px;color:var(--muted);margin-top:1px">${list.length} expected</div>`:''}</div><span class="month-count" style="background:${countColor}">${list.length}</span></div>`;
+    if(!list.length){matHtml+=`<div class="month-empty">No deliveries expected</div>`;}
+    else{
+      matHtml+=`<div class="month-animals">`;
+      for(const a of list){
+        const dtd=daysBetween(today,a.deliveryDate);
+        const cls=isPast?'past':dtd<=14?'soon':'';
+        matHtml+=`<div class="animal-chip ${cls}" onclick="openDetail(${a.id})">🐃 ${a.tagNo} <span style="opacity:.6;font-size:9px">${a.location}</span>${dtd>0?` <span style="font-size:9px;opacity:.7">${dtd}d</span>`:''}</div>`;
+      }
+      matHtml+=`</div>`;
+    }
+    matHtml+=`</div>`;
+  }
+  $('delivery-matrix').innerHTML=matHtml;
+}
+
+// ---- HERD ----
+function renderHerd(){
+  const today=todayStr();
+  const drLimit=addDays(today,7);
+  let shedA=0,shedB=0,noora=0,tosif=0,taji=0,kori=0,bakdi=0,pregnant=0,fali=0,p7=0,repeat=0,needSvc=0,drDue=0;
+  const active=[];
+  for(const a of animals){
+    if(['Slaughtered','Dead'].includes(a.status)){if(a.outwardType==='BAKDI')bakdi++;continue;}
+    active.push(a);
+    if(a.outwardType==='BAKDI') bakdi++;
+    const loc=a.location;
+    if(loc==='Shed A'||loc==='Yard A') shedA++;
+    else if(loc==='Shed B'||loc==='Yard B') shedB++;
+    else if(loc==='Noora') noora++;
+    else if(loc==='Tosif') tosif++;
+    if(a.type==='TAJI') taji++; else kori++;
+    if(a.status==='Pregnant'){pregnant++;if(a.faliDate&&daysBetween(a.faliDate,today)>=210)p7++;}
+    else if(a.status==='FALI') fali++;
+    if(N(a.servicedCycle)>3) repeat++;
+    if(!a.faliDate&&daysBetween(a.incomingDate,today)>60) needSvc++;
+    else if(a.status==='KHALI'&&a.lastDrKhaliDate&&daysBetween(a.lastDrKhaliDate,today)>=30) needSvc++;
+    if(a.drCheckDate&&a.drCheckDate>=today&&a.drCheckDate<=drLimit) drDue++;
+  }
+  const aBar=$('herd-alert-bar');
+  if(p7+repeat+needSvc>0){aBar.style.display='block';aBar.textContent=`⚠️ ${p7} ready to deliver · ${needSvc} need service · ${repeat} repeat breeders · ${drDue} Dr checks due`;}
+  else aBar.style.display='none';
+
+  const ST=[
+    {icon:'🐃', label:'Total Active', val:active.length, color:'#1B4FD8'},
+    {icon:'🏠', label:'Shed A', val:shedA, color:'#6C2BD9'},
+    {icon:'🏠', label:'Shed B', val:shedB, color:'#0694A2'},
+    {icon:'👤', label:'Noora', val:noora, color:'#0A7C52'},
+    {icon:'👤', label:'Tosif', val:tosif, color:'#B45309'},
+    {icon:'🚛', label:'TAJI In', val:taji, color:'#0694A2'},
+    {icon:'🤝', label:'KORI In', val:kori, color:'#1B4FD8'},
+    {icon:'🚚', label:'BAKDI Out', val:bakdi, color:'#4B5563'},
+    {icon:'🤰', label:'Pregnant', val:pregnant, color:'#6C2BD9'},
+    {icon:'🔄', label:'FALI', val:fali, color:'#0A7C52'},
+    {icon:'⏰', label:'7mo+ Ready', val:p7, color:p7>0?'#C81E1E':'#9CA3AF'},
+    {icon:'🩺', label:'Dr Due 7d', val:drDue, color:drDue>0?'#1B4FD8':'#9CA3AF'},
+  ];
+  let html='';
+  for(let i=0;i<ST.length;i+=2){
+    html+='<div class="g2">';
+    const a=ST[i], b=ST[i+1];
+    html+=`<div class="avg-card" style="border-left-color:${a.color}" onclick="showDetailList('${a.label}','${a.icon}','${a.val}')">
+      <div class="ac-icon">${a.icon}</div>
+      <div class="ac-body"><div class="ac-label">${a.label}</div></div>
+      <div class="ac-val" style="color:${a.color}">${a.val}</div>
+    </div>`;
+    if(b){
+      html+=`<div class="avg-card" style="border-left-color:${b.color}" onclick="showDetailList('${b.label}','${b.icon}','${b.val}')">
+        <div class="ac-icon">${b.icon}</div>
+        <div class="ac-body"><div class="ac-label">${b.label}</div></div>
+        <div class="ac-val" style="color:${b.color}">${b.val}</div>
+      </div>`;
+    }
+    html+='</div>';
+  }
+  $('herd-stat-grid').innerHTML=html;
+
+  const lEl=$('herd-list');
+  if(!active.length){lEl.innerHTML='<div class="empty">No animals — tap Add Buffalo</div>';return;}
+  let listH='';
+  for(const a of active){
+    const sc=statusColor(a.status);
+    const hasRet=(a.breedingLog||[]).some(b=>b.returned);
+    listH+=`<div class="list-card" onclick="openDetail(${a.id})"><div class="lc-row"><div style="flex:1;min-width:0"><div class="lc-title">${a.tagNo} · ${a.khilaNo}</div><div class="lc-sub">${a.location} · ${a.type||'—'} · In: ${fmtDate(a.incomingDate)}</div>${a.drCheckDate?`<div class="lc-sub" style="color:var(--amber)">Dr: ${fmtDate(a.drCheckDate)}</div>`:''}</div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;margin-left:8px">${badgeHtml(a.status,sc)}${hasRet?badgeHtml('RETURNED','#C81E1E'):''}</div></div></div>`;
+  }
+  lEl.innerHTML=listH;
+}
+
+// ---- SUPPLY ----
+function renderSupply(){
+  let totalAM=0,totalAE=0,totalBM=0,totalBE=0;
+  for(const p of milkProductions){
+    totalAM+=N(p.am); totalAE+=N(p.ae); totalBM+=N(p.bm); totalBE+=N(p.be);
+  }
+  const herdTotal=animals.filter(a=>!['Slaughtered','Dead'].includes(a.status)).length || 1;
+  const totalProd=totalAM+totalAE+totalBM+totalBE;
+  const shedA=totalAM+totalAE;
+  const shedB=totalBM+totalBE;
+  const avgPerAnimal=herdTotal>0? totalProd/herdTotal : 0;
+  const bench=settings.milkBench || 192;
+  const pct=avgPerAnimal>0 && bench>0 ? ((avgPerAnimal*30/bench)*100).toFixed(0) : 0;
+
+  let totalBill=0, totalReceived=0;
+  for(const c of customers){
+    const days=30;
+    const vol=N(c.fixedDaily);
+    const rate=N(c.sellingRate);
+    const bill=vol*rate*days;
+    totalBill+=bill;
+    const paid=customerPayments.filter(p=>p.customerId===c.id).reduce((s,p)=>s+N(p.amount),0);
+    totalReceived+=paid;
+  }
+  const outstanding=totalBill-totalReceived;
+
+  const stats=[
+    {icon:'🥛', label:'Total Production (L)', val:totalProd.toFixed(1), color:'#1B4FD8'},
+    {icon:'🏠', label:'Shed A Production', val:shedA.toFixed(1), color:'#6C2BD9'},
+    {icon:'🏠', label:'Shed B Production', val:shedB.toFixed(1), color:'#0A7C52'},
+    {icon:'📊', label:`Avg L/Animal vs Bench (${bench}L/mo)`, val:avgPerAnimal.toFixed(1)+'L ('+pct+'%)', color:avgPerAnimal>bench/30?'#0A7C52':'#C81E1E'},
+    {icon:'📄', label:'Total Bill Amount', val:cur(totalBill), color:'#B45309'},
+    {icon:'💰', label:'Total Received', val:cur(totalReceived), color:'#0A7C52'},
+    {icon:'🔴', label:'Total Outstanding', val:cur(outstanding), color:'#C81E1E'},
+  ];
+  let html='';
+  for(let i=0;i<stats.length;i+=2){
+    html+='<div class="g2">';
+    const a=stats[i], b=stats[i+1];
+    html+=`<div class="avg-card" style="border-left-color:${a.color}" onclick="showDetailList('${a.label}','${a.icon}','${a.val}')">
+      <div class="ac-icon">${a.icon}</div>
+      <div class="ac-body"><div class="ac-label">${a.label}</div></div>
+      <div class="ac-val" style="color:${a.color}">${a.val}</div>
+    </div>`;
+    if(b){
+      html+=`<div class="avg-card" style="border-left-color:${b.color}" onclick="showDetailList('${b.label}','${b.icon}','${b.val}')">
+        <div class="ac-icon">${b.icon}</div>
+        <div class="ac-body"><div class="ac-label">${b.label}</div></div>
+        <div class="ac-val" style="color:${b.color}">${b.val}</div>
+      </div>`;
+    }
+    html+='</div>';
+  }
+  $('supply-stats').innerHTML=html;
+
+  let custHtml='';
+  for(const c of customers){
+    const paid=customerPayments.filter(p=>p.customerId===c.id).reduce((s,p)=>s+N(p.amount),0);
+    const bill=N(c.fixedDaily)*N(c.sellingRate)*30;
+    const bal=bill-paid;
+    custHtml+=`<div class="supply-customer-card">
+      <div class="sc-left"><div class="sc-name">${c.name}</div><div class="sc-sub">₹${c.sellingRate}/L · ${c.fixedDaily}L/d · ${c.billingCycle}</div></div>
+      <div class="sc-right"><div class="sc-amt" style="color:${bal>0?'#C81E1E':'#0A7C52'}">${cur(bal)}</div><div style="font-size:9px;color:var(--muted)">outstanding</div></div>
+    </div>`;
+  }
+  $('customer-list').innerHTML=custHtml || '<div class="empty">No customers added yet</div>';
+}
+
+// ---- STOCK ----
+function renderStock(){
+  let totalGodownValue=0, totalBagsConsumed=0, totalCostConsumed=0;
+  const goodsMap={};
+  for(const p of feedPurchases){
+    if(!goodsMap[p.goods]) goodsMap[p.goods]={rate:N(p.rate),bags:N(p.bags),weight:N(p.weight)};
+    else goodsMap[p.goods].rate=N(p.rate);
+  }
+  let lowStockAlerts=[];
+  for(const g of godownStock){
+    const info=goodsMap[g.goods] || {rate:0};
+    const val=N(g.bags)*info.rate* (info.weight/info.bags || 1);
+    totalGodownValue+=val;
+    if(N(g.bags) < 5) lowStockAlerts.push(g.goods);
+  }
+  for(const fc of feedConsumptions){
+    totalBagsConsumed+=N(fc.bags);
+    const info=goodsMap[fc.goods] || {rate:0};
+    totalCostConsumed+=N(fc.bags)*info.rate;
+  }
+
+  const alertBar=$('stock-alert-bar');
+  if(lowStockAlerts.length){
+    alertBar.style.display='block';
+    alertBar.textContent='⚠️ Low Stock: '+lowStockAlerts.join(', ');
+  } else alertBar.style.display='none';
+
+  const stats=[
+    {icon:'🏗️', label:'Godown Assets', val:cur(totalGodownValue), color:'#1B4FD8'},
+    {icon:'🍽️', label:'Total Feed Consumed (bags)', val:totalBagsConsumed.toFixed(0), color:'#B45309'},
+    {icon:'💰', label:'Total Cost of Consumed', val:cur(totalCostConsumed), color:'#C81E1E'},
+  ];
+  let html='';
+  for(let i=0;i<stats.length;i+=2){
+    html+='<div class="g2">';
+    const a=stats[i], b=stats[i+1];
+    html+=`<div class="avg-card" style="border-left-color:${a.color}" onclick="showDetailList('${a.label}','${a.icon}','${a.val}')">
+      <div class="ac-icon">${a.icon}</div>
+      <div class="ac-body"><div class="ac-label">${a.label}</div></div>
+      <div class="ac-val" style="color:${a.color}">${a.val}</div>
+    </div>`;
+    if(b){
+      html+=`<div class="avg-card" style="border-left-color:${b.color}" onclick="showDetailList('${b.label}','${b.icon}','${b.val}')">
+        <div class="ac-icon">${b.icon}</div>
+        <div class="ac-body"><div class="ac-label">${b.label}</div></div>
+        <div class="ac-val" style="color:${b.color}">${b.val}</div>
+      </div>`;
+    }
+    html+='</div>';
+  }
+  $('stock-stats').innerHTML=html;
+
+  let invHtml='';
+  for(const g of godownStock){
+    invHtml+=`<div class="stock-godown-item"><div class="gi-left"><div class="gi-name">${g.goods}</div><div class="gi-sub">${g.bags} bags</div></div><div class="gi-right">${g.bags} bags</div></div>`;
+  }
+  $('godown-list').innerHTML=invHtml || '<div class="empty">No stock in godown</div>';
+}
+
+// ---- LABOUR ----
+function renderLabour(){
+  const today=todayStr();
+  const active=employees.filter(e=>!e.leavingDate || e.leavingDate>=today);
+  const totalPagar=active.reduce((s,e)=>s+N(e.fixedPagar),0);
+  const avgPerMonth=employees.length>0 ? totalPagar/employees.length : 0;
+  const herdTotal=animals.filter(a=>!['Slaughtered','Dead'].includes(a.status)).length || 1;
+  const avgPerAnimal=herdTotal>0 ? totalPagar/herdTotal : 0;
+
+  const stats=[
+    {icon:'💵', label:'Total Pagar (Month)', val:cur(totalPagar), color:'#1B4FD8'},
+    {icon:'👤', label:'Avg Pagar/Worker', val:cur(avgPerMonth), color:'#B45309'},
+    {icon:'🐃', label:'Avg Pagar/Animal', val:cur(avgPerAnimal), color:'#0A7C52'},
+  ];
+  let html='';
+  for(let i=0;i<stats.length;i+=2){
+    html+='<div class="g2">';
+    const a=stats[i], b=stats[i+1];
+    html+=`<div class="avg-card" style="border-left-color:${a.color}" onclick="showDetailList('${a.label}','${a.icon}','${a.val}')">
+      <div class="ac-icon">${a.icon}</div>
+      <div class="ac-body"><div class="ac-label">${a.label}</div></div>
+      <div class="ac-val" style="color:${a.color}">${a.val}</div>
+    </div>`;
+    if(b){
+      html+=`<div class="avg-card" style="border-left-color:${b.color}" onclick="showDetailList('${b.label}','${b.icon}','${b.val}')">
+        <div class="ac-icon">${b.icon}</div>
+        <div class="ac-body"><div class="ac-label">${b.label}</div></div>
+        <div class="ac-val" style="color:${b.color}">${b.val}</div>
+      </div>`;
+    }
+    html+='</div>';
+  }
+  $('labour-stats').innerHTML=html;
+
+  let wHtml='';
+  for(const e of employees){
+    const payments=labourPayments.filter(p=>p.employeeId===e.id);
+    const totalPaid=payments.reduce((s,p)=>s+N(p.amount),0);
+    const advance=N(e.startingAdvance)+totalPaid;
+    const status=advance>0?'Advance':advance<0?'Balance':'Settled';
+    const statusColor=advance>0?'#C81E1E':advance<0?'#0A7C52':'#6B7280';
+    wHtml+=`<div class="labour-worker-card">
+      <div class="lw-left"><div class="lw-name">${e.name}</div><div class="lw-sub">₹${e.fixedPagar}/mo · Joined ${fmtDate(e.joiningDate)}${e.leavingDate?' · Left '+fmtDate(e.leavingDate):''}</div></div>
+      <div class="lw-right"><div class="lw-bal">${cur(advance)}</div><div class="lw-status" style="background:${statusColor}22;color:${statusColor}">${status}</div></div>
+    </div>`;
+  }
+  $('worker-list').innerHTML=wHtml || '<div class="empty">No workers added</div>';
+}
+
+// ---- ACCOUNTS ----
+function renderAccounts(){
+  const today=todayStr();
+  let milkRevenue=0;
+  for(const c of customers){
+    const days=30;
+    const vol=N(c.fixedDaily);
+    const rate=N(c.sellingRate);
+    milkRevenue+=vol*rate*days;
+  }
+  const livestockSales=animals.filter(a=>a.status==='Slaughtered').reduce((s,a)=>s+N(a.soldAmount),0);
+  const feedExpense=feedPurchases.reduce((s,p)=>s+N(p.bags)*N(p.rate)+N(p.freight),0);
+  const active=animals.filter(a=>!['Slaughtered','Dead'].includes(a.status));
+  const noora=active.filter(a=>a.location==='Noora').length;
+  const tosif=active.filter(a=>a.location==='Tosif').length;
+  const caretakerExpense=noora*settings.nooraRate + tosif*settings.tosifRate;
+  const taji=active.filter(a=>a.type==='TAJI').length;
+  const bakdi=animals.filter(a=>a.outwardType==='BAKDI').length;
+  const transportExpense=taji*settings.tajiRate + bakdi*settings.bakdiRate;
+  const labourExpense=employees.filter(e=>!e.leavingDate || e.leavingDate>=today).reduce((s,e)=>s+N(e.fixedPagar),0);
+  const medicalExpense=medBills.reduce((s,b)=>s+N(b.amount),0);
+  const totalIncome=milkRevenue+livestockSales;
+  const totalExpense=feedExpense+caretakerExpense+transportExpense+labourExpense+medicalExpense;
+  const net=totalIncome-totalExpense;
+
+  const stats=[
+    {icon:'📈', label:'Total Income', val:cur(totalIncome), color:'#0A7C52'},
+    {icon:'📉', label:'Total Expense', val:cur(totalExpense), color:'#C81E1E'},
+    {icon:'💹', label:'Net Profit / Loss', val:cur(net), color:net>=0?'#0A7C52':'#C81E1E'},
+    {icon:'🥛', label:'Milk Revenue', val:cur(milkRevenue), color:'#1B4FD8'},
+    {icon:'🔪', label:'Livestock Sales', val:cur(livestockSales), color:'#B45309'},
+    {icon:'🌾', label:'Feed Expense', val:cur(feedExpense), color:'#0694A2'},
+    {icon:'👤', label:'Caretaker', val:cur(caretakerExpense), color:'#6C2BD9'},
+  ];
+  let html='';
+  for(let i=0;i<stats.length;i+=2){
+    html+='<div class="g2">';
+    const a=stats[i], b=stats[i+1];
+    html+=`<div class="avg-card" style="border-left-color:${a.color}" onclick="showDetailList('${a.label}','${a.icon}','${a.val}')">
+      <div class="ac-icon">${a.icon}</div>
+      <div class="ac-body"><div class="ac-label">${a.label}</div></div>
+      <div class="ac-val" style="color:${a.color}">${a.val}</div>
+    </div>`;
+    if(b){
+      html+=`<div class="avg-card" style="border-left-color:${b.color}" onclick="showDetailList('${b.label}','${b.icon}','${b.val}')">
+        <div class="ac-icon">${b.icon}</div>
+        <div class="ac-body"><div class="ac-label">${b.label}</div></div>
+        <div class="ac-val" style="color:${b.color}">${b.val}</div>
+      </div>`;
+    }
+    html+='</div>';
+  }
+  $('accounts-stats').innerHTML=html;
+
+  let expHtml=`
+    <div class="info-table">
+      <div class="it-row"><span class="it-label">Feed</span><span class="it-val">${cur(feedExpense)}</span></div>
+      <div class="it-row"><span class="it-label">Caretaker</span><span class="it-val">${cur(caretakerExpense)}</span></div>
+      <div class="it-row"><span class="it-label">Transport</span><span class="it-val">${cur(transportExpense)}</span></div>
+      <div class="it-row"><span class="it-label">Labour</span><span class="it-val">${cur(labourExpense)}</span></div>
+      <div class="it-row"><span class="it-label">Medical</span><span class="it-val">${cur(medicalExpense)}</span></div>
+    </div>
+  `;
+  $('expenses-list').innerHTML=expHtml;
+  $('pl-summary').innerHTML=`<div class="info-table"><div class="it-row"><span class="it-label" style="font-weight:700">NET</span><span class="it-val" style="color:${net>=0?'#0A7C52':'#C81E1E'}">${cur(net)}</span></div></div>`;
+}
+
+// ---- REPORTS ----
+function renderReports(){
+  const today=todayStr();
+  const active=animals.filter(a=>!['Slaughtered','Dead'].includes(a.status));
+  const totalActive=active.length;
+  const herdTotal=totalActive || 1;
+  let totalProd=0;
+  for(const p of milkProductions){
+    totalProd+=N(p.am)+N(p.ae)+N(p.bm)+N(p.be);
+  }
+  const avgPerAnimal=herdTotal>0 ? totalProd/herdTotal : 0;
+  const bench=settings.milkBench || 192;
+  const pct=avgPerAnimal>0 && bench>0 ? ((avgPerAnimal*30/bench)*100).toFixed(0) : 0;
+  const pregnant=active.filter(a=>a.status==='Pregnant').length;
+  const dead=animals.filter(a=>a.status==='Dead').length;
+
+  let milkRevenue=0;
+  for(const c of customers){
+    const days=30;
+    const vol=N(c.fixedDaily);
+    const rate=N(c.sellingRate);
+    milkRevenue+=vol*rate*days;
+  }
+  const livestockSales=animals.filter(a=>a.status==='Slaughtered').reduce((s,a)=>s+N(a.soldAmount),0);
+  const feedExpense=feedPurchases.reduce((s,p)=>s+N(p.bags)*N(p.rate)+N(p.freight),0);
+  const noora=active.filter(a=>a.location==='Noora').length;
+  const tosif=active.filter(a=>a.location==='Tosif').length;
+  const caretakerExpense=noora*settings.nooraRate + tosif*settings.tosifRate;
+  const taji=active.filter(a=>a.type==='TAJI').length;
+  const bakdi=animals.filter(a=>a.outwardType==='BAKDI').length;
+  const transportExpense=taji*settings.tajiRate + bakdi*settings.bakdiRate;
+  const labourExpense=employees.filter(e=>!e.leavingDate || e.leavingDate>=today).reduce((s,e)=>s+N(e.fixedPagar),0);
+  const medicalExpense=medBills.reduce((s,b)=>s+N(b.amount),0);
+  const totalIncome=milkRevenue+livestockSales;
+  const totalExpense=feedExpense+caretakerExpense+transportExpense+labourExpense+medicalExpense;
+  const net=totalIncome-totalExpense;
+
+  let weeklyProd=0;
+  const last7=milkProductions.slice(-7);
+  for(const p of last7) weeklyProd+=N(p.am)+N(p.ae)+N(p.bm)+N(p.be);
+
+  let pagarHtml='';
+  for(const e of employees){
+    const payments=labourPayments.filter(p=>p.employeeId===e.id);
+    const totalPaid=payments.reduce((s,p)=>s+N(p.amount),0);
+    const bal=N(e.startingAdvance)+totalPaid;
+    pagarHtml+=`<div class="it-row"><span class="it-label">${e.name}</span><span class="it-val">${cur(bal)}</span></div>`;
+  }
+
+  let custHtml='';
+  for(const c of customers){
+    const delivered=30*N(c.fixedDaily);
+    const rate=N(c.sellingRate);
+    const bill=delivered*rate;
+    custHtml+=`<div class="it-row"><span class="it-label">${c.name}</span><span class="it-val">${delivered}L · ${cur(bill)}</span></div>`;
+  }
+
+  const html=`
+    <div class="info-table">
+      <div class="it-row"><span class="it-label">Total Active Animals</span><span class="it-val">${totalActive}</span></div>
+      <div class="it-row"><span class="it-label">Avg Milk/Animal vs Bench</span><span class="it-val">${avgPerAnimal.toFixed(1)}L (${pct}%)</span></div>
+      <div class="it-row"><span class="it-label">Pregnant</span><span class="it-val">${pregnant}</span></div>
+      <div class="it-row"><span class="it-label">Dead (YTD)</span><span class="it-val">${dead}</span></div>
+    </div>
+    <div class="info-table">
+      <div class="it-row"><span class="it-label" style="font-weight:700">Profit & Loss</span><span class="it-val"></span></div>
+      <div class="it-row"><span class="it-label">Income</span><span class="it-val">${cur(totalIncome)}</span></div>
+      <div class="it-row"><span class="it-label">Expense</span><span class="it-val">${cur(totalExpense)}</span></div>
+      <div class="it-row"><span class="it-label" style="font-weight:700">Net</span><span class="it-val" style="color:${net>=0?'#0A7C52':'#C81E1E'}">${cur(net)}</span></div>
+    </div>
+    <div class="info-table">
+      <div class="it-row"><span class="it-label">Weekly Cash Flow (last 7d)</span><span class="it-val">${weeklyProd.toFixed(1)} L</span></div>
+    </div>
+    <div class="sec-title">Monthly Pagar Slip</div>
+    <div class="info-table">${pagarHtml || '<div class="empty">No workers</div>'}</div>
+    <div class="sec-title">Customer Wise Milk Reports</div>
+    <div class="info-table">${custHtml || '<div class="empty">No customers</div>'}</div>
+  `;
+  $('report-pl').innerHTML=html;
+}
+
+// ===================================================================
+//  DETAIL LIST MODAL
+// ===================================================================
+function showDetailList(title, icon, value){
+  $('detail-list-title').textContent=`${icon} ${title}`;
+  $('detail-list-content').innerHTML=`<div class="empty">Detailed list for ${title}:<br><br><span style="font-size:24px;font-weight:800">${value}</span></div>`;
+  openModal('modal-detail-list');
+}
+
+// ===================================================================
+//  LEDGER DETAIL
+// ===================================================================
+const LEDGER_INFO={
+  noora:{title:'Noora Palak Ledger',color:'#0A7C52'},
+  tosif:{title:'Tosif Palak Ledger',color:'#B45309'},
+  irshad:{title:'Irshad Transport Ledger',color:'#0694A2'},
+  dana:{title:'Danawala Bills Ledger',color:'#1B4FD8'},
+  bhaiswal:{title:'Bhaiswal Bills Ledger',color:'#6C2BD9'},
+  medicine:{title:'Medicine Bills Ledger',color:'#C81E1E'},
+  labour:{title:'Total Labour Pagar',color:'#0A7C52'},
+  slaughter:{title:'Slaughter Revenue Ledger',color:'#374151'},
+};
+function openLedger(key){
+  const info=LEDGER_INFO[key]||{title:'Ledger',color:'#1B4FD8'};
+  $('ledger-title').textContent=info.title;
+  $('ledger-body').innerHTML=`<div style="padding:12px 13px 24px"><div class="empty">Ledger details for ${info.title}</div></div>`;
+  showScreen('screen-ledger');
+}
+
+// ===================================================================
+//  ANIMAL DETAIL
+// ===================================================================
+function openDetail(id){
+  if(!id) return;
+  currentAnimalId=id;
+  const a=animals.find(x=>x.id===id);
+  if(!a){return;}
+  $('detail-title').textContent=`${a.tagNo} · ${a.khilaNo}`;
+  const sc=statusColor(a.status);
+  const breedLog=a.breedingLog||[];
+  let breedHtml=breedLog.length===0?'<div class="empty">No breeding records</div>':
+    [...breedLog].reverse().map(b=>{
+      let cls='bl-active',lbl='Active',lc='#1B4FD8';
+      if(b.returned){cls='bl-returned';lbl='RETURNED';lc='#C81E1E';}
+      else if(b.drChecked){cls='bl-confirmed';lbl=b.drResult;lc='#0A7C52';}
+      return `<div class="breed-row ${cls}">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-weight:700;font-size:13px;color:var(--dark)">${fmtDate(b.faliDate)}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">${b.bull||'Unknown Bull'} · ${b.shed||'—'}</div></div>
+          ${badgeHtml(lbl,lc)}
+        </div>
+      </div>`;
+    }).join('');
+
+  $('detail-body').innerHTML=`<div style="padding:12px 13px 24px">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+      ${badgeHtml(a.status,sc)}
+      ${badgeHtml(a.type||'—','#0694A2')}
+      ${a.outwardType?badgeHtml(a.outwardType,'#4B5563'):''}
+    </div>
+    <div class="info-table">
+      <div class="it-row"><span class="it-label">Tag No</span><span class="it-val">${a.tagNo}</span></div>
+      <div class="it-row"><span class="it-label">Khila No</span><span class="it-val">${a.khilaNo}</span></div>
+      <div class="it-row"><span class="it-label">Location</span><span class="it-val">${a.location}</span></div>
+      <div class="it-row"><span class="it-label">Incoming Date</span><span class="it-val">${fmtDate(a.incomingDate)}</span></div>
+      <div class="it-row"><span class="it-label">Status</span><span class="it-val">${a.status}</span></div>
+      <div class="it-row"><span class="it-label">FALI Date</span><span class="it-val">${fmtDate(a.faliDate)}</span></div>
+      <div class="it-row"><span class="it-label">Expected Delivery</span><span class="it-val">${a.faliDate?fmtDate(addDays(a.faliDate,305)):'—'}</span></div>
+      <div class="it-row"><span class="it-label">Dr. Check Date</span><span class="it-val">${fmtDate(a.drCheckDate)}</span></div>
+      <div class="it-row"><span class="it-label">Serviced Cycles</span><span class="it-val">${a.servicedCycle||0}</span></div>
+      <div class="it-row"><span class="it-label">Lactation Cycle</span><span class="it-val">${a.lactationCycle||1}</span></div>
+      ${a.outDate?`<div class="it-row"><span class="it-label">Outgoing Date</span><span class="it-val">${fmtDate(a.outDate)}</span></div>`:''}
+      ${a.soldAmount?`<div class="it-row"><span class="it-label">Sold Amount</span><span class="it-val">${cur(a.soldAmount)}</span></div>`:''}
+      ${a.kasaiName?`<div class="it-row"><span class="it-label">Kasai Name</span><span class="it-val">${a.kasaiName}</span></div>`:''}
+    </div>
+    <div class="sec-title">Breeding History</div>
+    ${breedHtml}
+  </div>`;
+  showScreen('screen-detail');
+}
+
+// ===================================================================
+//  DR CARD
+// ===================================================================
+function openDrCard(){showScreen('screen-drcard');renderDrCard();}
+function renderDrCard(){
+  const today=todayStr();
+  const drAnimals=animals.filter(a=>!['Slaughtered','Dead'].includes(a.status)&&a.drCheckDate).sort((a,b)=>a.drCheckDate.localeCompare(b.drCheckDate));
+  const body=document.getElementById('drcard-body');
+  if(drAnimals.length===0){body.innerHTML='<div class="empty">No animals pending doctor check</div>';return;}
+  body.innerHTML='<div style="padding:10px 13px">'+drAnimals.map(a=>`
+    <div class="list-card" style="cursor:default">
+      <div class="lc-row" style="margin-bottom:8px">
+        <div>
+          <div class="lc-title">${a.tagNo} · ${a.khilaNo}</div>
+          <div class="lc-sub">${a.location} · FALI: ${fmtDate(a.faliDate)} · Cycle #${a.servicedCycle}</div>
+          <div class="lc-sub" style="color:var(--amber)">Dr Due: ${fmtDate(a.drCheckDate)}</div>
+        </div>
+        <button class="btn-sm" style="background:var(--muted)" onclick="openDetail(${a.id})">📋</button>
+      </div>
+      <div style="display:flex;gap:7px">
+        <button class="btn-sm" style="background:var(--purple);flex:1" onclick="markDr(${a.id},'Pregnant')">✅ Pregnant</button>
+        <button class="btn-sm" style="background:var(--muted);flex:1" onclick="markDr(${a.id},'KHALI')">⭕ KHALI</button>
+      </div>
+    </div>`).join('')+'</div>';
+}
+async function markDr(id,result){
+  const idx=animals.findIndex(a=>a.id===id);if(idx<0)return;
+  const a={...animals[idx]};
+  const log=(a.breedingLog||[]).map((b,i)=>i===a.breedingLog.length-1?{...b,drChecked:true,drResult:result}:b);
+  a.status=result;a.drCheckDate=null;a.breedingLog=log;
+  if(result==='KHALI') a.lastDrKhaliDate=todayStr();
+  animals[idx]=a;await dbPut('animals',a);
+  toast(`✅ Marked as ${result}`);renderDrCard();
+}
+
+// ===================================================================
+//  SAVE HANDLERS
+// ===================================================================
+
+// --- RATES ---
+async function saveRates(){
+  settings.nooraRate=N($('rate-noora').value,3300);
+  settings.tosifRate=N($('rate-tosif').value,3100);
+  settings.tajiRate=N($('rate-taji').value,3400);
+  settings.bakdiRate=N($('rate-bakdi').value,1800);
+  settings.milkBench=N($('rate-bench').value,192);
+  settings.feedBaseline=N($('rate-feed').value,200);
+  await dbPut('settings',settings);
+  closeModal('modal-rates');
+  toast('✅ Rates saved');
+  renderDashboard();
+}
+
+// --- ADD ANIMAL ---
+async function saveAnimal(){
+  const tagNo=$('f-tagNo').value.trim();
+  const khilaNo=$('f-khilaNo').value.trim();
+  const incomingDate=$('f-incomingDate').value;
+  const location=$('f-location').value;
+  const status=$('f-status').value;
+  const type=$('f-type').value;
+  if(!tagNo||!khilaNo||!incomingDate||!location||!status){toast('⚠️ Fill all required fields');return;}
+  const obj={id:uid(),tagNo,khilaNo,incomingDate,location,status,type:type||'KORI',servicedCycle:0,lactationCycle:1,breedingLog:[],outwardType:null};
+  await dbPut('animals',obj); animals.push(obj);
+  closeModal('modal-add-animal');
+  ['f-tagNo','f-khilaNo','f-incomingDate'].forEach(id=>$(id).value='');
+  ['f-location','f-status','f-type'].forEach(id=>$(id).value='');
+  toast('✅ Buffalo added');
+  renderHerd(); renderDashboard();
+}
+
+// --- BREEDING ---
+function onBreedingTagInput(tagNo){
+  const a=animals.find(x=>x.tagNo===tagNo.trim()&&!['Slaughtered','Dead'].includes(x.status));
+  const warn=document.getElementById('reservice-warn');
+  const note=document.getElementById('b-tagNote');
+  const khilaEl=document.getElementById('b-khilaNo');
+  const svcEl=document.getElementById('b-serviceNo');
+  const statusEl=document.getElementById('b-status');
+  if(a){
+    note.textContent=`Found: ${a.khilaNo} · ${a.location} · ${a.status}`;
+    khilaEl.value=a.khilaNo;
+    const nextSvc=(a.servicedCycle||0)+1;
+    svcEl.textContent=`#${nextSvc}`;
+    statusEl.textContent=a.status;
+    statusEl.style.color=statusColor(a.status);
+    if((a.breedingLog||[]).some(b=>!b.drChecked&&!b.returned)) warn.style.display='block';
+    else warn.style.display='none';
+  } else {
+    note.textContent=tagNo.length>2?'Animal not found in records':'';
+    khilaEl.value='';svcEl.textContent='—';statusEl.textContent='—';
+    warn.style.display='none';
+  }
+  onBreedingDateInput();
+}
+function onBreedingDateInput(){
+  const faliDate=document.getElementById('b-faliDate').value;
+  const drEl=document.getElementById('b-drDate');
+  if(faliDate){ drEl.textContent=fmtDate(addDays(faliDate,55)); }
+  else drEl.textContent='—';
+}
+async function saveBreeding(){
+  const tagNo=$('b-tagNo').value.trim();
+  const faliDate=$('b-faliDate').value;
+  const bull=$('b-bull').value.trim();
+  const shed=$('b-shed').value;
+  if(!tagNo||!faliDate||!shed){toast('⚠️ Tag No, FALI date & Shed required');return;}
+  const idx=animals.findIndex(a=>a.tagNo===tagNo&&!['Slaughtered','Dead'].includes(a.status));
+  if(idx<0){toast('⚠️ Animal not found — add it first');return;}
+  const a={...animals[idx]};
+  const log=(a.breedingLog||[]).map(b=>!b.drChecked?{...b,returned:true}:b);
+  const newSvc=(a.servicedCycle||0)+1;
+  log.push({faliDate,bull,shed,returned:false,drChecked:false,date:todayStr(),serviceNo:newSvc});
+  a.faliDate=faliDate;a.drCheckDate=addDays(faliDate,55);a.status='Pregnant';
+  a.servicedCycle=newSvc;a.location=shed;a.breedingLog=log;
+  animals[idx]=a;await dbPut('animals',a);
+  closeModal('modal-breeding');
+  ['b-tagNo','b-faliDate','b-bull'].forEach(id=>$(id).value='');
+  $('b-shed').value=''; $('b-khilaNo').value=''; $('b-serviceNo').textContent='—'; $('b-drDate').textContent='—'; $('b-tagNote').textContent=''; $('b-status').textContent='—';
+  document.getElementById('reservice-warn').style.display='none';
+  toast('✅ FALI logged — Service #'+newSvc);
+  renderHerd(); renderDashboard();
+}
+
+// --- TAJI ---
+function onTajiTagInput(tagNo){
+  const a=animals.find(x=>x.tagNo===tagNo.trim()&&!['Slaughtered','Dead'].includes(x.status));
+  const note=document.getElementById('tj-tagNote');
+  if(a) note.textContent=`Found: ${a.khilaNo} · ${a.location}`;
+  else note.textContent=tagNo.length>2?'Animal not found':'';
+}
+function calcTaji(){
+  const inDate=$('tj-inDate').value;
+  const outDate=$('tj-outDate').value;
+  const palak=$('tj-palak').value;
+  const daysEl=$('tj-days');
+  const billEl=$('tj-bill');
+  if(inDate&&outDate){
+    const days=daysBetween(inDate,outDate);
+    daysEl.textContent=days+' days';
+    if(palak){
+      const rate=palak==='Noora'?settings.nooraRate:settings.tosifRate;
+      const bill=Math.round((rate/30)*days);
+      billEl.textContent=cur(bill);
+    } else billEl.textContent='—';
+  } else {daysEl.textContent='—';billEl.textContent='—';}
+}
+async function saveTaji(){
+  const tagNo=$('tj-tagNo').value.trim();
+  const inDate=$('tj-inDate').value;
+  const outDate=$('tj-outDate').value;
+  const palak=$('tj-palak').value;
+  if(!tagNo||!inDate||!outDate||!palak){toast('⚠️ Fill all fields');return;}
+  const days=daysBetween(inDate,outDate);
+  const rate=palak==='Noora'?settings.nooraRate:settings.tosifRate;
+  const bill=Math.round((rate/30)*days);
+  const entry={id:uid(),tagNo,inDate,outDate,palak,rearingDays:days,rate,bill};
+  await dbPut('tajiEntries',entry);tajiEntries.push(entry);
+  const idx=animals.findIndex(a=>a.tagNo===tagNo);
+  if(idx>=0){const a={...animals[idx]};a.type='TAJI';a.incomingDate=inDate;a.location=palak;animals[idx]=a;await dbPut('animals',a);}
+  closeModal('modal-taji');
+  ['tj-tagNo','tj-inDate','tj-outDate'].forEach(id=>$(id).value='');
+  $('tj-palak').value=''; ['tj-days','tj-bill'].forEach(id=>$(id).textContent='—');
+  toast(`✅ TAJI saved — ${days} days — Bill: ${cur(bill)}`);
+  renderHerd(); renderDashboard();
+}
+
+// --- BAKDI ---
+function onBakdiTagInput(tagNo){
+  const a=animals.find(x=>x.tagNo===tagNo.trim());
+  const note=document.getElementById('bk-tagNote');
+  const faliEl=$('bk-faliDate');
+  const shedEl=$('bk-fromShed');
+  const pregEl=$('bk-daysPreg');
+  if(a){
+    note.textContent=`Found: ${a.khilaNo} · ${a.location}`;
+    faliEl.textContent=a.faliDate?fmtDate(a.faliDate):'No FALI date';
+    shedEl.textContent=a.location||'—';
+    calcBakdi();
+  } else {
+    note.textContent=tagNo.length>2?'Animal not found':'';
+    faliEl.textContent='—';shedEl.textContent='—';pregEl.textContent='—';
+  }
+}
+function calcBakdi(){
+  const tagNo=$('bk-tagNo').value.trim();
+  const outDate=$('bk-outDate').value;
+  const a=animals.find(x=>x.tagNo===tagNo);
+  const pregEl=$('bk-daysPreg');
+  if(a&&a.faliDate&&outDate){
+    const days=daysBetween(a.faliDate,outDate);
+    pregEl.textContent=days+' days pregnant';
+  } else pregEl.textContent='—';
+}
+async function saveBakdi(){
+  const tagNo=$('bk-tagNo').value.trim();
+  const outDate=$('bk-outDate').value;
+  const caretaker=$('bk-caretaker').value;
+  if(!tagNo||!outDate||!caretaker){toast('⚠️ Tag No, date & target palak required');return;}
+  const idx=animals.findIndex(a=>a.tagNo===tagNo);
+  if(idx<0){toast('⚠️ Animal not found');return;}
+  const a={...animals[idx]};
+  const daysPreg=a.faliDate?daysBetween(a.faliDate,outDate):0;
+  a.outwardType='BAKDI';a.bakdiDate=outDate;a.bakdiCaretaker=caretaker;
+  a.bakdiFromShed=a.location;a.bakdiDaysPreg=daysPreg;
+  animals[idx]=a;await dbPut('animals',a);
+  closeModal('modal-bakdi');
+  ['bk-tagNo','bk-outDate'].forEach(id=>$(id).value='');
+  $('bk-caretaker').value=''; ['bk-fromShed','bk-faliDate','bk-daysPreg'].forEach(id=>$(id).textContent='—');
+  toast('✅ BAKDI Out recorded');
+  renderHerd(); renderDashboard();
+}
+
+// --- KORI ---
+function calcKoriAvg(){
+  const c=N($('k-count').value);
+  const t=N($('k-total').value);
+  const el=$('kori-avg');
+  if(c>0&&t>0) el.textContent=cur(Math.round(t/c));
+  else el.textContent='—';
+}
+async function saveKori(){
+  const broker=$('k-broker').value.trim();
+  const total=N($('k-total').value);
+  const date=$('k-date').value;
+  const count=N($('k-count').value);
+  if(!broker||!total||!date||!count){toast('⚠️ Fill all fields');return;}
+  const avg=Math.round(total/count);
+  const entry={id:uid(),broker,total,date,count,avg};
+  await dbPut('koriEntries',entry);koriEntries.push(entry);
+  closeModal('modal-kori');
+  ['k-broker','k-total','k-date','k-count'].forEach(id=>$(id).value='');
+  $('kori-avg').textContent='—';
+  toast(`✅ KORI saved — ${count} animals — Avg: ${cur(avg)}`);
+  renderDashboard();
+}
+
+// --- SLAUGHTER ---
+async function saveSlaughter(){
+  const tagNo=$('sl-tagNo').value.trim();
+  const outDate=$('sl-outDate').value;
+  const soldAmount=N($('sl-amount').value);
+  const kasaiName=$('sl-kasai').value.trim();
+  if(!tagNo||!outDate||!soldAmount){toast('⚠️ Fill all fields');return;}
+  const idx=animals.findIndex(a=>a.tagNo===tagNo);
+  if(idx<0){toast('⚠️ Animal not found');return;}
+  const a={...animals[idx]};
+  a.status='Slaughtered';a.outDate=outDate;a.soldAmount=soldAmount;a.kasaiName=kasaiName;a.outwardType='Slaughter';
+  animals[idx]=a;await dbPut('animals',a);
+  closeModal('modal-slaughter');
+  ['sl-tagNo','sl-outDate','sl-amount','sl-kasai'].forEach(id=>$(id).value='');
+  toast('✅ Slaughter recorded — '+cur(soldAmount));
+  renderHerd(); renderDashboard();
+}
+
+// --- DEAD ---
+async function saveDead(){
+  const tagNo=$('d-tagNo').value.trim();
+  const outDate=$('d-outDate').value;
+  const location=$('d-location').value;
+  if(!tagNo||!outDate||!location){toast('⚠️ Fill all fields');return;}
+  const idx=animals.findIndex(a=>a.tagNo===tagNo);
+  if(idx<0){toast('⚠️ Animal not found');return;}
+  const a={...animals[idx]};a.status='Dead';a.outDate=outDate;a.deathLocation=location;
+  animals[idx]=a;await dbPut('animals',a);
+  closeModal('modal-dead');
+  ['d-tagNo','d-outDate'].forEach(id=>$(id).value='');
+  $('d-location').value='';
+  toast('✅ Death recorded');
+  renderHerd(); renderDashboard();
+}
+
+// --- VENDOR PAYMENTS ---
+function calcDanaOutstanding(){
+  const broker=$('dana-broker').value.trim();
+  const amount=N($('dana-amount').value);
+  const totalPaid=vendorPayments.filter(p=>p.type==='dana'&&p.name===broker).reduce((s,p)=>s+N(p.amount),0);
+  $('dana-outstanding').textContent=cur(totalPaid+amount);
+}
+function calcBhaiswalOutstanding(){
+  const name=$('bh-name').value.trim();
+  const amount=N($('bh-amount').value);
+  const totalPaid=vendorPayments.filter(p=>p.type==='bhaiswal'&&p.name===name).reduce((s,p)=>s+N(p.amount),0);
+  $('bh-outstanding').textContent=cur(totalPaid+amount);
+}
+async function saveVendorPayment(type){
+  let name,amount,date;
+  if(type==='dana'){
+    name=$('dana-broker').value.trim();
+    amount=N($('dana-amount').value);
+    date=$('dana-date').value;
+  } else {
+    name=$('bh-name').value.trim();
+    amount=N($('bh-amount').value);
+    date=$('bh-date').value;
+  }
+  if(!name||!amount||!date){toast('⚠️ Fill all fields');return;}
+  const entry={id:uid(),type:type==='dana'?'dana':'bhaiswal',name,amount,date};
+  await dbPut('vendorPayments',entry); vendorPayments.push(entry);
+  closeModal(type==='dana'?'modal-dana':'modal-bhaiswal');
+  toast('✅ Payment saved — '+cur(amount));
+  renderDashboard();
+}
+
+// --- MEDICINE ---
+function calcMedOutstanding(){
+  const amount=N($('med-amount').value);
+  const paid=N($('med-paid').value);
+  $('med-outstanding').textContent=cur(Math.max(0,amount-paid));
+}
+async function saveMedicineBill(){
+  const name=$('med-name').value.trim();
+  const date=$('med-date').value;
+  const amount=N($('med-amount').value);
+  const paid=N($('med-paid').value);
+  if(!name||!date||!amount){toast('⚠️ Fill name, date & amount');return;}
+  const outstanding=Math.max(0,amount-paid);
+  const entry={id:uid(),name,date,amount,paid,outstanding};
+  await dbPut('medBills',entry); medBills.push(entry);
+  settings.medicineTotal=medBills.reduce((s,b)=>s+N(b.amount),0);
+  await dbPut('settings',settings);
+  closeModal('modal-medicine');
+  ['med-name','med-date','med-amount','med-paid'].forEach(id=>$(id).value='');
+  $('med-outstanding').textContent='—';
+  toast(`✅ Med bill saved — ${cur(amount)} · Outstanding: ${cur(outstanding)}`);
+  renderDashboard();
+}
+
+// --- PALAK BILL ---
+function openPalakBill(){
+  const active=animals.filter(a=>!['Slaughtered','Dead'].includes(a.status));
+  const noora=active.filter(a=>a.location==='Noora').length;
+  const tosif=active.filter(a=>a.location==='Tosif').length;
+  const nooraCharge=noora*settings.nooraRate;
+  const tosifCharge=tosif*settings.tosifRate;
+  $('palak-bill-content').innerHTML=`
+    <div class="info-table">
+      <div class="it-row"><span class="it-label">Noora Animals</span><span class="it-val">${noora}</span></div>
+      <div class="it-row"><span class="it-label">Noora Rate</span><span class="it-val">${cur(settings.nooraRate)}/mo</span></div>
+      <div class="it-row"><span class="it-label">Noora Bill</span><span class="it-val" style="color:var(--red)">${cur(nooraCharge)}</span></div>
+      <div class="it-row"><span class="it-label">Tosif Animals</span><span class="it-val">${tosif}</span></div>
+      <div class="it-row"><span class="it-label">Tosif Rate</span><span class="it-val">${cur(settings.tosifRate)}/mo</span></div>
+      <div class="it-row"><span class="it-label">Tosif Bill</span><span class="it-val" style="color:var(--red)">${cur(tosifCharge)}</span></div>
+      <div class="it-row" style="font-weight:700"><span class="it-label">Total Palak Bill</span><span class="it-val" style="color:var(--red)">${cur(nooraCharge+tosifCharge)}</span></div>
+    </div>
+  `;
+}
+
+// --- SUPPLY: Customer ---
+async function saveCustomer(){
+  const name=$('c-name').value.trim();
+  const rate=N($('c-rate').value);
+  const cycle=$('c-cycle').value;
+  const fixed=N($('c-fixed').value);
+  const oldbal=N($('c-oldbal').value);
+  if(!name||!rate||!fixed){toast('⚠️ Name, rate and fixed volume required');return;}
+  const obj={id:uid(),name,rate,cycle,fixedDaily:fixed,oldBalance:oldbal};
+  await dbPut('customers',obj); customers.push(obj);
+  closeModal('modal-add-customer');
+  ['c-name','c-rate','c-fixed','c-oldbal'].forEach(id=>$(id).value='');
+  $('c-cycle').value='weekly';
+  toast('✅ Customer added');
+  renderSupply();
+}
+
+// --- SUPPLY: Production ---
+async function saveProduction(){
+  const date=$('prod-date').value;
+  if(!date){toast('⚠️ Date required');return;}
+  const am=N($('prod-am').value);
+  const ae=N($('prod-ae').value);
+  const bm=N($('prod-bm').value);
+  const be=N($('prod-be').value);
+  const obj={id:uid(),date,am,ae,bm,be};
+  await dbPut('milkProductions',obj); milkProductions.push(obj);
+  closeModal('modal-log-production');
+  ['prod-date','prod-am','prod-ae','prod-bm','prod-be'].forEach(id=>$(id).value='');
+  toast('✅ Production logged');
+  renderSupply();
+}
+
+// --- SUPPLY: Payment ---
+async function saveCustomerPayment(){
+  const customerId=$('cp-customer').value;
+  const date=$('cp-date').value;
+  const amount=N($('cp-amount').value);
+  if(!customerId||!date||!amount){toast('⚠️ All fields required');return;}
+  const obj={id:uid(),customerId,date,amount};
+  await dbPut('customerPayments',obj); customerPayments.push(obj);
+  closeModal('modal-customer-payment');
+  $('cp-customer').value=''; $('cp-date').value=''; $('cp-amount').value='';
+  toast('✅ Payment recorded');
+  renderSupply();
+}
+
+// --- SUPPLY: Override ---
+async function saveOverride(){
+  const customerId=$('so-customer').value;
+  const date=$('so-date').value;
+  const am=$('so-am').value;
+  const pm=$('so-pm').value;
+  if(!customerId||!date){toast('⚠️ Customer and date required');return;}
+  const obj={id:uid(),customerId,date,am:am||null,pm:pm||null};
+  await dbPut('supplyOverrides',obj); supplyOverrides.push(obj);
+  closeModal('modal-supply-override');
+  $('so-customer').value=''; $('so-date').value=''; $('so-am').value=''; $('so-pm').value='';
+  toast('✅ Override saved');
+}
+
+// --- SUPPLY: Customer Bill ---
+function generateCustomerBill(){
+  const customerId=$('cb-customer').value;
+  const start=$('cb-start').value;
+  const end=$('cb-end').value;
+  if(!customerId||!start||!end){toast('⚠️ Select customer and date range');return;}
+  const c=customers.find(x=>x.id==customerId);
+  if(!c) return;
+  const days=daysBetween(start,end)+1;
+  const delivered=days*N(c.fixedDaily);
+  const bill=delivered*N(c.sellingRate);
+  const paid=customerPayments.filter(p=>p.customerId===c.id).reduce((s,p)=>s+N(p.amount),0);
+  const outstanding=bill-paid;
+  toast(`Bill for ${c.name}: ${cur(bill)} · Outstanding: ${cur(outstanding)}`);
+  closeModal('modal-customer-bill');
+}
+
+// --- STOCK: Feed Purchase ---
+function calcFeedPurchase(){
+  const bags=N($('fp-bags').value);
+  const weight=N($('fp-weight').value);
+  const rate=N($('fp-rate').value);
+  const freight=N($('fp-freight').value);
+  const bagSize= bags>0 ? weight/bags : 0;
+  const freightKg= weight>0 ? freight/weight : 0;
+  const bill= weight*rate + freight;
+  $('fp-bagSize').textContent=bagSize.toFixed(1)+' kg';
+  $('fp-freightKg').textContent=cur(freightKg);
+  $('fp-bill').textContent=cur(bill);
+}
+async function saveFeedPurchase(){
+  const broker=$('fp-broker').value.trim();
+  const goods=$('fp-goods').value.trim();
+  const bags=N($('fp-bags').value);
+  const weight=N($('fp-weight').value);
+  const rate=N($('fp-rate').value);
+  const freight=N($('fp-freight').value);
+  const date=$('fp-date').value;
+  if(!broker||!goods||!bags||!weight||!rate||!date){toast('⚠️ Fill all required fields');return;}
+  const obj={id:uid(),broker,goods,bags,weight,rate,rateType:$('fp-rateType').value,freight,date};
+  await dbPut('feedPurchases',obj); feedPurchases.push(obj);
+  const existing=godownStock.find(g=>g.goods===goods);
+  if(existing){ existing.bags=N(existing.bags)+bags; await dbPut('godownStock',existing); }
+  else { const newStock={id:uid(),goods,bags}; await dbPut('godownStock',newStock); godownStock.push(newStock); }
+  closeModal('modal-feed-purchase');
+  ['fp-broker','fp-goods','fp-bags','fp-weight','fp-rate','fp-freight','fp-date'].forEach(id=>$(id).value='');
+  ['fp-bagSize','fp-freightKg','fp-bill'].forEach(id=>$(id).textContent='—');
+  toast('✅ Feed purchase saved');
+  renderStock();
+}
+
+// --- STOCK: Feed Consumed ---
+async function saveFeedConsumed(){
+  const goods=$('fc-goods').value.trim();
+  const bags=N($('fc-bags').value);
+  const date=$('fc-date').value;
+  if(!goods||!bags||!date){toast('⚠️ Fill all fields');return;}
+  const obj={id:uid(),goods,bags,date};
+  await dbPut('feedConsumptions',obj); feedConsumptions.push(obj);
+  const idx=godownStock.findIndex(g=>g.goods===goods);
+  if(idx>=0){
+    const g=godownStock[idx];
+    g.bags=Math.max(0,N(g.bags)-bags);
+    await dbPut('godownStock',g);
+    if(g.bags===0) godownStock.splice(idx,1);
+  } else toast('⚠️ No stock found for this goods');
+  closeModal('modal-feed-consumed');
+  ['fc-goods','fc-bags','fc-date'].forEach(id=>$(id).value='');
+  toast('✅ Consumption recorded');
+  renderStock();
+}
+
+// --- STOCK: Initial Godown ---
+async function saveGodownInit(){
+  const goods=$('gi-goods').value.trim();
+  const bags=N($('gi-bags').value);
+  if(!goods||!bags){toast('⚠️ Fill all fields');return;}
+  const existing=godownStock.find(g=>g.goods===goods);
+  if(existing){ existing.bags=bags; await dbPut('godownStock',existing); }
+  else { const obj={id:uid(),goods,bags}; await dbPut('godownStock',obj); godownStock.push(obj); }
+  closeModal('modal-godown-init');
+  ['gi-goods','gi-bags'].forEach(id=>$(id).value='');
+  toast('✅ Initial stock set');
+  renderStock();
+}
+
+// --- STOCK: Dana Payment ---
+async function saveDanaPayment(){
+  const broker=$('dp-broker').value.trim();
+  const date=$('dp-date').value;
+  const amount=N($('dp-amount').value);
+  if(!broker||!date||!amount){toast('⚠️ Fill all fields');return;}
+  const obj={id:uid(),type:'dana',name:broker,amount,date};
+  await dbPut('vendorPayments',obj); vendorPayments.push(obj);
+  closeModal('modal-dana-payment');
+  ['dp-broker','dp-date','dp-amount'].forEach(id=>$(id).value='');
+  toast('✅ Payment recorded');
+  renderStock();
+}
+
+// --- LABOUR: Add Worker ---
+async function saveLabour(){
+  const name=$('l-name').value.trim();
+  const pagar=N($('l-pagar').value);
+  const join=$('l-join').value;
+  const leave=$('l-leave').value;
+  const advance=N($('l-advance').value);
+  if(!name||!pagar||!join){toast('⚠️ Name, pagar and joining date required');return;}
+  const obj={id:uid(),name,fixedPagar:pagar,joiningDate:join,leavingDate:leave||null,startingAdvance:advance};
+  await dbPut('employees',obj); employees.push(obj);
+  closeModal('modal-add-labour');
+  ['l-name','l-pagar','l-join','l-leave','l-advance'].forEach(id=>$(id).value='');
+  toast('✅ Worker added');
+  renderLabour();
+}
+
+// --- LABOUR: Payment ---
+async function saveLabourPayment(){
+  const employeeId=$('lp-worker').value;
+  const date=$('lp-date').value;
+  const amount=N($('lp-amount').value);
+  if(!employeeId||!date||!amount){toast('⚠️ All fields required');return;}
+  const obj={id:uid(),employeeId,date,amount};
+  await dbPut('labourPayments',obj); labourPayments.push(obj);
+  closeModal('modal-labour-payment');
+  $('lp-worker').value=''; $('lp-date').value=''; $('lp-amount').value='';
+  toast('✅ Payment recorded');
+  renderLabour();
+}
+
+// --- LABOUR: Search ---
+function searchLabourHistory(){
+  const q=$('ls-search').value.trim().toLowerCase();
+  const result=$('labour-history-result');
+  if(!q){result.innerHTML='';return;}
+  const found=employees.filter(e=>e.name.toLowerCase().includes(q));
+  if(!found.length){result.innerHTML='<div class="empty">No worker found</div>';return;}
+  let html='';
+  for(const e of found){
+    const payments=labourPayments.filter(p=>p.employeeId===e.id);
+    const totalPaid=payments.reduce((s,p)=>s+N(p.amount),0);
+    const balance=N(e.startingAdvance)+totalPaid;
+    html+=`<div class="list-card" style="cursor:default"><div class="lc-row"><div><div class="lc-title">${e.name}</div><div class="lc-sub">Pagar: ₹${e.fixedPagar}/mo · Joined ${fmtDate(e.joiningDate)}${e.leavingDate?' · Left '+fmtDate(e.leavingDate):''}</div><div class="lc-sub">Payments: ${payments.length} · Balance: ${cur(balance)}</div></div></div></div>`;
+  }
+  result.innerHTML=html;
+}
+
+// --- LABOUR: Pagar Slip ---
+function generatePagarSlip(){
+  const workerId=$('ls-worker').value;
+  const month=$('ls-month').value;
+  if(!workerId||!month){toast('⚠️ Select worker and month');return;}
+  const e=employees.find(x=>x.id==workerId);
+  if(!e) return;
+  const payments=labourPayments.filter(p=>p.employeeId===e.id);
+  const totalPaid=payments.reduce((s,p)=>s+N(p.amount),0);
+  const balance=N(e.startingAdvance)+totalPaid;
+  toast(`Pagar Slip for ${e.name} (${month}): Pagar ₹${e.fixedPagar}, Balance: ${cur(balance)}`);
+  closeModal('modal-labour-slip');
+}
+
+// ===================================================================
+//  CONFIRM DELETE
+// ===================================================================
+function confirmDeleteAnimal(){document.getElementById('confirm-overlay').classList.add('open');}
+function closeConfirm(){document.getElementById('confirm-overlay').classList.remove('open');}
+async function deleteCurrentAnimal(){
+  if(!currentAnimalId)return;
+  await dbDelete('animals',currentAnimalId);
+  animals=animals.filter(a=>a.id!==currentAnimalId);
+  closeConfirm();closeDetail();
+  toast('🗑️ Animal deleted');
+  renderDashboard();
+}
+
+// ===================================================================
+//  BOOT
+// ===================================================================
+async function boot(){
+  await openDB();
+  const s=await dbGetAll('settings');
+  if(s.length>0) settings={...settings,...s[0]};
+  else await dbPut('settings',settings);
+  [animals,koriEntries,tajiEntries,vendorPayments,medBills,
+   customers,milkProductions,customerPayments,supplyOverrides,
+   feedPurchases,godownStock,feedConsumptions,
+   employees,labourPayments] = await Promise.all([
+    dbGetAll('animals'),dbGetAll('koriEntries'),dbGetAll('tajiEntries'),
+    dbGetAll('vendorPayments'),dbGetAll('medBills'),
+    dbGetAll('customers'),dbGetAll('milkProductions'),dbGetAll('customerPayments'),dbGetAll('supplyOverrides'),
+    dbGetAll('feedPurchases'),dbGetAll('godownStock'),dbGetAll('feedConsumptions'),
+    dbGetAll('employees'),dbGetAll('labourPayments')
+  ]);
+  // Patch for palak bill
+  const oldOpen=window.openModal;
+  window.openModal=function(id){
+    if(id==='modal-palak-bill'){
+      document.getElementById(id).classList.add('open');
+      openPalakBill();
+      return;
+    }
+    oldOpen(id);
+  };
+  renderDashboard();
+  renderHerd();
+  renderSupply();
+  renderStock();
+  renderLabour();
+  renderAccounts();
+  renderReports();
+}
+boot();
+</script>
+</body>
+</html>
