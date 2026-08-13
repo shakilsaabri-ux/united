@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <title>Dairy Manager</title>
+    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogIkhhbGltYSBEYWlyeSBGYXJtIC0gRGFpcnkgTWFuYWdlciIsICJzaG9ydF9uYW1lIjogIkRhaXJ5IE1hbmFnZXIiLCAic3RhcnRfdXJsIjogIi4vIiwgInNjb3BlIjogIi4vIiwgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNGNkVFREUiLCAidGhlbWVfY29sb3IiOiAiI0I0NzcyRiIsICJpY29ucyI6IFt7InNyYyI6ICJkYXRhOmltYWdlL3BuZztiYXNlNjQsaVZCT1J3MEtHZ29BQUFBTlNVaEVVZ0FBQUxRQUFBQzBDQVlBQUFBOXpRWXlBQUFLWlVsRVFWUjRuTzNkVzJ3VTF4a0g4UC9abWZYNkVteGpTT3h5Q1NuaW9VMElFS2xSaGJnWVNGWDFvVkpJU2hQMXdpMjBhbEw2VkpXZ3Fxb3FWVFNCUkgycGdEUVByUklNYWtKYlNDcjYyQXVYRk5LcUZJRmx0VTF4d1VCdHdJN3Y2NzNNenVtRHRjaUdYWHN1WjMxbUR2K2ZOSGt3bnRuUHl6OGYzOHlaSFl0Vk8zcWh5L3RyTmt0dEwwNFY5ZlRwTnFIamRjV3FGMjdQeUF1OXQyWUx3M3VmMjNqNlVNVkRYdEZBTThSVVRxWENYWkZBTThqa2xlcGdpOVVLQTMxODdWWUdtUUo1NXRUYlNvSXRWbThQSCtqanJRd3lxZkhNeVhEQlRvUXRnR0VtbGNMbUtWU2dHV2FxaERDNUVtc0NqQnpIV3JjeHlEUWpuajM1bHE4UnhIZUhacGhwSnZuTld3SVM4TG94ektURHNkWnQwbXRHRXdLQWwrM1l1dTNTMjNkeTQ2WitPN1p1dS9UeW5aNUdqdCt1Mjg3T1ROcDV5ZUcwZ1dhWUtVcW15Nk1OeHBYaVpvck1pdGF0NVMvYi9XYkRDNHc3UmRLbVAvNVNsUHA2MlpHRFlhWW9LNWRQMGJyMTFqMWYvUFY2aHBuaTRjdC9tdHlwN1pKOVc1VDhLbEhrM0ozVWV4WldqbTdZd2U1TXNYRjB3NDVKaXk2aDc3WWppcEpKZ1Q3NkZMc3p4Yy9FM040MVEzTjJwbmdxSnZkT2gzNzNxVyt3TzFOc0ZmUExsVUl5QjA4S3lUUml3K1piZU9kejMyU2ZKaU93UTVOUkVweWh5U1RqbCsyNDFFMkc0TWhCUmhHM0RtM2swRUhHWUljbW85aVN5OTFrRUhab01nb0RUVVpob01rb0REUVpoWUVtb3pEUVpCU2JuMUloazdCRGsxRVlhRElLQTAxR3NYbnJLSm1FSFpxTXdrQ1RVWGpaam96Q0RrMUdZYURKS0RZL2YwVW00UXhOUnVISVFVWmhvTWtvSERuSUtPelFaQlFHbW96Q1FKTlJiSTdRWkJKMmFESUtBMDFHc1hVWGtGOS9CQXZtK1MrajY1cUQxS212S2E5bjF2TG5VTHYwUzRIMjdYMXZKd3FqdmI3M0Mvb2VGRWtKRkZ4QXVoS09BK1R5RXZtOHhGaEdvc1hxZ015UHdjME9qMitaUVJUUy9TaU05cUl3M0FNM054TDRkYU5JKzNYb2NLOGV4Uk1BL3pXRi9TbUVBR3dMZ0NXUVRBSTFOUk9QdUd6S2ZRZUhYTlFNZkloY1h5Znl0LytGWE85bFFCWkNWcVNQOWc1TmVqWFVKNEQ2bGFoNmVDVUFZSERRUmZMNjc1QzU5bGZrK3pvMVYrY2ZBMDJUTkRRa2dJYU5xSDFzSS9JOUZ6SGFjUUxaN291NnkvSXMzaCtTclVqdFlZNHBqUHA5TmNtV1pXaHNXWVo4VHp1Ry8zRVkrZjZydWt1YWxpMWpmRU4wSldvUGMwd3BLMU9UYnNtV3BXajQvRjVrMnQvRlNNY0pTTmZSWFZKWnZHeEhubGdXVUxmOGVUU3QzNDFFZFlQdWNzcGlvTW1YWk10U2lOWURzQnZtNnk2bHBNVDR6S2h6Q3lOaTlRZ2Q3OEhNZTNDdWhkb05yeU01KzJIb3o4L2tqUjJhQXFtdEZiQlh2UXA3MWtPNlM1bUVnYWJBR2hvU2NENzdVNGhrdGU1Uzd1QmxPNlhIbk5uTGRsM1hIRlNkM2xxaURBRmhWVUhZS1ZnMWpiQnFtMkEzTEVCeTlpTEk1cFdvcmxaWFkwdXpoY3hudG1IZzNKdktqaGtHRjFaTUpDV2trNFYwc25BelE4ajNkd0UzTG96L21YZ0RxZVpIVWZQSlZVZzlzbGJKLzMvVmk5ZWlwdWNTeHE3OEpmekJRdUxJY2IrUkxySTk3Umc0K3liNmZ2ODlaSytlVlhKWXNmUWxKSkkxU280VkJnTjlIM09HdXRIL3dYNE1mckFmdVh5NEZhSDYrZ1RxSHYyaW9zcUM0Mlc3MkYrMkMvOHpqMTA5aCtFLy9CRHBkTGhRMjB1ZVJxS3FUa2xOdkd4SG9lUS92b0xNbVIvQmNZS0hPcFVTcUZtOFZtRlYvakhRZEVldXR4UHA4NzhJZFl6MGdxOG9xaVlZL1lFMjhHWWUzeUwwSHFRdi94bjVua3VCOTI5K3lFSnk5a0tGRmZtVGlPc0lMWXIvaVVnOWt3cUw4M3NBWUxqOWVQQ2lBS1RtUGFFdFQvbzdORVZPN3ZhL2NlVks4RnRFcStZdVVWaU5QN3dmV2lFZDkwTlg2dldhZW84QWo1UlloZlRpd1NjZ1lXbjViS0wybGNLZy8rSXVYR2dEWHoyc3RCWmRWRXc2cW1XN2c4L1JWVlVDeVlaNXlBOWNVMWlSTjNha3praU1NSVB2cDZ6YzZ6bkQzUmdkZFZGWEYyd3F0V3JuSUQvUXBiaXE2WEdHcHJLU0F4Y0M3MnZWelZGWGlBOE1OSlZWU1BjRjN0ZXFhVlJYaUE4TU5KVlZHQnNNdksrd3F4Ulc0cDNORVZvbE9mT25KQlY4UGVsa0ErOHJyQ290cDJmczBGUmVpTWNWQ0N1cHNCRHZHR2dxTDBRb1pTR3ZzQkR2R0dncVMxaXB3UHRLSjZld0V1OFlhQ3JMcWduK1FCbnBaQlJXNGgwWFZsU1NFaWFkRllhNWxseEk5ME5IdHJRdmZRZDFyY3VCZlhxTDh1UFdMOXVFdXNlZlZYN2MrQkZ3bTFZRTNqdk1OZXd3T0hKUVNjbkcrYUVlZCtDTStQOU5CaW93MEZSUzZoUExBKytielVvNHc5MEtxL0hPanR3OW1INUVyblpEN2g4VkFpUE56Mk5XME4xN3p3T3VubDlyRWRzWk9vcTNYTTYwU3IwSHFaYWxhSm9mUEJxNTJ4OHByTVlmTzJvOXpvOUsxQjdtbU5LRWxXK1J3TWlTWFdnS2NZaXg2K2UxWFR1TGJZZW15cGoxNlM5ZzFxTGdLNFEzZXdvb2FMaXh2NGduaFhSSHF1VXgxSzNZSE9vWU5kZjFmb3FJSjRWS2p4bmZrOEpVODZmd3dKb2ZJQkdpeFdVekV1bk9VMXBQMWpseUVPcVdyTU1EVDM0TGxoM3VORFAvMFhHNDJWRkZWUVhEUU4vSGtvMExVYi9pT2FRV1BobjZXRU9ETHRJZEp4UlVGUTREZlo4UmxvVlV5K09vWGJ3R3FVV3JsRDJmM1cwL0NEZVhWbk93RUJob0U0a0VoR1ZEMk5Xd2FocGcxYzVCc25FQmtrMkxJVnBXSXFYd0NmNEFrT2s4aVhUbkdhWEhERXIvM1hhaFhqNktKN1FCYWdyNFl5eDQyQVkydnhOc1owVnUzU3pBL2R0YmlNcmZoZmJMZGx6eGkrOTdNRFRnQW1lL0c0bFJvMGg3b0NtZTBxTXVzbWQyd3hudTBWM0tKSnloeWJmZVd3VzQ1M2JCR2J5aHU1Ujc2SitoZzZyWVk3QkNMcXpFOWYzMEtOZDlFYzdwbjhITkR1a3VwU1IyYVBLazRFaWtMLzBLSXgwbklFTTgzcURTR0dpYVZ1NS9GekQ0OThOYUhyN29Gd05OWmVWdW5NZHd4d2xrZTlwMWwrS1o5Z2VlQjc5a0pTTjNYMVhRQjU1SDZiTGRRSDhCOXZYM01kYjFJWEo5LzlWZGptL3hQU2tFRUwzYTQzZFNPRGpnSWpWd0RybSt5OGplL0NkeXZmOEI0T291S3pDT0hBWW8vc3ZndWhKT0huRHlFcm1jUkdaTVlxN2RBWmxQdzgwT281QVpocHNaUkNIOU1aeVJYampEUFhCekl4alIvUU1vSks2L3ZTbGVMWVZvQ2x3cEpLTXcwR1NVZUg4RWkrZ3U3TkJrRkFhYWpNSkFrMUVZYURJS0EwMUdZYURKS0F3MEdZV0JKcVBFL0c0N29zbTAzdzlOcEJKSERqSUtBMDFHNFF4TlJtR0hKcU13MEdRVUJwcU13a0NUVWZpSkZUSUtPelFaaFlFbW96RFFaQlFHbW96Q2xVSXlDanMwR1lXQkpxTXcwR1FVVzNKaGhRekNEazFHU2Z6NHlQNG8vVVlFb2xEWW9ja29DYlpuTW9rOS9udHVlR0pJWnVESVFVWkpDQUI3amh6ZzVFR3h0K2ZJQWNFT1RVYXhlVzhTR1VOT21LSDNIT2JZUWZGVnpLL05GSk1KaWptZU5FUC9oRjJhWW1oaWJubFNTRVpKQ0FsTTNGNXBPeURHUDhYQ2pWdjB0MWZhRG9pSitXV0hKcU9JRjF1dmx2eUQ3Mzk5cDV6aFdvaDhlYlhFT1YvWkRsM3FtNG1pb2x3K0V3TGpsenhLYlhzWmFvcWd2WWNQaUhLWjliQlN5TW1ESW1hS1NFNTdVcmkzN1NDN05FWEdkSG4wZEpXRG9hWW84SkxES1dmb2lkcytocG8wMnRkMnNPemNQR243OXByU2wrM0syYjM1SlE3Vk5LUDJ0YjNodVpuNlhsanhjM0Npc1B6bVRlejAyYUVuZXBuZG1pcmt0WUNOTTlUU2Q5QVhKWnBLbUZ5RnZwZURvU2FWd3VaSjdGd2RmT1M0Mjh0Ylh1UUlRb0c4ZHVqblNocWorSTdDUUJmdFlyREpvOWNWQmJtb0lvRXVZckNwSE5WQkxxcG9vQ2RpdUtsU0laN28vMy9IMFRqTTF5ZUVBQUFBQUVsRlRrU3VRbUNDIiwgInNpemVzIjogIjE4MHgxODAiLCAidHlwZSI6ICJpbWFnZS9wbmciLCAicHVycG9zZSI6ICJhbnkifV19" />
+    <meta name="theme-color" content="#B4772F" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Dairy Manager" />
+    <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAKZUlEQVR4nO3dW2wU1xkH8P/ZmfX6EmxjSOxyCSnioU0IEKlRhbgYSFX1oVJIShP1wi20alL6VJWgqqoqVTSBRH2pgDQPrRIMakJbSCr62AuXFNKqFIFltU1xwUBtwI7v673MzumDtciGXXsuZ31mDv+fNHkwntnPyz8f38yZHYtVO3qhy/trNkttL04V9fTpNqHjdcWqF27PyAu9t2YLw3uf23j6UMVDXtFAM8RUTqXCXZFAM8jklepgi9UKA3187VYGmQJ55tTbSoItVm8PH+jjrQwyqfHMyXDBToQtgGEmlcLmKVSgGWaqhDC5EmsCjBzHWrcxyDQjnj35lq8RxHeHZphpJvnNWwIS8LoxzKTDsdZt0mtGEwKAl+3Yuu3S23dy46Z+O7Zuu/TynZ5Gjt+u287OTNp5yeG0gWaYKUqmy6MNxpXiZorMitat5S/b/WbDC4w7RdKmP/5SlPp62ZGDYaYoK5dP0br11j1f/PV6hpni4ct/mtyp7ZJ9W5T8KlHk3J3UexZWjm7Ywe5MsXF0w45Jiy6h77YjipJJgT76FLszxc/E3N41Q3N2pngqJvdOh373qW+wO1NsFfPLlUIyB08KyTRiw+ZbeOdz32SfJiOwQ5NREpyhySTjl+241E2G4MhBRhG3Dm3k0EHGYIcmo9iSy91kEHZoMgoDTUZhoMkoDDQZhYEmozDQZBSbn1Ihk7BDk1EYaDIKA01GsXnrKJmEHZqMwkCTUXjZjozCDk1GYaDJKDY/f0Um4QxNRuHIQUZhoMkoHDnIKOzQZBQGmozCQJNRbI7QZBJ2aDIKA01GsXUXkF9/BAvm+S+j65qD1KmvKa9n1vLnULv0S4H27X1vJwqjvb73C/oeFEkJFFxAuhKOA+TyEvm8xFhGosXqgMyPwc0Oj2+ZQRTS/SiM9qIw3AM3NxL4daNI+3XocK8exRMA/zWF/SmEAGwLgCWQTAI1NROPuGzKfQeHXNQMfIhcXyfyt/+FXO9lQBZCVqSP9g5NejXUJ4D6lah6eCUAYHDQRfL675C59lfk+zo1V+cfA02TNDQkgIaNqH1sI/I9FzHacQLZ7ou6y/Is3h+SrUjtYY4pjPp9NcmWZWhsWYZ8TzuG/3EY+f6rukuali1jfEN0JWoPc0wpK1OTbsmWpWj4/F5k2t/FSMcJSNfRXVJZvGxHnlgWULf8eTSt341EdYPucspioMmXZMtSiNYDsBvm6y6lpMT4zKhzCyNi9Qgd78HMe3CuhdoNryM5+2Hoz8/kjR2aAqmtFbBXvQp71kO6S5mEgabAGhoScD77U4hkte5S7uBlO6XHnNnLdl3XHFSd3lqiDAFhVUHYKVg1jbBqm2A3LEBy9iLI5pWorlZXY0uzhcxntmHg3JvKjhkGF1ZMJCWkk4V0snAzQ8j3dwE3Loz/mXgDqeZHUfPJVUg9slbJ/3/Vi9eipucSxq78JfzBQuLIcb+RLrI97Rg4+yb6fv89ZK+eVXJYsfQlJJI1So4VBgN9H3OGutH/wX4MfrAfuXy4FaH6+gTqHv2iosqC42W72F+2C/8zj109h+E//BDpdLhQ20ueRqKqTklNvGxHoeQ/voLMmR/BcYKHOpUSqFm8VmFV/jHQdEeutxPp878IdYz0gq8oqiYY/YE28GYe3yL0HqQv/xn5nkuB929+yEJy9kKFFfmTiOsILYr/iUg9kwqL83sAYLj9ePCiAKTmPaEtT/o7NEVO7va/ceVK8FtEq+YuUViNP7wfWiEd90NX6vWaeo8Aj5RYhfTiwScgYWn5bKL2lcKg/+IuXGgDXz2stBZdVEw6qmW7g8/RVVUCyYZ5yA9cU1iRN3akzkiMMIPvp6zc6znD3RgddVFXF2wqtWrnID/Qpbiq6XGGprKSAxcC72vVzVFXiA8MNJVVSPcF3teqaVRXiA8MNJVVGBsMvK+wqxRW4p3NEVolOfOnJBV8PelkA+8rrCotp2fs0FReiMcVCCupsBDvGGgqL0QoZSGvsBDvGGgqS1ipwPtKJ6ewEu8YaCrLqgn+QBnpZBRW4h0XVlSSEiadFYa5llxI90NHtrQvfQd1rcuBfXqL8uPWL9uEusefVX7c+BFwm1YE3jvMNewwOHJQScnG+aEed+CM+P9NBiow0FRS6hPLA++bzUo4w90Kq/HOjtw9mH5ErnZD7h8VAiPNz2NW0N17zwOunl9rEdsZOoq3XM60Sr0HqZalaJofPBq52x8prMYfO2o9zo9K1B7mmNKElW+RwMiSXWgKcYix6+e1XTuLbYemypj16S9g1qLgK4Q3ewooaLixv4gnhXRHquUx1K3YHOoYNdf1foqIJ4VKjxnfk8JU86fwwJofIBGixWUzEunOU1pP1jlyEOqWrMMDT34Llh3uNDP/0XG42VFFVQXDQN/Hko0LUb/iOaQWPhn6WEODLtIdJxRUFQ4DfZ8RloVUy+OoXbwGqUWrlD2f3W0/CDeXVnOwEBhoE4kEhGVD2NWwahpg1c5BsnEBkk2LIVpWIqXwCf4AkOk8iXTnGaXHDEr/3XahXj6KJ7QBagr4Yyx42AY2vxNsZ0Vu3SzA/dtbiMrfhfbLdlzxi+97MDTgAme/G4lRo0h7oCme0qMusmd2wxnu0V3KJJyhybfeWwW453bBGbyhu5R76J+hg6rYY7BCLqzE9f30KNd9Ec7pn8HNDukupSR2aPKk4EikL/0KIx0nIEM83qDSGGiaVu5/FzD498NaHr7oFwNNZeVunMdwxwlke9p1l+KZ9geeB79kJSN3X1XQB55H6bLdQH8B9vX3Mdb1IXJ9/9Vdjm/xPSkEEL3a43dSODjgIjVwDrm+y8je/Cdyvf8B4OouKzCOHAYo/svguhJOHnDyErmcRGZMYq7dAZlPw80Oo5AZhpsZRCH9MZyRXjjDPXBzIxjR/QMoJK6/vSleLYVoClwpJKMw0GSUeH8Ei+gu7NBkFAaajMJAk1EYaDIKA01GYaDJKAw0GYWBJqPE/G47osm03w9NpBJHDjIKA01G4QxNRmGHJqMw0GQUBpqMwkCTUfiJFTIKOzQZhYEmozDQZBQGmozClUIyCjs0GYWBJqMw0GQUW3JhhQzCDk1GSfz4yP4o/UYEolDYockoCbZnMok9/ntueGJIZuDIQUZJCAB7jhzg5EGxt+fIAcEOTUaxeW8SGUNOmKH3HObYQfFVzK/NFJMJijmeNEP/hF2aYmhibnlSSEZJCAlM3F5pOyDGP8XCjVv0t1faDoiJ+WWHJqOIF1uvlvyD7399p5zhWoh8ebXEOV/ZDl3qm4miolw+EwLjlzxKbXsZaoqgvYcPiHKZ9bBSyMmDImaKSE57Uri37SC7NEXGdHn0dJWDoaYo8JLDKWfoids+hpo02td2sOzcPGn79prSl+3K2b35JQ7VNKP2tb3huZn6Xljxc3CisPzmTez02aEnepndmirktYCNM9TSd9AXJZpKmFyFvpeDoSaVwuZJ7FwdfOS428tbXuQIQoG8dujnShqj+I7CQBftYrDJo9cVBbmoIoEuYrCpHNVBLqpooCdiuKlSIZ7o/3/H0TjM1yeEAAAAAElFTkSuQmCC" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+
+        <!-- ══════════ SPLASH / WELCOME (first launch only) ══════════ -->
+        <div class="splash-overlay" id="splash-screen">
+            <div class="splash-badge">🐃</div>
+            <div class="splash-title">Halima Dairy Farm</div>
+            <div class="splash-sub">Complete Farm Management System</div>
+            <div class="splash-credit-label">Design by</div>
+            <div class="splash-credit">Shakil Jaffer Nagori</div>
+            <button class="splash-start-btn" onclick="dismissSplash()">Start →</button>
+            <div class="splash-footer">Herd · Salvage · Supply · Stock · Labour · Accounts</div>
+        </div>
+
+        <!-- ══════════ SCREEN 0: DASHBOARD ══════════ -->
+        <div class="screen active" id="screen-0">
+            <div class="dash-hero">
+                <div class="dh-row" style="align-items:center">
+                    <h1>Halima Dairy Farm</h1>
+                    <div style="display:flex;gap:7px;align-items:center;flex-shrink:0">
+                        <button class="hero-rate-btn" onclick="openModal('modal-rates')">⚙️ Rates</button>
+                    </div>
+                </div>
+                <div class="dh-row" style="align-items:baseline;margin-top:2px">
+                    <div class="hero-total" id="dh-total">- Animals</div>
+                    <div class="hero-date" id="dh-date"></div>
+                </div>
+                <div class="hero-pills">
+                    <div class="hero-pill" id="dh-shedA">Shed A: 0</div>
+                    <div class="hero-pill" id="dh-shedB">Shed B: 0</div>
+                    <div class="hero-pill" id="dh-noora">Noora: 0</div>
+                    <div class="hero-pill" id="dh-tosif">Tosif: 0</div>
+                </div>
+            </div>
+
+            <div class="scroll-body">
+                <div class="period-toggle">
+                    <button class="pt-btn active" onclick="setPeriod('daily',this)">Daily</button>
+                    <button class="pt-btn" onclick="setPeriod('monthly',this)">Monthly</button>
+                    <button class="pt-btn" onclick="setPeriod('yearly',this)">Yearly</button>
+                </div>
+
+                <div class="sec-title">📊 Herd Summary</div>
+                <div id="dash-herd-summary"></div>
+
+                <div class="sec-title">📈 Milk Rate P&amp;L Calculator</div>
+                <div id="milk-pl-calculator"></div>
+
+                <div class="sec-title">💵 This Month Cash Flow</div>
+                <div id="dash-cashflow-tiles" class="g2" style="margin-bottom:7px"></div>
+
+                <div class="sec-title">🗓️ 12-Month Expected Deliveries</div>
+                <div id="delivery-matrix"></div>
+
+                <div id="kasai-out-alert" style="display:none;margin-bottom:8px"></div>
+                <div id="backup-reminder" style="display:none" class="backup-banner">
+                    <span style="font-size:24px">💾</span>
+                    <div class="backup-banner-text">No backup in 7+ days. Export your data to avoid loss.</div>
+                    <button onclick="openBackup()" style="background:var(--amber);color:#fff;border:none;border-radius:7px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">Backup Now</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════ SCREEN 1: HERD ══════════ -->
+        <div class="screen" id="screen-1">
+            <div class="topbar">
+                <span class="topbar-title">🐃 Herd Book</span>
+                <button class="topbar-btn" style="background:#0891b2" onclick="openKata()">🗂️ Kata</button>
+                <button class="topbar-btn" onclick="openDrCard()">🩺 Dr Card</button>
+            </div>
+            <div class="search-bar-wrap" style="display:flex;gap:8px;align-items:center">
+                <input type="text" id="herd-history-search" placeholder="📜 Search Buffalo History by Tag No…" enterkeyhint="search" onkeypress="if(event.key==='Enter'){openBuffaloHistory(this.value);}" style="flex:1">
+            </div>
+            <div class="scroll-body">
+                <div id="herd-alert-bar" style="display:none" class="alert-bar"></div>
+                <div class="sec-title">Herd Overview</div>
+                <div id="herd-stat-grid"></div>
+                <div class="sec-title">Animal Entries</div>
+                <div class="action-grid" style="grid-template-columns:1fr 1fr">
+                    <button class="action-btn" style="background:#1B4FD8" onclick="openHerdActionPicker('entry')"><span class="ab-icon">📝</span>Entry</button>
+                    <button class="action-btn" style="background:#0A7C52" onclick="openHerdActionPicker('payment')"><span class="ab-icon">💰</span>Payment</button>
+                </div>
+
+                <div class="sec-title">🔔 Herd Alerts</div>
+                <div id="dash-alert-tabs" style="display:flex;gap:6px;margin-bottom:8px">
+                    <button class="herd-tab-btn active" data-tab="Shed A" onclick="switchDashAlertTab('Shed A')" style="background:#6C2BD9">Shed A</button>
+                    <button class="herd-tab-btn" data-tab="Shed B" onclick="switchDashAlertTab('Shed B')" style="background:#B45309">Shed B</button>
+                </div>
+                <button onclick="shareHerdAlertsWhatsApp()" style="width:100%;background:#25D366;color:#fff;border:none;border-radius:9px;padding:8px 0;font-size:12px;font-weight:800;margin-bottom:10px;cursor:pointer">📤 Share <span id="dash-alert-share-label">Shed A</span> Report on WhatsApp</button>
+
+                <div class="sec-title" id="preg-alerts-title" style="display:none">🤰 Upcoming Deliveries (≤30 days)</div>
+                <div id="preg-alerts-list"></div>
+                <div id="taji-service-alerts" style="display:none;margin-bottom:8px"></div>
+
+            </div>
+        </div>
+
+        <!-- ══════════ SCREEN 2: SUPPLY ══════════ -->
+        <div class="screen" id="screen-2">
+            <div class="topbar">
+                <span class="topbar-title">🥛 Milk Supply</span>
+                <button class="topbar-btn" style="background:#0A7C52;margin-right:3px" onclick="openModal('modal-customer-payment')">💰 Payment</button>
+                <button class="topbar-btn" style="background:#0694A2;margin-right:3px" onclick="openModal('modal-receipt')">🧾</button>
+                <button class="topbar-btn" style="background:#25D366;margin-right:3px" onclick="openWhatsAppBillModal()">📤</button>
+                <button class="topbar-btn" style="background:#1B4FD8" onclick="openModal('modal-add-customer')">➕</button>
+            </div>
+            <div class="scroll-body">
+                <div class="sec-title">📊 Production Overview</div>
+                <div id="supply-stat-grid"></div>
+
+                <!-- ─── MILK RECEIVABLES ─── -->
+                <div class="sec-title" style="margin-top:12px">🧾 Milk Receivables</div>
+                <div id="milk-receivables"></div>
+
+                <!-- SHED PRODUCTION TABLE -->
+                <div class="sec-title" style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+                    <span>🥛 Shed Production Entry</span>
+                    <div style="display:flex;gap:5px;align-items:center">
+                        <button onclick="shedProdNav(-1)" style="background:var(--purple);color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:13px;font-weight:700;cursor:pointer">◀</button>
+                        <span id="shed-prod-date-label" style="font-size:11px;font-weight:700;color:var(--mid);min-width:70px;text-align:center"></span>
+                        <button onclick="shedProdNav(1)" style="background:var(--blue);color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:13px;font-weight:700;cursor:pointer">▶</button>
+                        <button onclick="openShedProdPicker()" style="background:#374151;color:#fff;border:none;border-radius:7px;padding:5px 7px;font-size:11px;cursor:pointer">📅</button>
+                        <input type="date" id="shed-prod-picker" style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none" onchange="setShedProdDate(this.value)">
+                    </div>
+                </div>
+                <div id="shed-prod-table-wrap"></div>
+
+                <div class="sec-title">Customer Ledger</div>
+                <div id="supply-bill-cards"></div>
+
+                <div class="sec-title" style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">
+                    <span>📋 Daily Supply Entry</span>
+                    <div style="display:flex;gap:5px;align-items:center">
+                        <button onclick="supplyDateNav(-1)" style="background:var(--purple);color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:13px;font-weight:700;cursor:pointer">◀</button>
+                        <span id="supply-date-label" style="font-size:11px;font-weight:700;color:var(--mid);min-width:70px;text-align:center"></span>
+                        <button onclick="supplyDateNav(1)" style="background:var(--blue);color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:13px;font-weight:700;cursor:pointer">▶</button>
+                        <button onclick="openSupplyDatePicker()" style="background:#374151;color:#fff;border:none;border-radius:7px;padding:5px 7px;font-size:11px;cursor:pointer">📅</button>
+                        <input type="date" id="supply-date-picker" style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none" onchange="setSupplyDate(this.value)">
+                    </div>
+                </div>
+                <div id="supply-daily-table"></div>
+
+                <div class="sec-title" style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">
+                    <span>📆 Weekly Summary</span>
+                    <div style="display:flex;gap:5px;align-items:center">
+                        <button onclick="supplyWeekNav(-1)" style="background:var(--purple);color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:13px;font-weight:700;cursor:pointer">◀</button>
+                        <span id="supply-week-label" style="font-size:11px;font-weight:700;color:var(--mid);min-width:98px;text-align:center"></span>
+                        <button onclick="supplyWeekNav(1)" style="background:var(--blue);color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:13px;font-weight:700;cursor:pointer">▶</button>
+                        <button onclick="openSupplyWeekPicker()" style="background:#374151;color:#fff;border:none;border-radius:7px;padding:5px 7px;font-size:11px;cursor:pointer">📅</button>
+                        <input type="date" id="supply-week-picker" style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none" onchange="setSupplyWeekDate(this.value)">
+                    </div>
+                </div>
+                <div id="supply-weekly-summary"></div>
+            </div>
+        </div>
+
+        <!-- ══════════ SCREEN 3: STOCK ══════════ -->
+        <div class="screen" id="screen-3">
+            <div class="topbar"><span class="topbar-title">📦 Stock Book</span></div>
+            <div class="search-bar-wrap"><input type="text" id="stock-search" placeholder="🔍 Search goods name…" oninput="renderStock()"></div>
+            <div class="scroll-body">
+                <div id="feed-low-alert" style="display:none;margin-bottom:8px"></div>
+                <div class="sec-title">📊 Stock &amp; Feed Overview</div>
+                <div id="stock-stat-grid"></div>
+                <div class="sec-title">Quick Actions</div>
+                <div class="action-grid">
+                    <button class="action-btn" style="background:#1B4FD8" onclick="openModal('modal-goods-purchase')"><span class="ab-icon">🛒</span>Goods Purchase</button>
+                    <button class="action-btn" style="background:#0694A2" onclick="openModal('modal-godown-init')"><span class="ab-icon">🏭</span>Godown Stock</button>
+                    <button class="action-btn" style="background:#B45309" onclick="openModal('modal-feed-consumed')"><span class="ab-icon">🍽️</span>Feed Consumed</button>
+                    <button class="action-btn" style="background:#0A7C52" onclick="openModal('modal-dana')"><span class="ab-icon">🌾</span>Danawala Payment</button>
+                    <button class="action-btn" style="background:#6C2BD9" onclick="openTMRSummaryScreen()"><span class="ab-icon">🥣</span>TMR Summary</button>
+                </div>
+
+                <div class="sec-title">🏭 Godown Details <span style="font-size:9px;font-weight:400;color:var(--light);text-transform:none">(as on date)</span></div>
+                <div class="godown-date-bar">
+                    <label>📅 As on</label>
+                    <input type="date" id="godown-view-date" onchange="renderGodownStock()">
+                    <button onclick="document.getElementById('godown-view-date').value=todayStr();renderGodownStock()" style="background:var(--blue);color:#fff;border:none;border-radius:6px;padding:5px 8px;font-size:11px;font-weight:700;cursor:pointer">Today</button>
+                </div>
+                <div id="godown-list"></div>
+                <button onclick="shareGodownWhatsApp()" style="width:100%;background:#25D366;color:#fff;border:none;border-radius:9px;padding:9px 0;font-size:12px;font-weight:800;margin:4px 0 8px;cursor:pointer">📤 Share Godown Details on WhatsApp</button>
+            </div>
+        </div>
+
+        <!-- ══════════ TMR SUMMARY (own screen) ══════════ -->
+        <div class="screen" id="screen-tmr-summary">
+            <div class="topbar"><button class="back-btn" onclick="closeTMRSummaryScreen()">‹</button><span class="topbar-title">🥣 TMR - Auto-Calculated from Feed Consumed</span></div>
+            <div class="scroll-body">
+                <div class="godown-date-bar" style="flex-wrap:wrap">
+                    <label>📅 From</label>
+                    <input type="date" id="tmr-from" onchange="renderTMRSummary()" style="min-width:110px">
+                    <label>To</label>
+                    <input type="date" id="tmr-to" onchange="renderTMRSummary()" style="min-width:110px">
+                    <button onclick="setTMRToday()" style="background:var(--blue);color:#fff;border:none;border-radius:6px;padding:5px 8px;font-size:11px;font-weight:700;cursor:pointer">Today</button>
+                </div>
+                <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:8px">
+                    <div id="tmr-summary-table"></div>
+                </div>
+
+                <div class="sec-title" style="display:flex;align-items:center;justify-content:space-between">
+                    <span>🌿 Feed Nutrition Library</span>
+                    <button class="gf-btn-toggle" onclick="toggleAddFeedRow()">+ Add Feed</button>
+                </div>
+                <div id="add-feed-row" style="display:none;gap:6px;margin-bottom:8px">
+                    <input type="text" id="new-feed-name" placeholder="Feed name (e.g. KAPAS KHALI)" style="flex:1;border:1.5px solid var(--border);border-radius:7px;padding:7px 9px;font-size:12px;color:var(--ink);background:var(--card)">
+                    <button onclick="addFeedNutritionRow()" style="background:var(--blue);color:#fff;border:none;border-radius:7px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer">Add</button>
+                </div>
+                <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:8px">
+                    <div id="feed-nutrition-table"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════ SCREEN 4: LABOUR ══════════ -->
+        <div class="screen" id="screen-4">
+            <div class="topbar"><span class="topbar-title">👷 Labour Book</span></div>
+            <div class="search-bar-wrap"><input type="text" id="labour-search" placeholder="🔍 Search worker name…" oninput="renderLabour()"></div>
+            <div class="scroll-body">
+                <div class="sec-title">📊 Labour Overview</div>
+                <div id="labour-stat-grid"></div>
+                <div class="sec-title">Quick Actions</div>
+                <div class="action-grid">
+                    <button class="action-btn" style="background:#1B4FD8" onclick="openModal('modal-add-worker')"><span class="ab-icon">➕</span>Add Worker</button>
+                    <button class="action-btn" style="background:#0A7C52" onclick="openModal('modal-labour-payment')"><span class="ab-icon">💰</span>Payment</button>
+                    <button class="action-btn" style="background:#6C2BD9" onclick="openModal('modal-attendance')"><span class="ab-icon">📅</span>Attendance</button>
+                    <button class="action-btn" style="background:#C81E1E" onclick="openLeavingModal()"><span class="ab-icon">🚪</span>Mark Leaving</button>
+                </div>
+                <div class="sec-title">Workers</div>
+                <div id="worker-list"></div>
+            </div>
+        </div>
+
+        <!-- ══════════ SCREEN 5: ACCOUNTS ══════════ -->
+        <div class="screen" id="screen-5">
+            <div class="topbar">
+                <span class="topbar-title">📈 Accounts</span>
+                <button class="topbar-btn" style="background:#B45309" onclick="openBackup()">💾</button>
+            </div>
+            <div class="scroll-body">
+                <div class="period-toggle">
+                    <button class="pt-btn active" onclick="setAccPeriod('monthly',this)">Monthly</button>
+                    <button class="pt-btn" onclick="setAccPeriod('yearly',this)">Yearly</button>
+                    <button class="pt-btn" onclick="setAccPeriod('all',this)">All-Time</button>
+                </div>
+                <div class="bill-card" style="border-left-color:#0694A2;cursor:pointer" onclick="openReportsScreen()">
+                    <div class="bc-icon">📋</div>
+                    <div class="bc-body"><div class="bc-name">Reports</div><div class="bc-sub">Revenue, expense &amp; operational reports</div></div>
+                    <div class="bc-right" style="font-size:22px;font-weight:800;color:#0694A2">›</div>
+                </div>
+                <div class="sec-title">📊 Cash Flow</div>
+                <div id="cashflow-summary"></div>
+                <div class="sec-title">💳 Quick Payments</div>
+                <div id="acc-quick-payments"></div>
+                <div class="sec-title">🧾 Bills &amp; Ledger</div>
+                <div id="acc-ledger-cards"></div>
+                <div class="sec-title">💰 Profit &amp; Loss</div>
+                <div id="pl-summary"></div>
+            </div>
+        </div>
+
+        <!-- ══════════ SCREEN 6: REPORTS ══════════ -->
+        <div class="screen" id="screen-6">
+            <div class="topbar">
+                <button class="back-btn" onclick="closeReportsScreen()">‹</button>
+                <span class="topbar-title">📋 Reports</span>
+                <button class="topbar-btn" style="background:#25D366" onclick="sharePLWhatsApp()">📤 Share</button>
+            </div>
+            <div class="scroll-body">
+                <div class="period-toggle">
+                    <button class="pt-btn active" onclick="setRepPeriod('weekly',this)">Weekly</button>
+                    <button class="pt-btn" onclick="setRepPeriod('monthly',this)">Monthly</button>
+                    <button class="pt-btn" onclick="setRepPeriod('yearly',this)">Yearly</button>
+                </div>
+                <div class="sec-title">Revenue Reports</div>
+                <div id="rep-revenue"></div>
+                <div class="sec-title">Expense Reports</div>
+                <div id="rep-expense"></div>
+                <div class="sec-title">Operational Reports</div>
+                <div id="rep-ops"></div>
+                <div class="sec-title" style="display:flex;align-items:center;justify-content:space-between">
+                    <span>Customer-wise Report</span>
+                    <button class="topbar-btn" style="background:#25D366" onclick="shareCustomerReportWhatsApp()">📤 Share</button>
+                </div>
+                <div id="rep-customers"></div>
+            </div>
+        </div>
+
+        <!-- ══════════ SCREEN 7: SALVAGE (Palak / TAJI / BAKDI / Irshad) ══════════ -->
+        <div class="screen" id="screen-7">
+            <div class="topbar">
+                <span class="topbar-title">🔄 Salvage Book</span>
+            </div>
+            <div class="scroll-body">
+                <div class="sec-title">Salvage Overview</div>
+                <div id="salvage-stat-grid"></div>
+                <div class="sec-title">Animal Movement</div>
+                <div class="action-grid">
+                    <button class="action-btn" style="background:#0891b2" onclick="openModal('modal-taji')"><span class="ab-icon">🚛</span>TAJI Inward</button>
+                    <button class="action-btn" style="background:#4B5563" onclick="openModal('modal-bakdi')"><span class="ab-icon">🚚</span>BAKDI Out</button>
+                </div>
+                <div class="sec-title">Vendor Payments</div>
+                <div class="action-grid">
+                    <button class="action-btn" style="background:#0A7C52" onclick="openModal('modal-palak-payment')"><span class="ab-icon">👤</span>Palak Payment</button>
+                </div>
+
+                <div class="sec-title">🔔 Palak Alerts</div>
+                <div id="salvage-alert-tabs" style="display:flex;gap:6px;margin-bottom:8px">
+                    <button class="herd-tab-btn active" data-tab="Noora" onclick="switchSalvageAlertTab('Noora')" style="background:#0A7C52">Noora</button>
+                    <button class="herd-tab-btn" data-tab="Tosif" onclick="switchSalvageAlertTab('Tosif')" style="background:#1B4FD8">Tosif</button>
+                </div>
+                <button onclick="shareHerdAlertsWhatsApp(salvageAlertTab)" style="width:100%;background:#25D366;color:#fff;border:none;border-radius:9px;padding:8px 0;font-size:12px;font-weight:800;margin-bottom:10px;cursor:pointer">📤 Share <span id="salvage-alert-share-label">Noora</span> Report on WhatsApp</button>
+                <div class="sec-title" id="salvage-preg-alerts-title" style="display:none">🤰 Upcoming Deliveries (≤30 days)</div>
+                <div id="salvage-preg-alerts-list"></div>
+                <div id="salvage-taji-service-alerts" style="display:none;margin-bottom:8px"></div>
+            </div>
+        </div>
+
+        <!-- ══════════ ADDITIONAL SCREENS ══════════ -->
+        <div class="screen" id="screen-backup">
+            <div class="topbar">
+                <button class="back-btn" onclick="closeBackup()">‹</button>
+                <span class="topbar-title">💾 Backup &amp; Restore</span>
+            </div>
+            <div class="scroll-body">
+                <div id="backup-hero-banner" style="border-radius:12px;padding:16px;margin-bottom:12px;text-align:center"></div>
+                <div class="pl-section" style="margin-bottom:12px">
+                    <div class="pl-sec-header" style="color:#25D366;background:var(--green-lt)">📤 WhatsApp Backup (Recommended)</div>
+                    <div class="pl-row">
+                        <div>
+                            <div class="pl-label">Send to WhatsApp Saved Messages</div>
+                            <div class="pl-sub">Opens WhatsApp → sends backup file to yourself</div>
+                        </div>
+                        <button onclick="backupToWhatsApp()" style="background:#25D366;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">📤 Send</button>
+                    </div>
+                    <div class="pl-row">
+                        <div>
+                            <div class="pl-label">Auto-Backup Schedule</div>
+                            <div class="pl-sub" id="backup-schedule-sub">Remind every Sunday</div>
+                        </div>
+                        <select id="backup-schedule-select" onchange="saveBackupSchedule(this.value)" style="border:1.5px solid var(--border);border-radius:8px;padding:6px 8px;font-size:12px;font-weight:700;color:var(--ink);background:var(--card);outline:none">
+                            <option value="sunday">Every Sunday</option>
+                            <option value="daily">Every Day</option>
+                            <option value="manual">Manual Only</option>
+                        </select>
+                    </div>
+                    <div class="pl-row">
+                        <div><div class="pl-label">Last Backup</div><div class="pl-sub" id="last-backup-date">Never</div></div>
+                        <span id="backup-status-icon" style="font-size:20px">❓</span>
+                    </div>
+                </div>
+                <div class="pl-section" style="margin-bottom:12px">
+                    <div class="pl-sec-header" style="color:var(--blue)">💾 Manual Backup &amp; Restore</div>
+                    <div class="pl-row">
+                        <div><div class="pl-label">Download JSON File</div><div class="pl-sub">Save to Files / Google Drive / email</div></div>
+                        <button onclick="exportData()" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer">⬇️ Export</button>
+                    </div>
+                    <div class="pl-row">
+                        <div><div class="pl-label">Restore from File</div><div class="pl-sub">Import a previously saved JSON backup</div></div>
+                        <button onclick="document.getElementById('import-file2').click()" style="background:var(--muted);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer">⬆️ Import</button>
+                    </div>
+                    <input type="file" id="import-file2" accept=".json" style="display:none" onchange="importData(event)">
+                </div>
+                <div class="pl-section" style="margin-bottom:12px">
+                    <div class="pl-sec-header" style="color:var(--teal)">📊 Storage Health</div>
+                    <div id="storage-health-rows"></div>
+                </div>
+                <div class="pl-section" style="margin-bottom:12px">
+                    <div class="pl-sec-header" style="color:var(--red)">⚠️ Danger Zone</div>
+                    <div class="pl-row">
+                        <div><div class="pl-label">Clear All Data</div><div class="pl-sub">Cannot be undone - backup first!</div></div>
+                        <button onclick="confirmClearAll()" style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer">🗑️ Clear</button>
+                    </div>
+                </div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:13px;margin-bottom:12px">
+                    <div style="font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">📖 How to Restore from WhatsApp</div>
+                    <div style="font-size:12px;color:var(--muted);line-height:1.8">
+                        1️⃣ Open WhatsApp → Saved Messages<br>
+                        2️⃣ Find the backup message (dairy-backup-DATE.json)<br>
+                        3️⃣ Download / Open the file<br>
+                        4️⃣ Come back here → tap ⬆️ Import<br>
+                        5️⃣ Select the downloaded file
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen" id="screen-detail">
+            <div class="topbar">
+                <button class="back-btn" onclick="closeDetail()">‹</button>
+                <span class="topbar-title" id="detail-title"></span>
+                <button class="topbar-btn" style="background:#6C2BD9" onclick="openEditAnimal()">✏️ Edit</button>
+                <button class="btn-danger" onclick="confirmDeleteAnimal()">Delete</button>
+            </div>
+            <div class="scroll-body" id="detail-body"></div>
+        </div>
+
+        <div class="screen" id="screen-drcard">
+            <div class="topbar">
+                <button class="back-btn" onclick="closeDrCard()">‹</button>
+                <span class="topbar-title">🩺 Doctor Card</span>
+            </div>
+            <div class="scroll-body">
+                <div style="display:flex;gap:6px;padding:10px 13px 0">
+                    <button class="herd-tab-btn active" data-tab="Shed A" onclick="switchDrCardTab('Shed A')" style="background:#6C2BD9">Shed A</button>
+                    <button class="herd-tab-btn" data-tab="Shed B" onclick="switchDrCardTab('Shed B')" style="background:#B45309">Shed B</button>
+                    <button class="herd-tab-btn" data-tab="Noora" onclick="switchDrCardTab('Noora')" style="background:#0A7C52">Noora</button>
+                    <button class="herd-tab-btn" data-tab="Tosif" onclick="switchDrCardTab('Tosif')" style="background:#1B4FD8">Tosif</button>
+                </div>
+                <div id="drcard-body"></div>
+            </div>
+        </div>
+
+        <div class="screen" id="screen-kata">
+            <div class="topbar">
+                <button class="back-btn" onclick="showScreen('screen-1')">‹</button>
+                <span class="topbar-title">🗂️ Kata - Milk Record</span>
+            </div>
+            <div style="display:flex;gap:8px;padding:10px 13px 0">
+                <button id="kata-tab-a" onclick="switchKataShed('A')" style="flex:1;border:none;border-radius:9px;padding:10px 0;font-size:14px;font-weight:800;cursor:pointer">🏠 Shed A</button>
+                <button id="kata-tab-b" onclick="switchKataShed('B')" style="flex:1;border:none;border-radius:9px;padding:10px 0;font-size:14px;font-weight:800;cursor:pointer">🏠 Shed B</button>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;justify-content:center;padding:12px 13px 4px">
+                <button onclick="kataDateNav(-1)" style="background:var(--purple);color:#fff;border:none;border-radius:9px;padding:8px 14px;font-size:14px;font-weight:800;cursor:pointer">◀</button>
+                <span id="kata-date-label" style="font-size:14px;font-weight:800;color:var(--ink);min-width:150px;text-align:center"></span>
+                <button onclick="kataDateNav(1)" style="background:var(--amber);color:#fff;border:none;border-radius:9px;padding:8px 14px;font-size:14px;font-weight:800;cursor:pointer">▶</button>
+                <button onclick="openKataDatePicker()" style="background:#374151;color:#fff;border:none;border-radius:9px;padding:8px 10px;font-size:14px;cursor:pointer">📅</button>
+                <input type="date" id="kata-date-picker" style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none" onchange="setKataDate(this.value)">
+            </div>
+            <div class="scroll-body" id="kata-body"></div>
+        </div>
+
+        <div class="screen" id="screen-buffalo-history">
+            <div class="topbar">
+                <button class="back-btn" onclick="closeBuffaloHistory()">‹</button>
+                <span class="topbar-title">📜 Buffalo History</span>
+            </div>
+            <div class="search-bar-wrap"><input type="text" id="bh-search" placeholder="🔍 Enter Tag No…" oninput="renderBuffaloHistorySearch()"></div>
+            <div class="scroll-body" id="bh-body"></div>
+        </div>
+
+        <div class="screen" id="screen-ledger">
+            <div class="topbar">
+                <button class="back-btn" onclick="closeLedger()">‹</button>
+                <span class="topbar-title" id="ledger-title"></span>
+            </div>
+            <div class="scroll-body" id="ledger-body"></div>
+        </div>
+
+        <div class="screen" id="screen-customer">
+            <div class="topbar">
+                <button class="back-btn" onclick="closeCustomer()">‹</button>
+                <span class="topbar-title" id="customer-title"></span>
+                <button class="topbar-btn" style="background:var(--purple);margin-right:3px" onclick="openWhatsAppBillModal(currentCustomerId)">📤 Bill</button>
+                <button class="btn-danger" onclick="confirmDeleteCustomer()">Delete</button>
+            </div>
+            <div class="scroll-body" id="customer-body"></div>
+        </div>
+
+        <div class="screen" id="screen-worker">
+            <div class="topbar">
+                <button class="back-btn" onclick="closeWorker()">‹</button>
+                <span class="topbar-title" id="worker-title"></span>
+                <button class="btn-sm" style="background:#25D366;color:#fff;margin-right:6px" onclick="shareWorkerWhatsApp()">📤</button>
+                <button class="btn-danger" onclick="confirmDeleteWorker()">Delete</button>
+            </div>
+            <div class="scroll-body" id="worker-body"></div>
+        </div>
+
+        <div class="screen" id="screen-goods">
+            <div class="topbar">
+                <button class="back-btn" onclick="closeGoods()">‹</button>
+                <span class="topbar-title" id="goods-title"></span>
+            </div>
+            <div class="scroll-body" id="goods-body"></div>
+        </div>
+
+        <div class="screen" id="screen-acc-ledger">
+            <div class="topbar">
+                <button class="back-btn" onclick="closeAccLedger()">‹</button>
+                <span class="topbar-title" id="acc-ledger-title"></span>
+                <button class="topbar-btn" id="acc-ledger-share-btn" style="background:#25D366;display:none" onclick="shareAccLedgerWhatsApp()">📤</button>
+            </div>
+            <div class="scroll-body" id="acc-ledger-body"></div>
+        </div>
+
+        <!-- ══════════ MODALS ══════════ -->
+
+        <!-- RATES -->
+        <div class="modal-overlay" id="modal-rates">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">⚙️ Rates & Settings</span><button class="modal-close" onclick="closeModal('modal-rates')">✕</button></div>
+                <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px">
+                    <div class="rate-row"><div><div class="rate-name">Farm / Business Name</div><div class="rate-sub">Shown on shared bill images</div></div><input class="rate-input" id="rate-bizname" style="width:120px;text-align:right" placeholder="e.g. Shakil Dairy"></div>
+                </div>
+                <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px;padding:10px 12px">
+                    <div class="rate-name" style="margin-bottom:8px">Bill Image Style</div>
+                    <div class="period-toggle" id="rate-billstyle-toggle">
+                        <button class="pt-btn" data-style="simple" onclick="setBillStylePref('simple',this)">Standard</button>
+                        <button class="pt-btn" data-style="branded" onclick="setBillStylePref('branded',this)">Branded</button>
+                    </div>
+                </div>
+                <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px">
+                    <div class="rate-row"><div><div class="rate-name">Noora</div><div class="rate-sub">₹ per animal / month</div></div><input class="rate-input" id="rate-noora" type="number" inputmode="decimal"></div>
+                    <div class="rate-row"><div><div class="rate-name">Tosif</div><div class="rate-sub">₹ per animal / month</div></div><input class="rate-input" id="rate-tosif" type="number" inputmode="decimal"></div>
+                    <div class="rate-row"><div><div class="rate-name">Irshad - TAJI In</div><div class="rate-sub">₹ per animal (inward)</div></div><input class="rate-input" id="rate-taji" type="number" inputmode="decimal"></div>
+                    <div class="rate-row"><div><div class="rate-name">Irshad - BAKDI Out</div><div class="rate-sub">₹ per animal (outward)</div></div><input class="rate-input" id="rate-bakdi" type="number" inputmode="decimal"></div>
+                    <div class="rate-row"><div><div class="rate-name">Milk Benchmark</div><div class="rate-sub">Litres per buffalo / month</div></div><input class="rate-input" id="rate-bench" type="number" inputmode="decimal"></div>
+                    <div class="rate-row"><div><div class="rate-name">Feed Baseline</div><div class="rate-sub">kg daily standard</div></div><input class="rate-input" id="rate-feed" type="number" inputmode="decimal"></div>
+                    <div class="rate-row"><div><div class="rate-name">Doubling Rate</div><div class="rate-sub">₹ per labour / month</div></div><input class="rate-input" id="rate-doubling" type="number" inputmode="decimal"></div>
+                    <div class="rate-row"><div><div class="rate-name">Stable Rent</div><div class="rate-sub">₹ per khila / month</div></div><input class="rate-input" id="rate-rent-perkhila" type="number" inputmode="decimal" oninput="updateRentRatePreview()"></div>
+                    <div class="rate-row"><div><div class="rate-name">Total Khilas</div><div class="rate-sub">Total stall count in stable</div></div><input class="rate-input" id="rate-total-khilas" type="number" inputmode="decimal" oninput="updateRentRatePreview()"></div>
+                </div>
+                <div style="font-size:10px;color:var(--light);margin:-6px 2px 12px;font-style:italic">Stable Rent = rate x khilas = <span id="rate-rent-preview">-</span>/month</div>
+                <button class="btn-main" style="background:var(--green)" onclick="saveRates()">Save Rates</button>
+                <button type="button" style="width:100%;background:none;border:none;color:var(--blue);font-size:12px;font-weight:700;padding:10px 0 2px;cursor:pointer" onclick="closeModal('modal-rates');openCurrentRatesModal()">📋 View All Current Rates (including live averages)</button>
+                <button type="button" style="width:100%;background:none;border:none;color:var(--muted);font-size:11px;font-weight:700;padding:6px 0 2px;cursor:pointer" onclick="closeModal('modal-rates');openDataIntegrityModal()">🔍 Data Integrity Check</button>
+                <button type="button" style="width:100%;background:none;border:none;color:var(--muted);font-size:11px;font-weight:700;padding:6px 0 2px;cursor:pointer" onclick="closeModal('modal-rates');openRecentlyDeletedModal()">🗑️ Recently Deleted</button>
+            </div>
+        </div>
+
+        <!-- CURRENT RATES SUMMARY (read-only) -->
+        <div class="modal-overlay" id="modal-current-rates">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">📋 Current Rates</span><button class="modal-close" onclick="closeModal('modal-current-rates')">✕</button></div>
+                <div id="current-rates-body"></div>
+            </div>
+        </div>
+
+        <!-- RECENTLY DELETED (recovery) -->
+        <div class="modal-overlay" id="modal-recently-deleted">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🗑️ Recently Deleted</span><button class="modal-close" onclick="closeModal('modal-recently-deleted')">✕</button></div>
+                <div style="font-size:11px;color:var(--muted);margin-bottom:12px">Deleted animals, customers, workers, payments, and godown/feed records stay recoverable here for 30 days before being permanently removed.</div>
+                <div id="recently-deleted-body" style="max-height:70vh;overflow-y:auto"></div>
+            </div>
+        </div>
+
+        <!-- DATA INTEGRITY CHECK (read-only) -->
+        <div class="modal-overlay" id="modal-data-integrity">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🔍 Data Integrity Check</span><button class="modal-close" onclick="closeModal('modal-data-integrity')">✕</button></div>
+                <div style="font-size:11px;color:var(--muted);margin-bottom:12px">Cross-checks key totals two independent ways. A mismatch usually means a data entry references something that no longer exists, or (rarely) a calculation bug.</div>
+                <div id="data-integrity-body"></div>
+            </div>
+        </div>
+
+        <!-- ADD ANIMAL -->
+        <div class="modal-overlay" id="modal-add-animal">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">➕ Add Buffalo</span><button class="modal-close" onclick="closeModal('modal-add-animal')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Tag No *</label><input id="f-tagNo" inputmode="numeric" placeholder="e.g. BF-001" oninput="checkDupTagNo()"></div>
+                    <div id="f-tagNo-warn" style="display:none;color:#C81E1E;font-size:11.5px;font-weight:700;margin:-8px 2px 8px">⚠️ This Tag No already exists</div>
+                    <div class="field"><label>Incoming Date *</label><input type="date" id="f-incomingDate"></div>
+                    <div class="field"><label>Location *</label><select id="f-location" onchange="onAddLocationChange()"><option value="">- Select -</option><option>Shed A</option><option>Shed B</option><option>Yard A</option><option>Yard B</option><option>Noora</option><option>Tosif</option></select></div>
+                    <div class="field" id="f-khilaNo-wrap"><label>Khila No <span style="font-size:10px;color:var(--muted);font-weight:400">(optional - can add later)</span></label><input id="f-khilaNo" inputmode="numeric" placeholder="e.g. K-01 (leave blank for yard animals)"></div>
+                    <div id="f-palak-note" style="display:none;font-size:10px;color:var(--light);margin:-6px 0 10px;font-style:italic">No Khila No needed - this animal is with a Palak, not in a shed.</div>
+                    <div class="field"><label>Source Type</label><select id="f-type"><option value="">- Select -</option><option>Kori-Haryana</option><option>Kori-Punjab</option><option>Kori-Gujarat</option><option>Kori-Rajasthan</option></select></div>
+                    <div class="field"><label>Status *</label><select id="f-status"><option value="">- Select -</option><option>KORI</option><option>TAJI</option><option>KHALI</option><option>FALI</option><option>Pregnant</option><option>To Be Slaughtered</option></select></div>
+                    <div style="font-size:10px;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:.4px;margin:6px 0 8px">Optional - if already pregnant or already serviced</div>
+                    <div class="field"><label>FALI Date (if known)</label><input type="date" id="f-faliDate"></div>
+                    <div class="field"><label>Bull (if known)</label><input id="f-bull" placeholder="Bull name / ID"></div>
+                    <button class="btn-main" style="background:var(--blue)" onclick="saveAnimal()">Save Buffalo</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- EDIT ANIMAL -->
+        <div class="modal-overlay" id="modal-edit-animal">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">✏️ Edit Buffalo</span><button class="modal-close" onclick="closeModal('modal-edit-animal')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Tag No</label><input id="e-tagNo" inputmode="numeric"><div style="font-size:10px;color:var(--light);margin-top:3px;font-style:italic">Change only if tag broke - old tag kept in history.</div></div>
+                    <div class="field"><label>Location / Shed *</label><select id="e-location" onchange="onEditLocationChange()"><option>Shed A</option><option>Shed B</option><option>Yard A</option><option>Yard B</option><option>Noora</option><option>Tosif</option></select></div>
+                    <div class="field" id="e-khilaNo-wrap"><label>Khila No <span style="font-size:10px;color:var(--muted);font-weight:400">(optional)</span></label><input id="e-khilaNo" inputmode="numeric" placeholder="e.g. K-01"></div>
+                    <div id="e-palak-note" style="display:none;font-size:10px;color:var(--light);margin:-6px 0 10px;font-style:italic">No Khila No needed at this location.</div>
+                    <div class="field"><label>Status *</label><select id="e-status"><option>TAJI</option><option>KORI</option><option>Pregnant</option><option>KHALI</option><option>FALI</option><option>To Be Slaughtered</option></select></div>
+                    <button class="btn-main" style="background:var(--purple)" onclick="saveEditAnimal()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FALI / BREEDING LOG -->
+        <div class="modal-overlay" id="modal-breeding">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🔁 FALI Breeding Log</span><button class="modal-close" onclick="closeModal('modal-breeding')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Tag No *</label><input id="b-tagNo" inputmode="numeric" placeholder="Type tag no e.g. BF-001" oninput="onBreedingTagInput(this.value)"><div style="font-size:10px;color:var(--light);margin-top:3px;font-style:italic" id="b-tagNote"></div></div>
+                    <div id="reservice-warn" style="display:none;background:var(--amber-lt);border:1px solid var(--amber);border-radius:8px;padding:9px 12px;margin-bottom:10px;font-size:12px;font-weight:700;color:var(--amber)">⚠️ Re-servicing - previous entry will be marked <strong>RETURNED</strong></div>
+                    <div id="b-service-history" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;margin-bottom:10px"><div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-bottom:6px">📋 Previous Services</div></div>
+                    <div class="field"><label>FALI Date *</label><input type="date" id="b-faliDate" oninput="onBreedingDateInput()"></div>
+                    <div class="field"><label>Bull Name (optional)</label><select id="b-bull"><option value="">- Select Bull -</option></select></div>
+                    <div class="field"><label>Shed</label><input id="b-shed" placeholder="Auto-filled from record" style="background:var(--bg);color:var(--muted)" readonly></div>
+                    <div class="field"><label>Khila No</label><input id="b-khilaNo" placeholder="Auto-filled from record" style="background:var(--bg);color:var(--muted)" readonly></div>
+                    <div style="background:var(--blue-lt);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:14px">
+                        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Auto Calculated</div>
+                        <div class="auto-row"><span class="auto-label">Service No.</span><span class="auto-val" id="b-serviceNo" style="color:var(--blue)">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">Dr. Check Date (+60d)</span><span class="auto-val" id="b-drDate">-</span></div>
+                    </div>
+                    <button class="btn-main" style="background:var(--purple)" onclick="saveBreeding()">Log FALI</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAJI INWARD -->
+        <div class="modal-overlay" id="modal-taji">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🚛 TAJI Inward (from Palak)</span><button class="modal-close" onclick="closeModal('modal-taji')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Tag No *</label><input id="tj-tagNo" inputmode="numeric" placeholder="e.g. BF-010" oninput="onTajiTagInput(this.value)"></div>
+                    <div class="field"><label>Incoming Date (Mumbai) *</label><input type="date" id="tj-inDate" oninput="calcTaji()"></div>
+                    <div class="field"><label>From Palak * <span style="font-size:10px;color:var(--green);font-weight:600">(auto from BAKDI)</span></label><input id="tj-palak-display" readonly style="background:var(--green-lt);font-weight:700;color:var(--green)" placeholder="Auto-filled from BAKDI Out record"><input type="hidden" id="tj-palak"></div>
+                    <div class="field"><label>To Location *</label><select id="tj-toLocation"><option value="">- Select -</option><option>Yard A</option><option>Yard B</option><option>Shed A</option><option>Shed B</option></select><div style="font-size:10px;color:var(--blue);margin-top:3px;font-style:italic">Usually Yard A or B first</div></div>
+                    <div class="field"><label>Returning Status from Palak *</label><select id="tj-returnStatus" onchange="onTajiReturnStatusChange()"><option value="">- Select -</option><option value="Pregnant">🤰 Pregnant (FALI continues)</option><option value="TAJI">🐃 TAJI (after delivery)</option></select><div style="font-size:10px;color:var(--light);margin-top:3px;font-style:italic" id="tj-returnStatus-note">Pregnant keeps the same FALI date recorded before she went to Gujarat . TAJI means she has delivered</div></div>
+                    <div class="field"><label>Outgoing Date from Gujarat <span style="font-size:10px;color:var(--green);font-weight:600">(auto from BAKDI)</span></label><input type="date" id="tj-outDate" oninput="calcTaji()"><div style="font-size:10px;color:var(--light);margin-top:3px;font-style:italic" id="tj-outDate-note">Auto-filled from BAKDI · edit if needed</div></div>
+                    <div style="background:var(--blue-lt);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Auto Calculated</div>
+                        <div class="auto-row"><span class="auto-label">Rearing Days (Out→In)</span><span class="auto-val" id="tj-days" style="color:var(--blue)">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">Rate / Month</span><span class="auto-val" id="tj-rate">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">Palak's Bill (Days × Rate ÷ 30)</span><span class="auto-val" id="tj-bill" style="color:var(--red)">-</span></div>
+                    </div>
+                    <div style="font-size:10px;color:var(--green);background:var(--green-lt);border-radius:6px;padding:6px 8px;margin-bottom:10px">✅ Buffalo status → TAJI until serviced<br>✅ Animal added to Mumbai herd automatically<br>✅ Alert if not serviced within 60 days</div>
+                    <button class="btn-main" style="background:#0891b2" onclick="saveTaji()">✅ Save TAJI Inward</button>
+                    <button class="btn-main" style="background:#25D366;margin-top:8px" onclick="shareTajiWhatsApp()">📤 Share on WhatsApp</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BAKDI OUTWARD -->
+        <div class="modal-overlay" id="modal-bakdi">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🚚 BAKDI Outward</span><button class="modal-close" onclick="closeModal('modal-bakdi')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Tag No *</label><input id="bk-tagNo" inputmode="numeric" placeholder="Type tag no e.g. BF-001" oninput="onBakdiTagInput(this.value)"></div>
+                    <div class="field"><label>Outgoing Date *</label><input type="date" id="bk-outDate" oninput="calcBakdi()"></div>
+                    <div class="field"><label>Target Palak *</label><select id="bk-caretaker"><option value="">- Select -</option><option>Noora</option><option>Tosif</option></select></div>
+                    <div style="background:var(--blue-lt);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Auto from Animal Record</div>
+                        <div class="auto-row"><span class="auto-label">From Shed</span><span class="auto-val" id="bk-fromShed">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">FALI Date</span><span class="auto-val" id="bk-faliDate">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">Days Pregnant</span><span class="auto-val" id="bk-daysPreg" style="color:var(--purple)">-</span></div>
+                    </div>
+                    <button class="btn-main" style="background:#4B5563" onclick="saveBakdi()">Record BAKDI Out</button>
+                    <button class="btn-main" style="background:#25D366;margin-top:8px" onclick="shareBakdiWhatsApp()">📤 Share on WhatsApp</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- KORI ENTRY -->
+        <div class="modal-overlay" id="modal-kori">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🤝 KORI Entry</span><button class="modal-close" onclick="closeModal('modal-kori')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Broker Name *</label><input id="k-broker" placeholder="Broker / vendor name"></div>
+                    <div class="field"><label>Amount (₹) *</label><input type="number" inputmode="decimal" id="k-total" oninput="calcKoriAvg()"></div>
+                    <div class="field"><label>Date of Purchase *</label><input type="date" id="k-date"></div>
+                    <div class="field"><label>No. of Animals *</label><input type="number" inputmode="decimal" id="k-count" oninput="calcKoriAvg()"></div>
+                    <div style="background:var(--blue-lt);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:12px"><div class="auto-row"><span class="auto-label">Avg Purchase per Animal (Auto)</span><span class="auto-val" id="kori-avg" style="color:var(--green)">-</span></div></div>
+                    <button class="btn-main" style="background:var(--teal)" onclick="saveKori()">Save KORI Entry</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- WHATSAPP PAYMENT RECEIPT -->
+        <div class="modal-overlay" id="modal-receipt">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🧾 Payment Receipt</span><button class="modal-close" onclick="closeModal('modal-receipt')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Customer *</label><select id="rc-customer" onchange="calcReceiptPreview()"><option value="">- Select -</option></select></div>
+                    <div class="field"><label>Payment Amount (₹) *</label><input type="number" inputmode="decimal" id="rc-amount" placeholder="e.g. 5000" oninput="calcReceiptPreview()"></div>
+                    <div class="field"><label>Payment Date</label><input type="date" id="rc-date"></div>
+                    <div id="rc-preview" style="display:none;background:var(--green-lt);border:1px solid var(--green);border-radius:9px;padding:12px;font-size:12px;color:var(--green);line-height:1.7;white-space:pre-wrap;font-family:monospace;margin-bottom:4px"></div>
+                    <button class="btn-main" style="background:#25D366" onclick="sendReceiptWhatsApp()">📤 Send on WhatsApp</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLAUGHTER -->
+        <div class="modal-overlay" id="modal-slaughter">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🔪 Slaughter Entry</span><button class="modal-close" onclick="closeModal('modal-slaughter')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Tag No *</label><input id="sl-tagNo" inputmode="numeric" placeholder="e.g. BF-001" oninput="fillSlaughterLocation()"></div>
+                    <div class="field"><label>Location</label><input id="sl-location" placeholder="Auto-filled from Tag No" disabled style="opacity:.75"></div>
+                    <div class="field"><label>Outgoing Date *</label><input type="date" id="sl-outDate"></div>
+                    <div class="field"><label>Sold Amount (₹) *</label><input type="number" inputmode="decimal" id="sl-amount" oninput="calcSlaughterBalance()"></div>
+                    <div style="background:var(--red-lt);border:1px solid var(--red);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Outstanding (Auto)</div>
+                        <div class="auto-row"><span class="auto-label">Sold Amount</span><span class="auto-val" id="sl-sold-show" style="color:var(--ink)">-</span></div>
+                        <div class="auto-row" style="margin-top:5px;border-top:1px solid var(--red);padding-top:6px"><span class="auto-label" style="font-weight:700">Outstanding</span><span class="auto-val" id="sl-out-show" style="color:var(--red)">-</span></div>
+                        <div style="font-size:10px;color:var(--light);margin-top:6px;font-style:italic">Full amount is recorded as outstanding here - use "Slaughter Payment" in Herd Book to log what the Kasai actually pays.</div>
+                    </div>
+                    <div class="field"><label>Kasai Name</label><div style="display:flex;gap:7px;align-items:center"><input id="sl-kasai" placeholder="Type name or pick below" style="flex:1;border:1.5px solid var(--border);border-radius:8px;padding:10px 11px;font-size:15px;color:var(--ink);background:var(--card);outline:none" oninput="filterKasaiPreview(this.value)"><button type="button" onclick="addKasaiAndSave()" style="background:var(--green);color:#fff;border:none;border-radius:8px;padding:10px 11px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">+ Save</button></div><div id="kasai-inline-list" style="margin-top:6px;background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden;display:none"></div><div style="font-size:10px;color:var(--light);margin-top:4px;font-style:italic">Type to filter · tap name to select · tap + Save to add new</div></div>
+                    <button class="btn-main" style="background:var(--red)" onclick="saveSlaughter()">Record Slaughter</button>
+                    <button class="btn-main" style="background:#25D366;margin-top:8px" onclick="shareSlaughterWhatsApp()">📤 Share on WhatsApp</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLAUGHTER PAYMENT -->
+        <div class="modal-overlay" id="modal-slaughter-payment">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🔪 Slaughter Payment</span><button class="modal-close" onclick="closeModal('modal-slaughter-payment')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Kasai Name *</label><select id="skp-kasai" onchange="calcSlaughterPaymentBalance()"><option value="">- Select -</option></select></div>
+                    <div class="field"><label>Amount Received (₹) *</label><input type="number" inputmode="decimal" id="skp-amount" oninput="calcSlaughterPaymentBalance()"></div>
+                    <div class="field"><label>Date *</label><input type="date" id="skp-date"></div>
+                    <div style="background:var(--green-lt);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:#0A7C52;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Balance (Auto)</div>
+                        <div class="auto-row"><span class="auto-label">Total Outstanding</span><span class="auto-val" id="skp-total" style="color:var(--red)">-</span></div>
+                        <div class="auto-row" style="margin-top:5px;border-top:1px solid var(--border);padding-top:6px"><span class="auto-label" style="font-weight:700">Balance After Payment</span><span class="auto-val" id="skp-after" style="color:#0A7C52">-</span></div>
+                    </div>
+                    <button class="btn-main" style="background:#0A7C52" onclick="saveSlaughterPayment()">Save Payment</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHANGE PAGAR -->
+        <div class="modal-overlay" id="modal-change-pagar">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">✏️ Change Pagar</span><button class="modal-close" onclick="closeModal('modal-change-pagar')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Worker</label><input id="cp-name" disabled></div>
+                    <div class="field"><label>Current Pagar (₹/month)</label><input id="cp-current" disabled></div>
+                    <div class="field"><label>New Pagar (₹/month) *</label><input type="number" inputmode="decimal" id="cp-new" placeholder="e.g. 17000"></div>
+                    <div class="field"><label>Effective From *</label><input type="date" id="cp-effective"></div>
+                    <div style="font-size:10px;color:var(--light);margin-bottom:12px;font-style:italic">Months before this date keep using the old rate - only this date onward uses the new one.</div>
+                    <button class="btn-main" style="background:var(--blue)" onclick="saveChangePagar()">Save New Rate</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHANGE WORKER ROLE -->
+        <div class="modal-overlay" id="modal-change-role">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">✏️ Change Role / Promote</span><button class="modal-close" onclick="closeModal('modal-change-role')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Worker</label><input id="cr-name" disabled></div>
+                    <div class="field"><label>Current Role</label><input id="cr-current" disabled></div>
+                    <div class="field"><label>New Role *</label><select id="cr-role"><option value="Labour">Labour</option><option value="Manager">Manager</option><option value="Cook">Cook</option></select></div>
+                    <div class="field"><label>Effective From *</label><input type="date" id="cr-effective"></div>
+                    <div style="font-size:10px;color:var(--light);margin-bottom:12px;font-style:italic">Days before this date keep the old role for attendance & doubling - only this date onward uses the new one. Promoting out of Labour mid-month excludes that whole month from the doubling share.</div>
+                    <button class="btn-main" style="background:var(--blue)" onclick="saveChangeRole()">Save Role</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- EDIT SLAUGHTER RECORD -->
+        <div class="modal-overlay" id="modal-edit-slaughter">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">✏️ Edit Slaughter Record</span><button class="modal-close" onclick="closeModal('modal-edit-slaughter')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Tag No *</label><input id="es-tagNo" inputmode="numeric"></div>
+                    <div class="field"><label>Sold Amount (₹) *</label><input type="number" inputmode="decimal" id="es-amount"></div>
+                    <div class="field"><label>Kasai Name</label><input id="es-kasai" placeholder="Kasai name"></div>
+                    <button class="btn-main" style="background:var(--blue)" onclick="saveEditSlaughter()">Save Changes</button>
+                    <button class="btn-main" style="background:var(--red);margin-top:8px" onclick="deleteSlaughterRecord()">🗑 Delete Record</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DEAD RECORD -->
+        <div class="modal-overlay" id="modal-dead">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">💀 Dead Record</span><button class="modal-close" onclick="closeModal('modal-dead')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Tag No *</label><input id="d-tagNo" inputmode="numeric" placeholder="e.g. BF-001"></div>
+                    <div class="field"><label>Death Date *</label><input type="date" id="d-outDate"></div>
+                    <div class="field"><label>Location *</label><select id="d-location"><option value="">- Select -</option><option>Shed A</option><option>Shed B</option><option>Noora</option><option>Tosif</option></select></div>
+                    <button class="btn-main" style="background:var(--ink)" onclick="saveDead()">Record Death</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DANAWALA PAYMENT -->
+        <div class="modal-overlay" id="modal-dana">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🌾 Danawala Payment</span><button class="modal-close" onclick="closeModal('modal-dana')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Broker Name *</label><select id="dana-broker" onchange="calcDanaBalance()"><option value="">- Select -</option></select><div style="font-size:10px;color:var(--light);margin-top:3px;font-style:italic">From names entered in Goods Purchase</div></div>
+                    <div class="field"><label>Amount Paid (₹) *</label><input type="number" inputmode="decimal" id="dana-amount" oninput="calcDanaBalance()"></div>
+                    <div class="field"><label>Date *</label><input type="date" id="dana-date"></div>
+                    <div style="background:var(--blue-lt);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Outstanding Balance (Auto)</div>
+                        <div class="auto-row"><span class="auto-label">Total Paid to This Broker</span><span class="auto-val" id="dana-totalpaid" style="color:var(--green)">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">Outstanding Balance</span><span class="auto-val" id="dana-outstanding" style="color:var(--red)">-</span></div>
+                    </div>
+                    <button class="btn-main" style="background:var(--blue)" onclick="saveVendorPayment('dana')">Save Payment</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BHAISWAL PAYMENT -->
+        <div class="modal-overlay" id="modal-bhaiswal">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🐄 Bhaiswal Payment</span><button class="modal-close" onclick="closeModal('modal-bhaiswal')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Broker / Vendor *</label><select id="bh-name" onchange="calcBhaiswalBalance()"><option value="">- Select -</option></select><div style="font-size:10px;color:var(--light);margin-top:3px;font-style:italic">Pays down the KORI purchase bill for this broker</div></div>
+                    <div class="field"><label>Amount Paid (₹) *</label><input type="number" inputmode="decimal" id="bh-amount" oninput="calcBhaiswalBalance()"></div>
+                    <div class="field"><label>Date *</label><input type="date" id="bh-date"></div>
+                    <div style="background:var(--purple-lt);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Outstanding (Auto)</div>
+                        <div class="auto-row"><span class="auto-label">KORI Bill (This Broker)</span><span class="auto-val" id="bh-bill" style="color:var(--ink)">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">Already Paid</span><span class="auto-val" id="bh-totalpaid" style="color:var(--green)">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">Outstanding After This Payment</span><span class="auto-val" id="bh-outstanding" style="color:var(--red)">-</span></div>
+                    </div>
+                    <button class="btn-main" style="background:var(--purple)" onclick="saveVendorPayment('bh')">Save Payment</button>
+                    <button class="btn-main" style="background:#25D366;margin-top:8px" onclick="shareBhaiswalPaymentWhatsApp()">📤 Share on WhatsApp</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MEDICINE BILL -->
+        <div class="modal-overlay" id="modal-medicine">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">💊 Medicine Bill</span><button class="modal-close" onclick="closeModal('modal-medicine')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Medical Name *</label><input id="med-name" placeholder="e.g. Amoxicillin, Dr. Khan visit"></div>
+                    <div class="field"><label>Date *</label><input type="date" id="med-date"></div>
+                    <div class="field"><label>Bill Amount (₹) *</label><input type="number" inputmode="decimal" id="med-amount" oninput="calcMedBalance()"></div>
+                    <div style="background:var(--red-lt);border:1px solid var(--red);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Outstanding Balance (Auto)</div>
+                        <div class="auto-row"><span class="auto-label">All Medicine Outstanding (after this bill)</span><span class="auto-val" id="med-total-out" style="color:var(--red)">-</span></div>
+                    </div>
+                    <button class="btn-main" style="background:var(--red)" onclick="saveMedicineBill()">Save Medicine Bill</button>
+                    <button class="btn-main" style="background:#25D366;margin-top:8px" onclick="shareMedBillWhatsApp()">📤 Share on WhatsApp</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MEDICINE PAYMENT -->
+        <div class="modal-overlay" id="modal-medicine-payment">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">💊 Medicine Payment</span><button class="modal-close" onclick="closeModal('modal-medicine-payment')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Medical Name *</label><select id="medp-name" onchange="calcMedPaymentBalance()"></select></div>
+                    <div class="field"><label>Date *</label><input type="date" id="medp-date"></div>
+                    <div class="field"><label>Amount Paid (₹) *</label><input type="number" inputmode="decimal" id="medp-amount" oninput="calcMedPaymentBalance()"></div>
+                    <div style="background:var(--blue-lt);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Balance (Auto)</div>
+                        <div class="auto-row"><span class="auto-label">Current Outstanding</span><span class="auto-val" id="medp-current-out">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">After This Payment</span><span class="auto-val" id="medp-after-out" style="color:var(--green)">-</span></div>
+                    </div>
+                    <button class="btn-main" style="background:#0A7C52" onclick="saveMedicinePayment()">Save Payment</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADD BULL -->
+        <div class="modal-overlay" id="modal-add-bull">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🐂 Add Bull</span><button class="modal-close" onclick="closeModal('modal-add-bull')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Bull Name *</label><input id="bull-name" placeholder="Bull name / ID"></div>
+                    <div class="field"><label>Bull Purchased Amount (₹) *</label><input type="number" inputmode="decimal" id="bull-amount"></div>
+                    <div class="field"><label>Vendor *</label><input id="bull-vendor" placeholder="Vendor name" list="bull-vendor-list"><datalist id="bull-vendor-list"></datalist></div>
+                    <div class="field"><label>Date *</label><input type="date" id="bull-date"></div>
+                    <button class="btn-main" style="background:var(--blue)" onclick="saveBull()">Save Bull</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BULLS PAYMENT -->
+        <div class="modal-overlay" id="modal-bull-payment">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🐂 Bulls Payment</span><button class="modal-close" onclick="closeModal('modal-bull-payment')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Vendor *</label><select id="bullp-vendor" onchange="calcBullPaymentBalance()"></select></div>
+                    <div class="field"><label>Date *</label><input type="date" id="bullp-date"></div>
+                    <div class="field"><label>Amount Paid (₹) *</label><input type="number" inputmode="decimal" id="bullp-amount" oninput="calcBullPaymentBalance()"></div>
+                    <div style="background:var(--blue-lt);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px" id="bullp-status-label">Balance / Advance (Auto)</div>
+                        <div class="auto-row"><span class="auto-label">Current Outstanding</span><span class="auto-val" id="bullp-current-out">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">After This Payment</span><span class="auto-val" id="bullp-after-out" style="color:var(--green)">-</span></div>
+                    </div>
+                    <button class="btn-main" style="background:#0A7C52" onclick="saveBullPayment()">Save Payment</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PURCHASED MILK PAYMENT -->
+        <div class="modal-overlay" id="modal-milk-purchase-payment">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🥛 Purchased Milk Payment</span><button class="modal-close" onclick="closeModal('modal-milk-purchase-payment')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Purchased From *</label><select id="mpp-vendor" onchange="calcMilkPurchaseBill()"></select></div>
+                    <div class="field"><label>Purchased Rate (₹/L) *</label><input type="number" inputmode="decimal" id="mpp-rate" oninput="calcMilkPurchaseBill()"></div>
+                    <div style="font-size:10px;color:var(--light);margin:-6px 0 10px;font-style:italic">Week: Sunday to Saturday, current week</div>
+                    <div style="background:var(--blue-lt);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Auto Calculated</div>
+                        <div class="auto-row"><span class="auto-label">Liters Purchased (this week)</span><span class="auto-val" id="mpp-litres" style="color:var(--blue)">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">Weekly Bill Amount</span><span class="auto-val" id="mpp-billamt" style="color:var(--blue)">-</span></div>
+                    </div>
+                    <div class="field"><label>Amount Paid (₹)</label><input type="number" inputmode="decimal" id="mpp-paid" oninput="calcMilkPurchaseBill()"></div>
+                    <div style="background:var(--green-lt);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px" id="mpp-status-label">Balance / Advance (Auto)</div>
+                        <div class="auto-row"><span class="auto-label">Current Outstanding</span><span class="auto-val" id="mpp-current-out">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">After This Payment</span><span class="auto-val" id="mpp-after-out" style="color:var(--green)">-</span></div>
+                    </div>
+                    <button class="btn-main" style="background:var(--blue)" onclick="saveMilkPurchasePayment()">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STABLE RENT PAYMENT -->
+        <div class="modal-overlay" id="modal-rent-payment">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🏠 Stable Rent Payment</span><button class="modal-close" onclick="closeModal('modal-rent-payment')">✕</button></div>
+                <div class="form-box">
+                    <div style="font-size:11px;color:var(--muted);margin-bottom:12px" id="rentp-rate-info">-</div>
+                    <div class="field"><label>Date *</label><input type="date" id="rentp-date"></div>
+                    <div class="field"><label>Amount Paid (₹) *</label><input type="number" inputmode="decimal" id="rentp-amount" oninput="calcRentPaymentBalance()"></div>
+                    <div style="background:var(--blue-lt);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Balance (Auto)</div>
+                        <div class="auto-row"><span class="auto-label">Current Outstanding</span><span class="auto-val" id="rentp-current-out">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">After This Payment</span><span class="auto-val" id="rentp-after-out" style="color:var(--green)">-</span></div>
+                    </div>
+                    <button class="btn-main" style="background:#0A7C52" onclick="saveRentPayment()">Save Payment</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MISCELLANEOUS EXPENSE -->
+        <div class="modal-overlay" id="modal-misc-expense">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🧾 Miscellaneous Expense</span><button class="modal-close" onclick="closeModal('modal-misc-expense')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Category *</label><select id="misc-category"><option value="Water">💧 Water</option><option value="Cooking">🍳 Cooking</option><option value="Milk Transportation">🚚 Milk Transportation</option><option value="Diesel">⛽ Diesel</option><option value="Repairs">🔧 Repairs</option><option value="Others">📦 Others</option></select></div>
+                    <div class="field"><label>Date *</label><input type="date" id="misc-date"></div>
+                    <div class="field"><label>Amount (₹) *</label><input type="number" inputmode="decimal" id="misc-amount"></div>
+                    <div class="field"><label>Note <span style="font-size:10px;color:var(--muted);font-weight:400">(optional)</span></label><input id="misc-note" placeholder="e.g. tanker refill, diwali sweets"></div>
+                    <button class="btn-main" style="background:var(--amber)" onclick="saveMiscExpense()">Save Expense</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIGHT BILL -->
+        <div class="modal-overlay" id="modal-light-bill">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">💡 Light Bill Entry</span><button class="modal-close" onclick="closeModal('modal-light-bill')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Bill Month *</label><input type="month" id="lb-month"></div>
+                    <div class="field"><label>Bill Amount (₹) *</label><input type="number" inputmode="decimal" id="lb-amount" oninput="calcLightBalance()"></div>
+                    <div class="field"><label>Amount Paid (₹)</label><input type="number" inputmode="decimal" id="lb-paid" oninput="calcLightBalance()" placeholder="0 if not paid yet"></div>
+                    <div class="field"><label>Due Date</label><input type="date" id="lb-duedate"></div>
+                    <div class="field"><label>Notes</label><input id="lb-notes" placeholder="e.g. MSEB bill, meter no."></div>
+                    <div style="background:var(--amber-lt);border:1px solid var(--amber);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Outstanding (Auto)</div>
+                        <div class="auto-row"><span class="auto-label">This Bill Outstanding</span><span class="auto-val" id="lb-outstanding" style="color:var(--amber)">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">All Light Bills Outstanding</span><span class="auto-val" id="lb-total-out" style="color:var(--red)">-</span></div>
+                    </div>
+                    <button class="btn-main" style="background:var(--amber)" onclick="saveLightBill()">💾 Save Light Bill</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADD CUSTOMER -->
+        <div class="modal-overlay" id="modal-add-customer">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">➕ Add Customer</span><button class="modal-close" onclick="closeModal('modal-add-customer')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Customer Name *</label><input id="cu-name" placeholder="e.g. Ramesh Sharma"></div>
+                    <div class="field"><label>Rate (₹ / litre) *</label><input type="number" inputmode="decimal" id="cu-rate" placeholder="e.g. 60"></div>
+                    <div class="field"><label>Billing Cycle *</label><select id="cu-cycle"><option value="">- Select -</option><option value="Weekly">Weekly</option><option value="10">Every 10 Days</option><option value="20">Every 20 Days</option><option value="31">Every 31 Days</option><option value="Monthly">Monthly</option></select></div>
+                    <div class="field"><label>Supply Type *</label><select id="cu-supplyType" onchange="toggleSupplyType()"><option value="">- Select -</option><option value="Fix">Fix (same qty daily)</option><option value="NonFix">Non-Fix (varies daily)</option></select></div>
+                    <div id="cu-fix-fields" style="display:none"><div class="field"><label>Morning Qty (litres)</label><input type="number" inputmode="decimal" id="cu-morning" placeholder="e.g. 2"></div><div class="field"><label>Evening Qty (litres)</label><input type="number" inputmode="decimal" id="cu-evening" placeholder="e.g. 2"></div></div>
+                    <div class="field"><label>Old Balance (₹)</label><input type="number" inputmode="decimal" id="cu-oldbalance" placeholder="0 if starting new"></div>
+                    <div class="field"><label>Start Date *</label><input type="date" id="cu-startdate"></div>
+                    <button class="btn-main" style="background:var(--blue)" onclick="saveCustomer()">Save Customer</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- EDIT CUSTOMER RATE -->
+        <div class="modal-overlay" id="modal-edit-rate">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">✏️ Edit Rate</span><button class="modal-close" onclick="closeModal('modal-edit-rate')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Customer</label><input id="er-name" disabled></div>
+                    <div class="field"><label>Rate (₹ / litre) *</label><input type="number" inputmode="decimal" id="er-rate" placeholder="e.g. 60"></div>
+                    <button class="btn-main" style="background:var(--blue)" onclick="saveCustomerRate()">Save Rate</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- EDIT CUSTOMER PAYMENT -->
+        <div class="modal-overlay" id="modal-edit-payment">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">✏️ Edit Payment</span><button class="modal-close" onclick="closeModal('modal-edit-payment')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Customer</label><input id="ep-name" disabled></div>
+                    <div class="field"><label>Amount (₹) *</label><input type="number" inputmode="decimal" id="ep-amount" placeholder="e.g. 5000"></div>
+                    <div class="field"><label>Date *</label><input type="date" id="ep-date"></div>
+                    <button class="btn-main" style="background:var(--blue)" onclick="saveEditPayment()">Save Changes</button>
+                    <button class="btn-main" style="background:var(--red);margin-top:8px" onclick="deleteEditPayment()">🗑 Delete Payment</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CUSTOMER PAYMENT -->
+        <div class="modal-overlay" id="modal-customer-payment">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">💰 Customer Payment</span><button class="modal-close" onclick="closeModal('modal-customer-payment')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Customer Name *</label><select id="cpay-name" onchange="calcCustomerOutstanding()"><option value="">- Select -</option></select></div>
+                    <div class="field"><label>Amount Received (₹) *</label><input type="number" inputmode="decimal" id="cp-amount" oninput="calcCustomerOutstanding()"></div>
+                    <div class="field"><label>Date *</label><input type="date" id="cp-date"></div>
+                    <div style="background:var(--blue-lt);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Outstanding (Auto)</div>
+                        <div class="auto-row"><span class="auto-label">Current Outstanding</span><span class="auto-val" id="cp-current-out">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">After This Payment</span><span class="auto-val" id="cp-after-out" style="color:var(--green)">-</span></div>
+                    </div>
+                    <div style="background:var(--amber-lt);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">From Last Bill Generated</div>
+                        <div id="cp-lastbill-info" style="font-size:12px;color:var(--muted)">Select a customer to check</div>
+                    </div>
+                    <button class="btn-main" style="background:#0A7C52" onclick="saveCustomerPayment()">Save Payment</button>
+                    <button type="button" style="width:100%;background:none;border:none;color:#25D366;font-size:12px;font-weight:700;padding:10px 0 2px;cursor:pointer" onclick="closeModal('modal-customer-payment');openModal('modal-receipt')">📤 Save &amp; send WhatsApp receipt instead</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- WHATSAPP BILL GENERATOR -->
+        <div class="modal-overlay" id="modal-whatsapp-bill">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">📤 Generate WhatsApp Bill</span><button class="modal-close" onclick="closeModal('modal-whatsapp-bill')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Customer *</label><select id="wb-customer" onchange="updateWbDateDefaults(this.value?N(this.value):null)"><option value="">- Select -</option></select></div>
+                    <div class="field"><label>From Date *</label><input type="date" id="wb-fromdate"></div>
+                    <div class="field"><label>To Date *</label><input type="date" id="wb-todate"></div>
+                    <button class="btn-main" style="background:#0A7C52" onclick="generateWhatsAppBill()">Generate Bill Preview</button>
+                    <div id="wb-preview" style="display:none;margin-top:14px">
+                        <div style="background:var(--green-lt);border:1px solid var(--green);border-radius:10px;padding:12px;font-family:monospace;font-size:11px;white-space:pre-wrap;color:var(--ink);line-height:1.5;max-height:38vh;overflow-y:auto;-webkit-overflow-scrolling:touch" id="wb-preview-text"></div>
+                        <div style="display:flex;gap:8px;margin-top:10px">
+                            <button class="wb-share-btn" style="flex:1;justify-content:center" onclick="shareWhatsAppBill()">📤 Share on WhatsApp</button>
+                        </div>
+                        <button class="btn-main" style="background:var(--purple);margin-top:8px" onclick="shareBillImage()">🖼️ Share Bill as Image</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EDIT GODOWN -->
+        <div class="modal-overlay" id="modal-edit-godown">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">✏️ Edit Godown Entry</span><button class="modal-close" onclick="closeModal('modal-edit-godown')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Goods Name</label><input id="eg-name" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
+                    <div style="font-size:10px;color:var(--light);margin:-6px 2px 12px;font-style:italic">Renaming merges this item's full history into whatever name you type - useful if a typo or your keyboard's autocorrect created a duplicate (e.g. "Ganna kutti" vs "Ganna Kutti's").</div>
+                    <div class="field"><label>Opening Bags</label><input type="number" inputmode="decimal" id="eg-opening" placeholder="Opening bags"></div>
+                    <div class="field"><label>Bag Size (kg)</label><input type="number" inputmode="decimal" id="eg-bagsize" placeholder="kg per bag"></div>
+                    <div class="field"><label>Date</label><input type="date" id="eg-date"></div>
+                    <button class="btn-main" style="background:var(--blue)" onclick="saveEditGodown()">💾 Save Changes</button>
+                    <button type="button" style="width:100%;background:none;border:none;color:var(--muted);font-size:11px;font-weight:700;padding:10px 0 2px;cursor:pointer" onclick="openStockDebug(editGodownName)">🐛 Debug this item's stock ledger</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STOCK LEDGER DEBUG -->
+        <div class="modal-overlay" id="modal-stock-debug">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🐛 Stock Ledger Debug</span><button class="modal-close" onclick="closeModal('modal-stock-debug')">✕</button></div>
+                <div id="stock-debug-body" style="max-height:70vh;overflow-y:auto"></div>
+            </div>
+        </div>
+
+        <!-- GOODS PURCHASE -->
+        <div class="modal-overlay" id="modal-goods-purchase">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🛒 Goods Purchase</span><button class="modal-close" onclick="closeModal('modal-goods-purchase')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Broker Name *</label><input id="gp-broker" placeholder="e.g. Sharma Traders"></div>
+                    <div class="field"><label>Date *</label><input type="date" id="gp-date"></div>
+                    <div class="field"><label>Goods Name *</label><input id="gp-goods" placeholder="e.g. Wheat Bran" autocapitalize="off" autocorrect="off" spellcheck="false" list="godown-goods-list"></div>
+                    <div class="field"><label>Weight (kg) *</label><input type="number" inputmode="decimal" id="gp-weight" oninput="calcGoodsPurchase()"></div>
+                    <div class="field"><label>No. of Bags *</label><input type="number" inputmode="decimal" id="gp-bags" oninput="calcGoodsPurchase()"></div>
+                    <div class="field"><label>Rate Type *</label><select id="gp-ratetype" onchange="calcGoodsPurchase()"><option value="">- Select -</option><option value="X-Factory">X-Factory (ex-factory price)</option><option value="Delivery">Delivery (inclusive of freight)</option></select></div>
+                    <div class="field"><label>Rate ₹/kg * <span id="gp-rate-label" style="font-size:10px;color:var(--blue);font-weight:700"></span></label><input type="number" inputmode="decimal" id="gp-rate" oninput="calcGoodsPurchase()"></div>
+                    <div id="gp-freight-wrap" class="field"><label>Freight Amount (₹) <span style="font-size:10px;color:var(--amber);font-weight:600"> - paid to truck driver, NOT added to Danawala bill</span></label><input type="number" inputmode="decimal" id="gp-freight" oninput="calcGoodsPurchase()" placeholder="0"></div>
+                    <div style="background:var(--blue-lt);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:8px">
+                        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Auto Calculated</div>
+                        <div class="auto-row"><span class="auto-label">Bag Size</span><span class="auto-val" id="gp-bagsize">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">Freight / kg</span><span class="auto-val" id="gp-freightperkg">-</span></div>
+                        <div class="auto-row" style="margin-top:5px;border-top:1px solid var(--border);padding-top:6px"><span class="auto-label" style="font-weight:700">Danawala Bill (goods only)</span><span class="auto-val" id="gp-bill" style="color:var(--blue);font-weight:800">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">Freight (truck, separate)</span><span class="auto-val" id="gp-freight-show" style="color:var(--amber)">-</span></div>
+                        <div class="auto-row" style="margin-top:5px;border-top:1px solid var(--border);padding-top:6px"><span class="auto-label" style="font-weight:700">Total Outflow</span><span class="auto-val" id="gp-total-show" style="color:var(--ink);font-weight:800">-</span></div>
+                    </div>
+                    <div style="font-size:10px;color:var(--green);margin-bottom:10px;font-style:italic;padding:6px 8px;background:var(--green-lt);border-radius:6px">✅ Danawala bill (goods only) auto-saved to outstanding ledger<br>🚛 Freight saved separately in P&amp;L expenses</div>
+                    <input type="file" id="gp-photo-input" accept="image/*,application/pdf" style="display:none" onchange="handleBillPhotoSelect(event)">
+                    <button type="button" onclick="document.getElementById('gp-photo-input').click()" style="width:100%;background:var(--card-strong);border:1.5px dashed var(--border);color:var(--mid);border-radius:9px;padding:10px 0;font-size:12.5px;font-weight:700;margin-bottom:8px;cursor:pointer" id="gp-photo-btn">📷 Attach Bill Photo / PDF</button>
+                    <div id="gp-photo-preview-wrap" style="display:none;margin-bottom:10px;position:relative">
+                        <img id="gp-photo-preview" style="width:100%;border-radius:9px;border:1px solid var(--border);display:block">
+                        <div id="gp-photo-pdf-label" style="display:none;background:var(--card-strong);border:1px solid var(--border);border-radius:9px;padding:16px;text-align:center;font-size:13px;font-weight:700;color:var(--ink)">📄 PDF attached</div>
+                        <button type="button" onclick="removeBillPhoto()" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:26px;height:26px;font-size:14px;cursor:pointer">✕</button>
+                    </div>
+                    <button class="btn-main" style="background:var(--blue)" onclick="saveGoodsPurchase()">Save Purchase</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW / REPLACE BILL PHOTO -->
+        <div class="modal-overlay" id="modal-view-bill-photo">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title" id="vbp-title">📷 Bill Photo</span><button class="modal-close" onclick="closeModal('modal-view-bill-photo')">✕</button></div>
+                <div class="form-box">
+                    <img id="vbp-img" style="width:100%;border-radius:9px;border:1px solid var(--border);margin-bottom:12px">
+                    <a id="vbp-pdf-link" target="_blank" style="display:none;text-decoration:none;background:var(--card-strong);border:1px solid var(--border);border-radius:9px;padding:22px;text-align:center;font-size:13px;font-weight:700;color:var(--blue);margin-bottom:12px">📄 Open PDF Bill</a>
+                    <input type="file" id="vbp-photo-input" accept="image/*,application/pdf" style="display:none" onchange="handleReplaceBillPhoto(event)">
+                    <button type="button" onclick="document.getElementById('vbp-photo-input').click()" style="width:100%;background:var(--blue);color:#fff;border:none;border-radius:9px;padding:10px 0;font-size:12.5px;font-weight:700;margin-bottom:8px;cursor:pointer">📷 Upload / Replace Bill</button>
+                    <button type="button" onclick="deleteBillPhoto()" style="width:100%;background:var(--red);color:#fff;border:none;border-radius:9px;padding:10px 0;font-size:12.5px;font-weight:700;cursor:pointer">🗑 Remove</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- GODOWN STOCK INIT -->
+        <div class="modal-overlay" id="modal-godown-init">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🏭 Godown Stock (New)</span><button class="modal-close" onclick="closeModal('modal-godown-init')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Goods Name *</label><input id="gi-goods" placeholder="e.g. Wheat Bran" autocapitalize="off" autocorrect="off" spellcheck="false" list="godown-goods-list"></div>
+                    <datalist id="godown-goods-list"></datalist>
+                    <div class="field"><label>No. of Bags *</label><input type="number" inputmode="decimal" id="gi-bags" placeholder="e.g. 50"></div>
+                    <div class="field"><label>Bag Size (kg)</label><input type="number" inputmode="decimal" id="gi-bagsize" placeholder="e.g. 50"></div>
+                    <div style="font-size:10px;color:var(--light);margin-bottom:10px;font-style:italic">Use this only for starting / opening stock - no bill is created</div>
+                    <button class="btn-main" style="background:#0694A2" onclick="saveGodownInit()">Save Opening Stock</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FEED CONSUMED -->
+        <div class="modal-overlay" id="modal-feed-consumed">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🍽️ Feed Consumed Daily</span><button class="modal-close" onclick="closeModal('modal-feed-consumed')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Date *</label><input type="date" id="fc-date"></div>
+                    <div class="field"><label>Goods Name *</label><select id="fc-goods" onchange="calcFeedConsumed()"><option value="">- Select -</option></select></div>
+                    <div class="field"><label>Bags Consumed *</label><input type="number" inputmode="decimal" id="fc-bags" oninput="calcFeedConsumed()"></div>
+                    <div style="background:var(--amber-lt);border:1px solid var(--amber);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Auto Calculated</div>
+                        <div class="auto-row"><span class="auto-label">Total Feed (kg)</span><span class="auto-val" id="fc-totalkg">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">Bags Left in Stock</span><span class="auto-val" id="fc-left" style="color:var(--red)">-</span></div>
+                    </div>
+                    <div style="font-size:10px;color:var(--light);margin-bottom:10px;font-style:italic">Once added, repeats daily until you change it</div>
+                    <button class="btn-main" style="background:#B45309" onclick="saveFeedConsumed()">Save Consumption</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADD WORKER -->
+        <div class="modal-overlay" id="modal-add-worker">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">➕ Add Worker</span><button class="modal-close" onclick="closeModal('modal-add-worker')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Worker Name *</label><input id="wk-name" placeholder="e.g. Ram Lal"></div>
+                    <div class="field"><label>Role *</label><select id="wk-role"><option value="Labour">Labour</option><option value="Manager">Manager</option><option value="Cook">Cook</option></select></div>
+                    <div class="field"><label>Pagar / Month (₹) *</label><input type="number" inputmode="decimal" id="wk-pagar" placeholder="e.g. 12000"></div>
+                    <div class="field"><label>Joining Date *</label><input type="date" id="wk-joining"></div>
+                    <div class="field"><label>Starting Advance (₹)</label><input type="number" inputmode="decimal" id="wk-advance" placeholder="0"></div>
+                    <div class="field"><label>Old Balance (₹)</label><input type="number" inputmode="decimal" id="wk-oldbalance" placeholder="0 - pagar due to worker from before"></div>
+                    <button class="btn-main" style="background:var(--blue)" onclick="saveWorker()">Save Worker</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MARK LEAVING -->
+        <div class="modal-overlay" id="modal-leaving">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">🚪 Mark Worker Leaving</span><button class="modal-close" onclick="closeModal('modal-leaving')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Worker *</label><select id="lv-worker" onchange="renderLeavingAuto()"><option value="">- Select -</option></select></div>
+                    <div class="field"><label>Joining Date</label><input id="lv-joining" disabled style="opacity:.75"></div>
+                    <div class="field"><label>Leaving Date *</label><input type="date" id="lv-leaving" onchange="renderLeavingAuto()"></div>
+                    <div style="background:var(--red-lt);border:1px solid var(--red);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Auto-Calculated Final Settlement</div>
+                        <div class="auto-row"><span class="auto-label">Days Worked</span><span class="auto-val" id="lv-days">-</span></div>
+                        <div class="auto-row"><span class="auto-label">Total Pagar Earned</span><span class="auto-val" id="lv-earned">-</span></div>
+                        <div class="auto-row"><span class="auto-label">Already Paid</span><span class="auto-val" id="lv-paid">-</span></div>
+                        <div class="auto-row"><span class="auto-label">Old Balance (carried)</span><span class="auto-val" id="lv-oldbal">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">Pagar Balance / Advance</span><span class="auto-val" id="lv-balance">-</span></div>
+                        <div class="auto-row"><span class="auto-label">Money Taken (Advance)</span><span class="auto-val" id="lv-advance">-</span></div>
+                    </div>
+                    <button class="btn-main" style="background:var(--red)" onclick="saveWorkerLeaving()">Confirm Leaving</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- LABOUR PAYMENT -->
+        <div class="modal-overlay" id="modal-labour-payment">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">💰 Labour Payment</span><button class="modal-close" onclick="closeModal('modal-labour-payment')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Worker Name *</label><select id="lp-worker"><option value="">- Select -</option></select></div>
+                    <div class="field"><label>Amount Paid (₹) *</label><input type="number" inputmode="decimal" id="lp-amount"></div>
+                    <div class="field"><label>Date *</label><input type="date" id="lp-date"></div>
+                    <button class="btn-main" style="background:#0A7C52" onclick="saveLabourPayment()">Save Payment</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ATTENDANCE -->
+        <div class="modal-overlay" id="modal-attendance">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">📅 Attendance Entry</span><button class="modal-close" onclick="closeModal('modal-attendance')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Worker Name *</label><select id="att-worker" onchange="calcAttendancePagar()"><option value="">- Select -</option></select></div>
+                    <div class="field"><label>Month *</label><input type="month" id="att-month" oninput="calcAttendancePagar()"></div>
+                    <div class="field"><label>Days Present *</label><input type="number" inputmode="decimal" step="0.5" id="att-days" oninput="calcAttendancePagar()" placeholder="e.g. 29.5"></div>
+                    <div style="background:var(--purple-lt);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Pagar (Auto)</div>
+                        <div class="auto-row"><span class="auto-label">Calculated Pagar</span><span class="auto-val" id="att-pagar" style="color:var(--purple)">-</span></div>
+                    </div>
+                    <button class="btn-main" style="background:var(--purple)" onclick="saveAttendance()">Save Attendance</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PALAK PAYMENT -->
+        <div class="modal-overlay" id="modal-palak-payment">
+            <div class="modal-box">
+                <div class="modal-header"><span class="modal-title">👤 Palak Payment</span><button class="modal-close" onclick="closeModal('modal-palak-payment')">✕</button></div>
+                <div class="form-box">
+                    <div class="field"><label>Palak / Vendor *</label><select id="pp-target" onchange="calcPalakOutstanding()"><option value="">- Select -</option><option value="Noora">Noora (Palak)</option><option value="Tosif">Tosif (Palak)</option><option value="Irshad">Irshad (Transport)</option></select></div>
+                    <div class="field"><label>Amount Paid (₹) *</label><input type="number" inputmode="decimal" id="pp-amount" oninput="calcPalakOutstanding()"></div>
+                    <div class="field"><label>Date *</label><input type="date" id="pp-date"></div>
+                    <div style="background:var(--blue-lt);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:12px">
+                        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Outstanding (Auto)</div>
+                        <div class="auto-row"><span class="auto-label">Bill Amount (Monthly)</span><span class="auto-val" id="pp-bill">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">Already Paid (Total)</span><span class="auto-val" id="pp-paidtotal" style="color:#0A7C52">-</span></div>
+                        <div class="auto-row" style="margin-top:5px"><span class="auto-label">Outstanding After This</span><span class="auto-val" id="pp-after" style="color:var(--red)">-</span></div>
+                    </div>
+                    <button class="btn-main" style="background:#0A7C52" onclick="savePalakPayment()">Save Payment</button>
+                    <button class="btn-main" style="background:#25D366;margin-top:8px" onclick="sharePalakPaymentWhatsApp()">📤 Share on WhatsApp</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONFIRM OVERLAYS -->
+        <div class="confirm-overlay" id="confirm-customer-overlay">
+            <div class="confirm-box">
+                <div style="font-size:22px;margin-bottom:10px">🗑️</div>
+                <div style="font-weight:700;font-size:16px;color:var(--ink);margin-bottom:8px">Delete Customer?</div>
+                <div style="font-size:13px;color:var(--muted);margin-bottom:16px">This permanently removes this customer and all their billing history. This cannot be undone.</div>
+                <div style="display:flex;gap:8px"><button onclick="closeConfirmCustomer()" style="flex:1;background:var(--bg);color:var(--ink);border:1.5px solid var(--border);border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer">Cancel</button><button onclick="deleteCurrentCustomer()" style="flex:1;background:var(--red);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer">🗑️ Delete</button></div>
+            </div>
+        </div>
+        <div class="confirm-overlay" id="confirm-worker-overlay">
+            <div class="confirm-box">
+                <div style="font-size:22px;margin-bottom:10px">🗑️</div>
+                <div style="font-weight:700;font-size:16px;color:var(--ink);margin-bottom:8px">Delete Worker?</div>
+                <div style="font-size:13px;color:var(--muted);margin-bottom:16px">This permanently removes this worker and their payment history. This cannot be undone.</div>
+                <div style="display:flex;gap:8px"><button onclick="closeConfirmWorker()" style="flex:1;background:var(--bg);color:var(--ink);border:1.5px solid var(--border);border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer">Cancel</button><button onclick="deleteCurrentWorker()" style="flex:1;background:var(--red);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer">🗑️ Delete</button></div>
+            </div>
+        </div>
+        <div class="confirm-overlay" id="confirm-overlay">
+            <div class="confirm-box">
+                <div style="font-size:22px;margin-bottom:10px">🗑️</div>
+                <div style="font-weight:700;font-size:16px;color:var(--ink);margin-bottom:8px">Delete Animal?</div>
+                <div style="font-size:13px;color:var(--muted);margin-bottom:16px">This permanently removes this animal from all records. This cannot be undone.</div>
+                <div style="display:flex;gap:8px"><button onclick="closeConfirm()" style="flex:1;background:var(--bg);color:var(--ink);border:1.5px solid var(--border);border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer">Cancel</button><button onclick="deleteCurrentAnimal()" style="flex:1;background:var(--red);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer">🗑️ Delete</button></div>
+            </div>
+        </div>
+
+        <div class="confirm-overlay" id="confirm-generic-overlay">
+            <div class="confirm-box">
+                <div style="font-size:22px;margin-bottom:10px">🗑️</div>
+                <div style="font-weight:700;font-size:16px;color:var(--ink);margin-bottom:8px" id="generic-confirm-title">Confirm</div>
+                <div style="font-size:13px;color:var(--muted);margin-bottom:16px" id="generic-confirm-msg"></div>
+                <div style="display:flex;gap:8px"><button onclick="closeGenericConfirm()" style="flex:1;background:var(--bg);color:var(--ink);border:1.5px solid var(--border);border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer">Cancel</button><button onclick="runGenericConfirm()" style="flex:1;background:var(--red);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer">🗑️ Delete</button></div>
+            </div>
+        </div>
+
+        <!-- Herd Book "Entry" / "Payment" picker sheet - opens the same modals
+             that used to be their own separate buttons on the Herd Book screen -->
+        <div class="confirm-overlay" id="herd-action-picker-overlay">
+            <div class="confirm-box">
+                <div style="font-weight:700;font-size:16px;color:var(--ink);margin-bottom:12px" id="herd-picker-title">Entry</div>
+                <div class="action-grid" id="herd-picker-grid" style="grid-template-columns:1fr 1fr"></div>
+                <button onclick="closeHerdActionPicker()" style="width:100%;margin-top:4px;background:var(--bg);color:var(--ink);border:1.5px solid var(--border);border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer">Cancel</button>
+            </div>
+        </div>
+
+        <div id="toast"></div>
+
+        <!-- TAB BAR -->
+        <div id="tab-bar">
+            <button class="tab-btn active" onclick="switchTab(0,this)"><span class="t-icon">📊</span><span class="t-label">Home</span></button>
+            <button class="tab-btn" onclick="switchTab(1,this)"><span class="t-icon">🐃</span><span class="t-label">Herd</span></button>
+            <button class="tab-btn" onclick="switchTab(7,this)"><span class="t-icon">🔄</span><span class="t-label">Salvage</span></button>
+            <button class="tab-btn" onclick="switchTab(2,this)"><span class="t-icon">🥛</span><span class="t-label">Supply</span></button>
+            <button class="tab-btn" onclick="switchTab(3,this)"><span class="t-icon">📦</span><span class="t-label">Stock</span></button>
+            <button class="tab-btn" onclick="switchTab(4,this)"><span class="t-icon">👷</span><span class="t-label">Labour</span></button>
+            <button class="tab-btn" onclick="switchTab(5,this)"><span class="t-icon">📈</span><span class="t-label">Accounts</span></button>
+        </div>
+    </div>
+
+    <!-- Load order matters: db-core defines shared state/utils used by every
+         module below it; app-init (backup/boot/splash) must load LAST since
+         boot() kicks off the whole app and touches every module above it. -->
+    <script src="db-core.js"></script>
+    <script src="bill-image.js"></script>
+    <script src="ui-shell.js"></script>
+    <script src="dashboard.js"></script>
+    <script src="accounts.js"></script>
+    <script src="herd.js"></script>
+    <script src="billing.js"></script>
+    <script src="expenses.js"></script>
+    <script src="stock.js"></script>
+    <script src="labour.js"></script>
+    <script src="app-init.js"></script>
+</body>
+</html>
